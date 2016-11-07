@@ -4,11 +4,11 @@ Tile Tile::CreateTileA() {
 	Tile newTile = new Tile();
 	newTile.has_shield = false;
 	newTile.tile_type = TileType::A;
-	newTile.edges = { 
+	newTile.edges = {
 		TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
 		TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
 		TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
-		TerrainType::Grass, TerrainType::Grass, TerrainType::Grass 
+		TerrainType::Grass, TerrainType::Grass, TerrainType::Grass
 	};
 
 	newTile.center = TerrainType::Church;
@@ -29,19 +29,115 @@ Tile Tile::CreateTileA() {
 }
 
 Tile Tile::CreateTileB() {
+	Tile newTile = new Tile();
+	newTile.has_shield = false;
+	newTile.tile_type = TileType::B;
+	newTile.edges = {
+		TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
+		TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
+		TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
+		TerrainType::Grass, TerrainType::Grass, TerrainType::Grass
+	};
 
+	newTile.center = TerrainType::Church;
+	newTile.edge_connections = {
+		111111111111b,
+		111111111111b,
+		111111111111b,
+		111111111111b,
+		111111111111b,
+		111111111111b,
+		111111111111b,
+		111111111111b,
+		111111111111b,
+		111111111111b,
+		111111111111b,
+		111111111111b,
+	};
 }
 
 Tile Tile::CreateTileC() {
+	Tile newTile = new Tile();
+	newTile.has_shield = true;
+	newTile.tile_type = TileType::C;
+	newTile.edges = {
+		TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
+		TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
+		TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
+		TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
+	};
 
+	newTile.center = TerrainType::Castle;
+	newTile.edge_connections = {
+		111111111111b,
+		111111111111b,
+		111111111111b,
+		111111111111b,
+		111111111111b,
+		111111111111b,
+		111111111111b,
+		111111111111b,
+		111111111111b,
+		111111111111b,
+		111111111111b,
+		111111111111b,
+	};
 }
 
 Tile Tile::CreateTileD() {
+	Tile newTile = new Tile();
+	newTile.has_shield = false;
+	newTile.tile_type = TileType::D;
+	newTile.edges = {
+		TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
+		TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
+		TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
+		TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
+	};
 
+//	newTile.center = TerrainType::Castle;
+	newTile.edge_connections = {
+		111100000001b,
+		000010000010b,
+		000001000100b,
+		000000111000b,
+		000000111000b,
+		000000111000b,
+		000001000100b,
+		000010000010b,
+		111100000001b,
+		111100000001b,
+		111100000001b,
+		111100000001b,
+	};
 }
 
 Tile Tile::CreateTileE() {
+	Tile newTile = new Tile();
+	newTile.has_shield = false;
+	newTile.tile_type = TileType::E;
+	newTile.edges = {
+		TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
+		TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
+		TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
+		TerrainType::Grass, TerrainType::Grass, TerrainType::Grass
+	};
 
+	newTile.center = TerrainType::Grass;
+	newTile.edge_connections = {
+		000000000111b,
+		000000000111b,
+		000000000111b,
+		111111111000b,
+		111111111000b,
+		111111111000b,
+		111111111000b,
+		111111111000b,
+		111111111000b,
+		111111111000b,
+		111111111000b,
+		111111111000b,
+	};
 }
 
 Tile Tile::CreateTileF() {
