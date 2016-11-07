@@ -3,7 +3,31 @@
 
 class Tile {
 	public:
-		Tile(bool shield, TileType type);
+		Tile CreateTileA();
+		Tile CreateTileB();
+		Tile CreateTileC();
+		Tile CreateTileD();
+		Tile CreateTileE();
+		Tile CreateTileF();
+		Tile CreateTileG();
+		Tile CreateTileH();
+		Tile CreateTileI();
+		Tile CreateTileJ();
+		Tile CreateTileK();
+		Tile CreateTileL();
+		Tile CreateTileM();
+		Tile CreateTileN();
+		Tile CreateTileO();
+		Tile CreateTileP();
+		Tile CreateTileQ();
+		Tile CreateTileR();
+		Tile CreateTileS();
+		Tile CreateTileT();
+		Tile CreateTileU();
+		Tile CreateTileV();
+		Tile CreateTileW();
+		Tile CreateTileX();
+
 		void setRotation(int rotation);
 		bool getShield();
 		int getNumberOfSides();
@@ -11,6 +35,8 @@ class Tile {
 		bool isConnected(int edgeIndex);
 
 	private:
+		Tile();
+
 		// The number of sides this tile has
 		int number_sides;
 		// Specifies whether this tile has a shield
@@ -26,5 +52,5 @@ class Tile {
 		int rotation;
 		// Edge Connections is an array of integer arrays where the index correlates to an edge part and the array of integers at that location contains all of the edge parts that it connects to.
 		// This should be the same size as the edges array
-		int ** edge_connections;
+		int * edge_connections;
 }
