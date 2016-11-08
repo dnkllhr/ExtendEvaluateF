@@ -33,7 +33,9 @@ Tile ** Tile::CreateTiles() {
 }
 
 void Tile::setRotation(unsigned int rotation) {
-        this->rotation = (rotation * 3);
+        if (this->placed) return;
+
+        this->rotation = ((rotation * 3) % 4);
 }
 
 bool Tile::getShield() {
