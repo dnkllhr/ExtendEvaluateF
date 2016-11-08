@@ -1,9 +1,14 @@
+#ifndef __TILE_H
+#define __TILE_H
+
 #include "TileType.h"
 #include "TerrainType.h"
 
 class Tile {
         public:
                 Tile ** CreateTiles();
+
+                ~Tile();
 
                 bool setRotation(unsigned int rotation);
                 bool getShield();
@@ -61,4 +66,6 @@ class Tile {
                 unsigned int * edge_connections;
                 // Determines if the tile has been placed (used).
                 bool placed;
-}
+};
+
+#endif

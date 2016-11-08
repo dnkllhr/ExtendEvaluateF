@@ -1,4 +1,7 @@
-public enum TileType {
+#ifndef __TILETYPE_H
+#define __TILETYPE_H
+
+enum class TileType {
         A,
         B,
         C,
@@ -23,4 +26,6 @@ public enum TileType {
         V,
         W,
         X
-}
+};
+
+#endif
