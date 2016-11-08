@@ -5,7 +5,7 @@ class Tile {
         public:
                 Tile ** CreateTiles();
 
-                void setRotation(unsigned int rotation);
+                bool setRotation(unsigned int rotation);
                 bool getShield();
                 unsigned int getNumberOfSides();
                 TileType getTileType();

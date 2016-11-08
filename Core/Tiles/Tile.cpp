@@ -32,10 +32,11 @@ Tile ** Tile::CreateTiles() {
         return arrayOfTiles;
 }
 
-void Tile::setRotation(unsigned int rotation) {
-        if (this->placed) return;
+bool Tile::setRotation(unsigned int rotation) {
+        if (this->placed) return false;
 
         this->rotation = ((rotation * 3) % 4);
+        return true;
 }
 
 bool Tile::getShield() {
