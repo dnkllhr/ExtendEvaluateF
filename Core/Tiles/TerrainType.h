@@ -1,7 +1,7 @@
 public enum TerrainType {
-	Grass,
-	Road,
-	Castle,
-	Church,
+        Grass,
+        Road,
+        Castle,
+        Church,
         Fork
 }
