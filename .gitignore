@@ -1,0 +1,5 @@
+**/*.o
+Testing/googletest
+Testing/tests
+test
+test.cpp

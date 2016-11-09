@@ -1,55 +1,60 @@
 #ifndef __TILE_H
 #define __TILE_H
 
+#include <algorithm>
 #include "TileType.h"
 #include "TerrainType.h"
+#include "../../Common/Array.h"
 
 class Tile {
         public:
-                Tile ** CreateTiles();
+                static Array<Array<Tile>> CreateTiles();
 
+                Tile& operator=(const Tile& other);
                 ~Tile();
 
                 bool setRotation(unsigned int rotation);
                 bool getShield();
                 unsigned int getNumberOfSides();
+                TerrainType getTerrainType(unsigned int edge);
                 TileType getTileType();
                 bool isConnected(unsigned int inEdge, unsigned int outEdge);
                 void placeTile();
                 bool isPlaced();
-                int getId();
+                unsigned int getId();
 
         private:
                 Tile();
 
-                Tile * CreateTileA(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileB(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileC(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileD(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileE(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileF(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileG(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileH(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileI(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileJ(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileK(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileL(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileM(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileN(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileO(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileP(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileQ(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileR(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileS(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileT(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileU(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileV(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileW(unsigned int tileCount, unsigned int& startId);
-                Tile * CreateTileX(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileA(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileB(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileC(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileD(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileE(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileF(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileG(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileH(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileI(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileJ(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileK(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileL(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileM(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileN(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileO(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileP(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileQ(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileR(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileS(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileT(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileU(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileV(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileW(unsigned int tileCount, unsigned int& startId);
+                static Array<Tile> CreateTileX(unsigned int tileCount, unsigned int& startId);
 
                 unsigned int tileId;
                 // The number of sides this tile has
                 unsigned int number_sides;
+                unsigned int count_per_side;
                 // Specifies whether this tile has a shield
                 bool has_shield;
                 // The type of tile

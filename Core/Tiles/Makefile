@@ -5,6 +5,7 @@ CLEAN=*.o
 
 Tile.o: Tile.cpp $(DEPS)
 	$(CC) $(CFLAGS) -c $< -o $@
+	cp -uf Tile.o ../../Compiled/Tile.o
 
 clean:
 	rm -rf $(CLEAN)
