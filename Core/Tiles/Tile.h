@@ -11,7 +11,7 @@ class Tile {
                 static Array<Array<Tile>> CreateTiles();
 
                 Tile& operator=(const Tile& other);
-                ~Tile();
+//                ~Tile();
 
                 bool setRotation(unsigned int rotation);
                 bool getShield();

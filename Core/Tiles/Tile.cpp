@@ -86,16 +86,16 @@ Tile::Tile() {
         this->placed = false;
 }
 
-Tile::~Tile() {
-        if (this->edges != NULL) {
-                delete[] this->edges;
-                this->edges = NULL;
-        }
-        if (this->edge_connections != NULL) {
-                delete[] this->edge_connections;
-                this->edge_connections = NULL;
-        }
-}
+//Tile::~Tile() {
+//        if (this->edges != NULL) {
+//                delete[] this->edges;
+//                this->edges = NULL;
+//        }
+//       if (this->edge_connections != NULL) {
+//                delete[] this->edge_connections;
+//                this->edge_connections = NULL;
+//        }
+//}
 
 Tile& Tile::operator=(const Tile& other) {
         this->tileId = other.tileId;

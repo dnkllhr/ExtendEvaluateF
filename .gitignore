@@ -1,4 +1,5 @@
 **/*.o
+Testing/test_result.xml
 Testing/googletest
 Testing/tests
 test
