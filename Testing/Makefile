@@ -8,7 +8,6 @@ default:
 	mkdir -p Compiled
 	$(MAKE) -C ./Core
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(DEPS) $(GTEST_DEPS) -o tests
-	./tests --gtest_output=xml:test_result.xml
 
 clean:
 	$(MAKE) -C ./Core -f Makefile clean

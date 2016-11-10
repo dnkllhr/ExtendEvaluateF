@@ -2,8 +2,6 @@
 #include "../Core/Tiles/TileType.h"
 #include "gtest/gtest.h"
 
-#include <iostream>
-
 TEST(TileTests, CreateTiles) {
         Array<Array<Tile>> tiles = Tile::CreateTiles();
         unsigned int expectedSize = 24;
@@ -21,15 +19,10 @@ TEST(TileTests, CreateTiles) {
 }
 
 TEST(TileTests, SetRotation) {
-        std::cout << "Creating tiles" << std::endl;
         Array<Array<Tile>> tiles = Tile::CreateTiles();
-
-        std::cout << "Reading tile 0,0" << std::endl;
         Tile tile = tiles[0][0];
         
-        std::cout << "Setting rotation to 1" << std::endl;
         bool result = tile.setRotation(1);
-        std::cout << "Set rotation" << std::endl;
         EXPECT_EQ(result, true);
 }
 

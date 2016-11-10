@@ -30,7 +30,9 @@ Array<Array<Tile>> Tile::CreateTiles() {
         arrayOfTiles[22] = Tile::CreateTileW(4, startId);
         arrayOfTiles[23] = Tile::CreateTileX(1, startId);
 
-        return Array<Array<Tile>>(arrayOfTiles, numberOfTiles);
+        Array<Array<Tile>> toReturn(arrayOfTiles, numberOfTiles);
+        delete[] arrayOfTiles;
+        return toReturn;
 }
 
 unsigned int Tile::getId() {
@@ -40,7 +42,7 @@ unsigned int Tile::getId() {
 bool Tile::setRotation(unsigned int rotation) {
         if (this->placed) return false;
 
-        this->rotation = ((rotation * 3) % 4);
+        this->rotation = ((rotation * this->count_per_side) % this->number_sides);
         return true;
 }
 
@@ -61,8 +63,8 @@ TerrainType Tile::getTerrainType(unsigned int edge) {
 }
 
 bool Tile::isConnected(unsigned int inEdge, unsigned int outEdge) {
-        unsigned int offsetIn = (inEdge + this->rotation) % 12;
-        unsigned int offsetOut = (outEdge + this->rotation) % 12;
+        unsigned int offsetIn = (inEdge + this->rotation) % (this->number_sides * this->count_per_side);
+        unsigned int offsetOut = (outEdge + this->rotation) % (this->number_sides * this->count_per_side);
 
         return (((this->edge_connections[offsetIn] >> offsetOut) & 1) == 1);
 }
@@ -85,14 +87,14 @@ Tile::Tile() {
 }
 
 Tile::~Tile() {
-//        if (this->edges != NULL) {
-//                delete[] this->edges;
-//                this->edges = NULL;
-//        }
-//        if (this->edge_connections != NULL) {
-//                delete[] this->edge_connections;
-//                this->edge_connections = NULL;
-//        }
+        if (this->edges != NULL) {
+                delete[] this->edges;
+                this->edges = NULL;
+        }
+        if (this->edge_connections != NULL) {
+                delete[] this->edge_connections;
+                this->edge_connections = NULL;
+        }
 }
 
 Tile& Tile::operator=(const Tile& other) {
@@ -105,8 +107,8 @@ Tile& Tile::operator=(const Tile& other) {
         this->rotation = other.rotation;
         this->placed = other.placed;
 
-        this->edges = (TerrainType*)malloc(this->number_sides * this->count_per_side * sizeof(TerrainType));
-        this->edge_connections = (unsigned int*)malloc(this->number_sides * this->count_per_side * sizeof(unsigned int));
+        this->edges = new TerrainType[this->number_sides * this->count_per_side];
+        this->edge_connections = new unsigned int[this->number_sides * this->count_per_side];
         std::copy(other.edges, other.edges + (this->number_sides * this->count_per_side), this->edges);
         std::copy(other.edge_connections, other.edge_connections + (this->number_sides * this->count_per_side), this->edge_connections);
 
@@ -118,7 +120,8 @@ Array<Tile> Tile::CreateTileA(unsigned int tileCount, unsigned int& startId) {
 
         newTile.has_shield = false;
         newTile.tile_type = TileType::A;
-        newTile.edges = new TerrainType[12] {
+
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
@@ -126,7 +129,7 @@ Array<Tile> Tile::CreateTileA(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Church;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b111101111111,
                 0b111101111111,
                 0b111101111111,
@@ -148,14 +151,21 @@ Array<Tile> Tile::CreateTileA(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;;
 }
 
 Array<Tile> Tile::CreateTileB(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = false;
         newTile.tile_type = TileType::B;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
@@ -163,7 +173,7 @@ Array<Tile> Tile::CreateTileB(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Church;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b111111111111,
                 0b111111111111,
                 0b111111111111,
@@ -185,14 +195,21 @@ Array<Tile> Tile::CreateTileB(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileC(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = true;
         newTile.tile_type = TileType::C;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
@@ -200,7 +217,7 @@ Array<Tile> Tile::CreateTileC(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Castle;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b111111111111,
                 0b111111111111,
                 0b111111111111,
@@ -222,14 +239,21 @@ Array<Tile> Tile::CreateTileC(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileD(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = false;
         newTile.tile_type = TileType::D;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
@@ -237,7 +261,7 @@ Array<Tile> Tile::CreateTileD(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Road;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b111100000001,
                 0b000010000010,
                 0b000001000100,
@@ -259,14 +283,21 @@ Array<Tile> Tile::CreateTileD(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileE(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = false;
         newTile.tile_type = TileType::E;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
@@ -274,7 +305,7 @@ Array<Tile> Tile::CreateTileE(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Grass;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b000000000111,
                 0b000000000111,
                 0b000000000111,
@@ -296,14 +327,21 @@ Array<Tile> Tile::CreateTileE(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileF(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = true;
         newTile.tile_type = TileType::F;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
@@ -311,7 +349,7 @@ Array<Tile> Tile::CreateTileF(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Castle;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b000000000111,
                 0b000000000111,
                 0b000000000111,
@@ -333,14 +371,21 @@ Array<Tile> Tile::CreateTileF(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileG(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = false;
         newTile.tile_type = TileType::G;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
@@ -348,7 +393,7 @@ Array<Tile> Tile::CreateTileG(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Castle;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b000111000111,
                 0b000111000111,
                 0b000111000111,
@@ -370,14 +415,21 @@ Array<Tile> Tile::CreateTileG(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileH(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = false;
         newTile.tile_type = TileType::H;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
@@ -385,7 +437,7 @@ Array<Tile> Tile::CreateTileH(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Grass;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b000111000111,
                 0b000111000111,
                 0b000111000111,
@@ -407,14 +459,21 @@ Array<Tile> Tile::CreateTileH(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileI(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = false;
         newTile.tile_type = TileType::I;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
@@ -422,7 +481,7 @@ Array<Tile> Tile::CreateTileI(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Grass;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b111000000111,
                 0b111000000111,
                 0b111000000111,
@@ -444,14 +503,21 @@ Array<Tile> Tile::CreateTileI(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileJ(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = false;
         newTile.tile_type = TileType::J;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
@@ -459,7 +525,7 @@ Array<Tile> Tile::CreateTileJ(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Road;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b000000000111,
                 0b000000000111,
                 0b000000000111,
@@ -481,14 +547,21 @@ Array<Tile> Tile::CreateTileJ(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileK(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = false;
         newTile.tile_type = TileType::K;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
@@ -496,7 +569,7 @@ Array<Tile> Tile::CreateTileK(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Road;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b100000000001,
                 0b010000000010,
                 0b001111000100,
@@ -518,14 +591,21 @@ Array<Tile> Tile::CreateTileK(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileL(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = false;
         newTile.tile_type = TileType::L;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
@@ -533,7 +613,7 @@ Array<Tile> Tile::CreateTileL(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Fork;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b100000000001,
                 0b000000000010,
                 0b000001000100,
@@ -555,14 +635,21 @@ Array<Tile> Tile::CreateTileL(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileM(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = true;
         newTile.tile_type = TileType::M;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
@@ -570,7 +657,7 @@ Array<Tile> Tile::CreateTileM(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Grass;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b111000000111,
                 0b111000000111,
                 0b111000000111,
@@ -592,14 +679,21 @@ Array<Tile> Tile::CreateTileM(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileN(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = false;
         newTile.tile_type = TileType::N;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
@@ -607,7 +701,7 @@ Array<Tile> Tile::CreateTileN(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Grass;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b111000000111,
                 0b111000000111,
                 0b111000000111,
@@ -629,14 +723,21 @@ Array<Tile> Tile::CreateTileN(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileO(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = true;
         newTile.tile_type = TileType::O;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
@@ -644,7 +745,7 @@ Array<Tile> Tile::CreateTileO(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Grass;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b111000000111,
                 0b111000000111,
                 0b111000000111,
@@ -666,14 +767,21 @@ Array<Tile> Tile::CreateTileO(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileP(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = false;
         newTile.tile_type = TileType::P;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
@@ -681,7 +789,7 @@ Array<Tile> Tile::CreateTileP(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Grass;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b111000000111,
                 0b111000000111,
                 0b111000000111,
@@ -703,14 +811,21 @@ Array<Tile> Tile::CreateTileP(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileQ(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = true;
         newTile.tile_type = TileType::Q;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
@@ -718,7 +833,7 @@ Array<Tile> Tile::CreateTileQ(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Castle;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b111000111111,
                 0b111000111111,
                 0b111000111111,
@@ -740,14 +855,21 @@ Array<Tile> Tile::CreateTileQ(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileR(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = false;
         newTile.tile_type = TileType::R;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
@@ -755,7 +877,7 @@ Array<Tile> Tile::CreateTileR(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Castle;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b111000111111,
                 0b111000111111,
                 0b111000111111,
@@ -777,14 +899,21 @@ Array<Tile> Tile::CreateTileR(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileS(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = true;
         newTile.tile_type = TileType::S;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
@@ -792,7 +921,7 @@ Array<Tile> Tile::CreateTileS(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Castle;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b111000111111,
                 0b111000111111,
                 0b111000111111,
@@ -814,14 +943,21 @@ Array<Tile> Tile::CreateTileS(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileT(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = false;
         newTile.tile_type = TileType::T;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
@@ -829,7 +965,7 @@ Array<Tile> Tile::CreateTileT(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Castle;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b111000111111,
                 0b111000111111,
                 0b111000111111,
@@ -851,14 +987,21 @@ Array<Tile> Tile::CreateTileT(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileU(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = false;
         newTile.tile_type = TileType::U;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
@@ -866,7 +1009,7 @@ Array<Tile> Tile::CreateTileU(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Road;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b111100000001,
                 0b000010000010,
                 0b000001111100,
@@ -888,14 +1031,21 @@ Array<Tile> Tile::CreateTileU(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileV(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = false;
         newTile.tile_type = TileType::V;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
@@ -903,7 +1053,7 @@ Array<Tile> Tile::CreateTileV(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Road;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b100001111111,
                 0b100001111111,
                 0b100001111111,
@@ -925,14 +1075,21 @@ Array<Tile> Tile::CreateTileV(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileW(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = false;
         newTile.tile_type = TileType::W;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
@@ -940,7 +1097,7 @@ Array<Tile> Tile::CreateTileW(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Fork;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b100000001111,
                 0b100000001111,
                 0b100000001111,
@@ -962,14 +1119,21 @@ Array<Tile> Tile::CreateTileW(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileX(unsigned int tileCount, unsigned int& startId) {
         Tile newTile;
         newTile.has_shield = false;
         newTile.tile_type = TileType::X;
-        newTile.edges = new TerrainType[12] {
+        newTile.edges = new TerrainType[(newTile.number_sides * newTile.count_per_side)] {
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
                 TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
@@ -977,7 +1141,7 @@ Array<Tile> Tile::CreateTileX(unsigned int tileCount, unsigned int& startId) {
         };
 
         newTile.center = TerrainType::Fork;
-        newTile.edge_connections = new unsigned int[12] {
+        newTile.edge_connections = new unsigned int[(newTile.number_sides * newTile.count_per_side)] {
                 0b100000000001,
                 0b000000000010,
                 0b000000001100,
@@ -999,5 +1163,12 @@ Array<Tile> Tile::CreateTileX(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        return Array<Tile>(newTiles, tileCount);
+        delete[] newTile.edges;
+        newTile.edges = NULL;
+        delete[] newTile.edge_connections;
+        newTile.edge_connections = NULL;
+
+        Array<Tile> toReturn(newTiles, tileCount);
+        delete[] newTiles;
+        return toReturn;
 }

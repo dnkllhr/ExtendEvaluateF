@@ -2,7 +2,9 @@ default:
 	mkdir -p Compiled
 	$(MAKE) -C ./Core
 
-test:
+tests:
+	mkdir -p Compiled
+	$(MAKE) -C ./Core
 	$(MAKE) -C ./Testing 
 
 test-clean:
@@ -10,4 +12,5 @@ test-clean:
 
 clean:
 	$(MAKE) -C ./Core -f Makefile clean
+	$(MAKE) -C ./Testing -f Makefile clean
 	rm -rf Compiled/*

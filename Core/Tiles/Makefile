@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-Wall -std=c++14
+CFLAGS=-Wall -g -std=c++14
 DEPS=Tile.h TerrainType.h TileType.h
 CLEAN=*.o
 
