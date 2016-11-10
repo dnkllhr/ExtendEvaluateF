@@ -20,7 +20,7 @@ TEST(TileTests, CreateTiles) {
 
 TEST(TileTests, SetRotation) {
         Array<Array<Tile>> tiles = Tile::CreateTiles();
-        Tile tile = tiles[0][0];
+        Tile& tile = tiles[0][0];
         
         bool result = tile.setRotation(1);
         EXPECT_EQ(result, true);
@@ -28,7 +28,7 @@ TEST(TileTests, SetRotation) {
 
 TEST(TileTests, SetRotationAfterPlacement) {
         Array<Array<Tile>> tiles = Tile::CreateTiles();
-        Tile tile = tiles[0][0];
+        Tile& tile = tiles[0][0];
        
         bool result = tile.setRotation(1);
         EXPECT_EQ(result, true);
@@ -41,8 +41,8 @@ TEST(TileTests, SetRotationAfterPlacement) {
 
 TEST(TileTests, GetShield) {
         Array<Array<Tile>> tiles = Tile::CreateTiles();
-        Tile tileA = tiles[0][0];
-        Tile tileC = tiles[2][0];
+        Tile& tileA = tiles[0][0];
+        Tile& tileC = tiles[2][0];
 
         EXPECT_EQ(tileA.getShield(), false);
         EXPECT_EQ(tileC.getShield(), true);
@@ -50,17 +50,26 @@ TEST(TileTests, GetShield) {
 
 TEST(TileTests, GetNumberOfSides) {
         Array<Array<Tile>> tiles = Tile::CreateTiles();
-        Tile tileA = tiles[0][0];
-        Tile tileC = tiles[2][0];
+        Tile& tileA = tiles[0][0];
+        Tile& tileC = tiles[2][0];
 
         EXPECT_EQ(tileA.getNumberOfSides(), (unsigned int)4);
         EXPECT_EQ(tileC.getNumberOfSides(), (unsigned int)4);
 }
 
+TEST(TileTests, GetTerrainType) {
+        Array<Array<Tile>> tiles = Tile::CreateTiles();
+        Tile& tileA = tiles[0][0];
+        Tile& tileC = tiles[2][0];
+
+        EXPECT_EQ(tileA.getTerrainType(0), TerrainType::Grass);
+        EXPECT_EQ(tileC.getTerrainType(0), TerrainType::Castle);
+}
+
 TEST(TileTests, GetTileType) {
         Array<Array<Tile>> tiles = Tile::CreateTiles();
-        Tile tileA = tiles[0][0];
-        Tile tileC = tiles[2][0];
+        Tile& tileA = tiles[0][0];
+        Tile& tileC = tiles[2][0];
 
         EXPECT_EQ(tileA.getTileType(), TileType::A);
         EXPECT_EQ(tileC.getTileType(), TileType::C);
@@ -68,7 +77,7 @@ TEST(TileTests, GetTileType) {
 
 TEST(TileTests, IsConnectedTileA) {
         Array<Array<Tile>> tiles = Tile::CreateTiles();
-        Tile tileA = tiles[0][0];
+        Tile& tileA = tiles[0][0];
 
         bool expectTrue = tileA.isConnected(0, 11);
         bool expectFalse = tileA.isConnected(0, 7);
@@ -79,7 +88,7 @@ TEST(TileTests, IsConnectedTileA) {
 
 TEST(TileTests, PlaceTile) {
         Array<Array<Tile>> tiles = Tile::CreateTiles();
-        Tile tileA = tiles[0][0];
+        Tile& tileA = tiles[0][0];
 
         bool expectFalse = tileA.isPlaced();
         tileA.placeTile();

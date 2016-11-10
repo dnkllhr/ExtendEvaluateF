@@ -5,7 +5,7 @@ default:
 tests:
 	mkdir -p Compiled
 	$(MAKE) -C ./Core
-	$(MAKE) -C ./Testing 
+	$(MAKE) -C ./Testing
 
 test-clean:
 	$(MAKE) -C ./Testing -f Makefile clean

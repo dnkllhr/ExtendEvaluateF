@@ -10,22 +10,6 @@ class Tile {
         public:
                 static Array<Array<Tile>> CreateTiles();
 
-                Tile& operator=(const Tile& other);
-//                ~Tile();
-
-                bool setRotation(unsigned int rotation);
-                bool getShield();
-                unsigned int getNumberOfSides();
-                TerrainType getTerrainType(unsigned int edge);
-                TileType getTileType();
-                bool isConnected(unsigned int inEdge, unsigned int outEdge);
-                void placeTile();
-                bool isPlaced();
-                unsigned int getId();
-
-        private:
-                Tile();
-
                 static Array<Tile> CreateTileA(unsigned int tileCount, unsigned int& startId);
                 static Array<Tile> CreateTileB(unsigned int tileCount, unsigned int& startId);
                 static Array<Tile> CreateTileC(unsigned int tileCount, unsigned int& startId);
@@ -50,6 +34,23 @@ class Tile {
                 static Array<Tile> CreateTileV(unsigned int tileCount, unsigned int& startId);
                 static Array<Tile> CreateTileW(unsigned int tileCount, unsigned int& startId);
                 static Array<Tile> CreateTileX(unsigned int tileCount, unsigned int& startId);
+
+                Tile& operator=(const Tile& other);
+                Tile(const Tile& other);
+                ~Tile();
+
+                bool setRotation(unsigned int rotation);
+                bool getShield();
+                unsigned int getNumberOfSides();
+                TerrainType getTerrainType(unsigned int edge);
+                TileType getTileType();
+                bool isConnected(unsigned int inEdge, unsigned int outEdge);
+                void placeTile();
+                bool isPlaced();
+                unsigned int getId();
+
+        private:
+                Tile();
 
                 unsigned int tileId;
                 // The number of sides this tile has

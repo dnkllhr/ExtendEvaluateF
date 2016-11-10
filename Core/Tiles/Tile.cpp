@@ -86,16 +86,23 @@ Tile::Tile() {
         this->placed = false;
 }
 
-//Tile::~Tile() {
-//        if (this->edges != NULL) {
-//                delete[] this->edges;
-//                this->edges = NULL;
-//        }
-//       if (this->edge_connections != NULL) {
-//                delete[] this->edge_connections;
-//                this->edge_connections = NULL;
-//        }
-//}
+Tile::~Tile() {
+        if (this->edges != NULL) { 
+                delete[] this->edges;
+                this->edges = NULL;
+        }
+       if (this->edge_connections != NULL) {
+                delete[] this->edge_connections;
+                this->edge_connections = NULL;
+        }
+}
+
+Tile::Tile(const Tile& other) : tileId(other.tileId), number_sides(other.number_sides), count_per_side(other.count_per_side), has_shield(other.has_shield), tile_type(other.tile_type), center(other.center), rotation(other.rotation), placed(other.placed) {
+        this->edges = new TerrainType[this->number_sides * this->count_per_side];
+        this->edge_connections = new unsigned int[this->number_sides * this->count_per_side];
+        std::copy(other.edges, other.edges + (this->number_sides * this->count_per_side), this->edges);
+        std::copy(other.edge_connections, other.edge_connections + (this->number_sides * this->count_per_side), this->edge_connections);
+}
 
 Tile& Tile::operator=(const Tile& other) {
         this->tileId = other.tileId;
@@ -151,14 +158,9 @@ Array<Tile> Tile::CreateTileA(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
-
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
-        return toReturn;;
+        return toReturn;
 }
 
 Array<Tile> Tile::CreateTileB(unsigned int tileCount, unsigned int& startId) {
@@ -194,11 +196,6 @@ Array<Tile> Tile::CreateTileB(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i] = newTile;
                 newTiles[i].tileId = startId++;
         }
-
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
 
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
@@ -239,11 +236,6 @@ Array<Tile> Tile::CreateTileC(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
-
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
         return toReturn;
@@ -282,11 +274,6 @@ Array<Tile> Tile::CreateTileD(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i] = newTile;
                 newTiles[i].tileId = startId++;
         }
-
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
 
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
@@ -327,11 +314,6 @@ Array<Tile> Tile::CreateTileE(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
-
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
         return toReturn;
@@ -370,11 +352,6 @@ Array<Tile> Tile::CreateTileF(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i] = newTile;
                 newTiles[i].tileId = startId++;
         }
-
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
 
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
@@ -415,11 +392,6 @@ Array<Tile> Tile::CreateTileG(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
-
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
         return toReturn;
@@ -458,11 +430,6 @@ Array<Tile> Tile::CreateTileH(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i] = newTile;
                 newTiles[i].tileId = startId++;
         }
-
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
 
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
@@ -503,11 +470,6 @@ Array<Tile> Tile::CreateTileI(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
-
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
         return toReturn;
@@ -546,11 +508,6 @@ Array<Tile> Tile::CreateTileJ(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i] = newTile;
                 newTiles[i].tileId = startId++;
         }
-
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
 
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
@@ -591,11 +548,6 @@ Array<Tile> Tile::CreateTileK(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
-
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
         return toReturn;
@@ -634,11 +586,6 @@ Array<Tile> Tile::CreateTileL(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i] = newTile;
                 newTiles[i].tileId = startId++;
         }
-
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
 
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
@@ -679,11 +626,6 @@ Array<Tile> Tile::CreateTileM(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
-
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
         return toReturn;
@@ -722,11 +664,6 @@ Array<Tile> Tile::CreateTileN(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i] = newTile;
                 newTiles[i].tileId = startId++;
         }
-
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
 
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
@@ -767,11 +704,6 @@ Array<Tile> Tile::CreateTileO(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
-
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
         return toReturn;
@@ -810,11 +742,6 @@ Array<Tile> Tile::CreateTileP(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i] = newTile;
                 newTiles[i].tileId = startId++;
         }
-
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
 
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
@@ -855,11 +782,6 @@ Array<Tile> Tile::CreateTileQ(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
-
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
         return toReturn;
@@ -898,11 +820,6 @@ Array<Tile> Tile::CreateTileR(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i] = newTile;
                 newTiles[i].tileId = startId++;
         }
-
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
 
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
@@ -943,11 +860,6 @@ Array<Tile> Tile::CreateTileS(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
-
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
         return toReturn;
@@ -986,11 +898,6 @@ Array<Tile> Tile::CreateTileT(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i] = newTile;
                 newTiles[i].tileId = startId++;
         }
-
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
 
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
@@ -1031,11 +938,6 @@ Array<Tile> Tile::CreateTileU(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
-
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
         return toReturn;
@@ -1074,11 +976,6 @@ Array<Tile> Tile::CreateTileV(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i] = newTile;
                 newTiles[i].tileId = startId++;
         }
-
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
 
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
@@ -1119,11 +1016,6 @@ Array<Tile> Tile::CreateTileW(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i].tileId = startId++;
         }
 
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
-
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
         return toReturn;
@@ -1162,11 +1054,6 @@ Array<Tile> Tile::CreateTileX(unsigned int tileCount, unsigned int& startId) {
                 newTiles[i] = newTile;
                 newTiles[i].tileId = startId++;
         }
-
-        delete[] newTile.edges;
-        newTile.edges = NULL;
-        delete[] newTile.edge_connections;
-        newTile.edge_connections = NULL;
 
         Array<Tile> toReturn(newTiles, tileCount);
         delete[] newTiles;
