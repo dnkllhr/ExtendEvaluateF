@@ -7,7 +7,7 @@ CLEAN=*.o
 
 Tile-Test.o: Tile-Test.cpp $(DEPS) $(GTEST_HEADERS)
 	$(CC) -I$(GTEST_DIR) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
-	cp -uf Tile-Test.o ../../Compiled/Tile-Test.o
+	cp -f Tile-Test.o ../../Compiled/Tile-Test.o
 
 clean:
 	rm -rf $(CLEAN)
