@@ -2,7 +2,7 @@
 
 Array<Array<Tile>> Tile::CreateTiles() {
         const unsigned int numberOfTiles = 24;
-        Array<Tile> * arrayOfTiles = new Array<Tile>[numberOfTiles];
+        Array<Array<Tile>> arrayOfTiles(numberOfTiles);
         unsigned int startId = 0;
 
         arrayOfTiles[0] = Tile::CreateTileA(2, startId);
@@ -30,19 +30,18 @@ Array<Array<Tile>> Tile::CreateTiles() {
         arrayOfTiles[22] = Tile::CreateTileW(4, startId);
         arrayOfTiles[23] = Tile::CreateTileX(1, startId);
 
-        Array<Array<Tile>> toReturn(arrayOfTiles, numberOfTiles);
-        delete[] arrayOfTiles;
-        return toReturn;
+        return arrayOfTiles;
 }
 
 unsigned int Tile::getId() {
-        return this->tileId;
+        return this->tile_id;
 }
 
 bool Tile::setRotation(unsigned int rotation) {
         if (this->placed) return false;
 
-        this->rotation = ((rotation * this->count_per_side) % this->number_sides);
+        unsigned int totalIndices = this->count_per_side * this->number_sides;
+        this->rotation = (totalIndices - ((rotation * this->count_per_side) % totalIndices)) % totalIndices;
         return true;
 }
 
@@ -52,6 +51,10 @@ bool Tile::getShield() {
 
 unsigned int Tile::getNumberOfSides() {
         return this->number_sides;
+}
+
+unsigned int Tile::getCountPerSide() {
+        return this->count_per_side;
 }
 
 TileType Tile::getTileType() {
@@ -97,7 +100,7 @@ Tile::~Tile() {
         }
 }
 
-Tile::Tile(const Tile& other) : tileId(other.tileId), number_sides(other.number_sides), count_per_side(other.count_per_side), has_shield(other.has_shield), tile_type(other.tile_type), center(other.center), rotation(other.rotation), placed(other.placed) {
+Tile::Tile(const Tile& other) : tile_id(other.tile_id), number_sides(other.number_sides), count_per_side(other.count_per_side), has_shield(other.has_shield), tile_type(other.tile_type), center(other.center), rotation(other.rotation), placed(other.placed) {
         this->edges = new TerrainType[this->number_sides * this->count_per_side];
         this->edge_connections = new unsigned int[this->number_sides * this->count_per_side];
         std::copy(other.edges, other.edges + (this->number_sides * this->count_per_side), this->edges);
@@ -105,7 +108,7 @@ Tile::Tile(const Tile& other) : tileId(other.tileId), number_sides(other.number_
 }
 
 Tile& Tile::operator=(const Tile& other) {
-        this->tileId = other.tileId;
+        this->tile_id = other.tile_id;
         this->number_sides = other.number_sides;
         this->count_per_side = other.count_per_side;
         this->has_shield = other.has_shield;
@@ -151,16 +154,14 @@ Array<Tile> Tile::CreateTileA(unsigned int tileCount, unsigned int& startId) {
                 0b111101111111
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
         
         for (unsigned int i = 0; i < tileCount; i++) {        
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileB(unsigned int tileCount, unsigned int& startId) {
@@ -190,16 +191,14 @@ Array<Tile> Tile::CreateTileB(unsigned int tileCount, unsigned int& startId) {
                 0b111111111111
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
         
         for (unsigned int i = 0; i < tileCount; i++) {        
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileC(unsigned int tileCount, unsigned int& startId) {
@@ -229,16 +228,14 @@ Array<Tile> Tile::CreateTileC(unsigned int tileCount, unsigned int& startId) {
                 0b111111111111
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
         
         for (unsigned int i = 0; i < tileCount; i++) {        
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileD(unsigned int tileCount, unsigned int& startId) {
@@ -268,16 +265,14 @@ Array<Tile> Tile::CreateTileD(unsigned int tileCount, unsigned int& startId) {
                 0b111100000001
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
         
         for (unsigned int i = 0; i < tileCount; i++) {        
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileE(unsigned int tileCount, unsigned int& startId) {
@@ -307,16 +302,14 @@ Array<Tile> Tile::CreateTileE(unsigned int tileCount, unsigned int& startId) {
                 0b111111111000
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
         
         for (unsigned int i = 0; i < tileCount; i++) {        
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileF(unsigned int tileCount, unsigned int& startId) {
@@ -346,16 +339,14 @@ Array<Tile> Tile::CreateTileF(unsigned int tileCount, unsigned int& startId) {
                 0b111000111000
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
         
         for (unsigned int i = 0; i < tileCount; i++) {        
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileG(unsigned int tileCount, unsigned int& startId) {
@@ -385,16 +376,14 @@ Array<Tile> Tile::CreateTileG(unsigned int tileCount, unsigned int& startId) {
                 0b111000000000
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
         
         for (unsigned int i = 0; i < tileCount; i++) {        
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileH(unsigned int tileCount, unsigned int& startId) {
@@ -424,16 +413,14 @@ Array<Tile> Tile::CreateTileH(unsigned int tileCount, unsigned int& startId) {
                 0b111000000000
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
         
         for (unsigned int i = 0; i < tileCount; i++) {        
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileI(unsigned int tileCount, unsigned int& startId) {
@@ -463,16 +450,14 @@ Array<Tile> Tile::CreateTileI(unsigned int tileCount, unsigned int& startId) {
                 0b111000000111
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
         
         for (unsigned int i = 0; i < tileCount; i++) {        
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileJ(unsigned int tileCount, unsigned int& startId) {
@@ -502,16 +487,14 @@ Array<Tile> Tile::CreateTileJ(unsigned int tileCount, unsigned int& startId) {
                 0b111100001000
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
 
         for (unsigned int i = 0; i < tileCount; i++) {        
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileK(unsigned int tileCount, unsigned int& startId) {
@@ -541,16 +524,14 @@ Array<Tile> Tile::CreateTileK(unsigned int tileCount, unsigned int& startId) {
                 0b100000000001
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
 
         for (unsigned int i = 0; i < tileCount; i++) {        
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileL(unsigned int tileCount, unsigned int& startId) {
@@ -580,16 +561,14 @@ Array<Tile> Tile::CreateTileL(unsigned int tileCount, unsigned int& startId) {
                 0b100000000001
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
 
         for (unsigned int i = 0; i < tileCount; i++) {        
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileM(unsigned int tileCount, unsigned int& startId) {
@@ -619,16 +598,14 @@ Array<Tile> Tile::CreateTileM(unsigned int tileCount, unsigned int& startId) {
                 0b111000000111
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
 
         for (unsigned int i = 0; i < tileCount; i++) { 
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileN(unsigned int tileCount, unsigned int& startId) {
@@ -658,16 +635,14 @@ Array<Tile> Tile::CreateTileN(unsigned int tileCount, unsigned int& startId) {
                 0b111000000111
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
 
         for (unsigned int i = 0; i < tileCount; i++) { 
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileO(unsigned int tileCount, unsigned int& startId) {
@@ -697,16 +672,14 @@ Array<Tile> Tile::CreateTileO(unsigned int tileCount, unsigned int& startId) {
                 0b111000000111
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
 
         for (unsigned int i = 0; i < tileCount; i++) { 
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileP(unsigned int tileCount, unsigned int& startId) {
@@ -736,16 +709,14 @@ Array<Tile> Tile::CreateTileP(unsigned int tileCount, unsigned int& startId) {
                 0b111000000111
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
 
         for (unsigned int i = 0; i < tileCount; i++) { 
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileQ(unsigned int tileCount, unsigned int& startId) {
@@ -775,16 +746,14 @@ Array<Tile> Tile::CreateTileQ(unsigned int tileCount, unsigned int& startId) {
                 0b111000111111
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
 
         for (unsigned int i = 0; i < tileCount; i++) { 
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileR(unsigned int tileCount, unsigned int& startId) {
@@ -814,16 +783,14 @@ Array<Tile> Tile::CreateTileR(unsigned int tileCount, unsigned int& startId) {
                 0b111000111111
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
 
         for (unsigned int i = 0; i < tileCount; i++) { 
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileS(unsigned int tileCount, unsigned int& startId) {
@@ -853,16 +820,14 @@ Array<Tile> Tile::CreateTileS(unsigned int tileCount, unsigned int& startId) {
                 0b111000111111
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
 
         for (unsigned int i = 0; i < tileCount; i++) { 
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileT(unsigned int tileCount, unsigned int& startId) {
@@ -892,16 +857,14 @@ Array<Tile> Tile::CreateTileT(unsigned int tileCount, unsigned int& startId) {
                 0b111000111111
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
 
         for (unsigned int i = 0; i < tileCount; i++) { 
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileU(unsigned int tileCount, unsigned int& startId) {
@@ -931,16 +894,14 @@ Array<Tile> Tile::CreateTileU(unsigned int tileCount, unsigned int& startId) {
                 0b111100000001
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
 
         for (unsigned int i = 0; i < tileCount; i++) { 
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileV(unsigned int tileCount, unsigned int& startId) {
@@ -970,16 +931,14 @@ Array<Tile> Tile::CreateTileV(unsigned int tileCount, unsigned int& startId) {
                 0b100001111111
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
 
         for (unsigned int i = 0; i < tileCount; i++) { 
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileW(unsigned int tileCount, unsigned int& startId) {
@@ -1009,16 +968,14 @@ Array<Tile> Tile::CreateTileW(unsigned int tileCount, unsigned int& startId) {
                 0b100000001111
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
 
         for (unsigned int i = 0; i < tileCount; i++) { 
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }
 
 Array<Tile> Tile::CreateTileX(unsigned int tileCount, unsigned int& startId) {
@@ -1048,14 +1005,12 @@ Array<Tile> Tile::CreateTileX(unsigned int tileCount, unsigned int& startId) {
                 0b100000000001
         };
 
-        Tile * newTiles = new Tile[tileCount];
+        Array<Tile> newTiles(tileCount);
 
         for (unsigned int i = 0; i < tileCount; i++) { 
                 newTiles[i] = newTile;
-                newTiles[i].tileId = startId++;
+                newTiles[i].tile_id = startId++;
         }
 
-        Array<Tile> toReturn(newTiles, tileCount);
-        delete[] newTiles;
-        return toReturn;
+        return newTiles;
 }

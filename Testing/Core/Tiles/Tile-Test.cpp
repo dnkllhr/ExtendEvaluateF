@@ -23,7 +23,7 @@ TEST(TileTests, SetRotation) {
         Tile& tile = tiles[0][0];
         
         bool result = tile.setRotation(1);
-        EXPECT_EQ(result, true);
+        EXPECT_TRUE(result);
 }
 
 TEST(TileTests, SetRotationAfterPlacement) {
@@ -31,12 +31,12 @@ TEST(TileTests, SetRotationAfterPlacement) {
         Tile& tile = tiles[0][0];
        
         bool result = tile.setRotation(1);
-        EXPECT_EQ(result, true);
+        EXPECT_TRUE(result);
 
         tile.placeTile();
 
         result = tile.setRotation(2);
-        EXPECT_EQ(result, false);
+        EXPECT_FALSE(result);
 }
 
 TEST(TileTests, GetShield) {
@@ -44,8 +44,8 @@ TEST(TileTests, GetShield) {
         Tile& tileA = tiles[0][0];
         Tile& tileC = tiles[2][0];
 
-        EXPECT_EQ(tileA.getShield(), false);
-        EXPECT_EQ(tileC.getShield(), true);
+        EXPECT_FALSE(tileA.getShield());
+        EXPECT_TRUE(tileC.getShield());
 }
 
 TEST(TileTests, GetNumberOfSides) {
@@ -55,6 +55,15 @@ TEST(TileTests, GetNumberOfSides) {
 
         EXPECT_EQ(tileA.getNumberOfSides(), (unsigned int)4);
         EXPECT_EQ(tileC.getNumberOfSides(), (unsigned int)4);
+}
+
+TEST(TileTests, GetCountPerSide) {
+        Array<Array<Tile>> tiles = Tile::CreateTiles();
+        Tile& tileA = tiles[0][0];
+        Tile& tileC = tiles[2][0];
+
+        EXPECT_EQ(tileA.getCountPerSide(), (unsigned int)3);
+        EXPECT_EQ(tileC.getCountPerSide(), (unsigned int)3);
 }
 
 TEST(TileTests, GetTerrainType) {
@@ -79,11 +88,38 @@ TEST(TileTests, IsConnectedTileA) {
         Array<Array<Tile>> tiles = Tile::CreateTiles();
         Tile& tileA = tiles[0][0];
 
-        bool expectTrue = tileA.isConnected(0, 11);
-        bool expectFalse = tileA.isConnected(0, 7);
+        EXPECT_TRUE(tileA.isConnected(0, 11));
+        EXPECT_TRUE(tileA.isConnected(11, 0));
+        EXPECT_FALSE(tileA.isConnected(0, 7));
+        EXPECT_FALSE(tileA.isConnected(7, 0));
+}
 
-        EXPECT_EQ(expectTrue, true);
-        EXPECT_EQ(expectFalse, false);
+TEST(TileTests, IsConnectedTileK) {
+        Array<Array<Tile>> tiles = Tile::CreateTiles();
+        Tile& tileK = tiles[10][0];
+
+        EXPECT_TRUE(tileK.isConnected(0, 11));
+        EXPECT_TRUE(tileK.isConnected(11, 0));
+        EXPECT_FALSE(tileK.isConnected(0, 2));
+        EXPECT_FALSE(tileK.isConnected(2, 0));
+}
+
+TEST(TileTests, IsConnectedAfterRotationTileK) {
+        Array<Array<Tile>> tiles = Tile::CreateTiles();
+        Tile& tileK = tiles[10][0];
+
+        for (unsigned int i = 1; i < 4; i++) {
+                tileK.setRotation(i);
+                unsigned int first = (i * tileK.getCountPerSide());
+                unsigned int last = 11 + (i * tileK.getCountPerSide());
+                unsigned int second = 2 + (i * tileK.getCountPerSide());
+
+                bool expectTrue = tileK.isConnected(first, last);
+                bool expectFalse = tileK.isConnected(first, second);
+
+                EXPECT_TRUE(expectTrue);
+                EXPECT_FALSE(expectFalse);
+        }
 }
 
 TEST(TileTests, PlaceTile) {
@@ -94,8 +130,8 @@ TEST(TileTests, PlaceTile) {
         tileA.placeTile();
         bool expectTrue = tileA.isPlaced();
 
-        EXPECT_EQ(expectTrue, true);
-        EXPECT_EQ(expectFalse, false);
+        EXPECT_TRUE(expectTrue);
+        EXPECT_FALSE(expectFalse);
 }
 
 TEST(TileTests, GetId) {
