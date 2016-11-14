@@ -2,94 +2,95 @@
 
 BoardManager::BoardManager()
 {
-	
+        
 }
 
 Board BoardManager::getBoard()
 {
-	return board;
+        return board;
 }
 
-void BoardManager::printBoard()
+std::ostream& BoardManager::operator<<(std::ostream& os, const BoardManager& obj)
 {
-	/// TODO: consider basic image-based board grid
-	
-	Tile[][] boardTiles = board.getTileMatrix();
-	
-	for(Tile[] row : boardTiles)
-	{
-		for(Tile[] tile : row)
-		{
-			if(tile == null)
-			{
-				std::cout << "-";
-			}
-			else
-			{
-				/// TODO: make this an enum / something better
-				std::cout << tile.getTileType();
-			}
-		}
-	}		
+        /// TODO: consider basic image-based board grid
+        
+        Tile[][] boardTiles = board.getTileMatrix();
+        
+        for(Tile[] row : boardTiles)
+        {
+                for(Tile[] tile : row)
+                {
+                        if(tile == null)
+                        {
+                                os << "-";
+                        }
+                        else
+                        {
+                                /// TODO: make this an enum / something better
+                                os << tile.getTileType();
+                        }
+                }
+        }
+
+        return os;
 }
-	
+        
 void BoardManager::gameInit()
 {
-	board = new Board();
-	
-	Coord center = new Coord(77,77);
-	
-	minCoord = center;
-	maxCoord = center;
-	
-	// place inital center tile
-	Tile startingTile = Tile.... /// TODO
-	Move startingMove = new Move(startingTile, center);
-	
-	// create the Tile stack
-	tileOrder = new TilePool(); // outside method?
+        Coord center(77,77);
+        
+        minCoord = center;
+        maxCoord = center;
+        
+        // place inital center tile
+        Tile startingTile = Tile.... /// TODO
+        Move startingMove(startingTile, center);
+        
+        // create the Tile stack
+        tileOrder = new TilePool(); // outside method?
 }
 
-Tile BoardManager::nextTile()
+const Tile& BoardManager::nextTile()
 {
-	return tileOrder.front();
+        return tileOrder.front();
 }
 
-Vector<Tile> BoardManager::getTileOrder()
+const std::vector<Tile&>& BoardManager::getTileOrder()
 {
-	return tileOrder;
+        return tileOrder;
 }
 
-Vector<Move> BoardManager::getLegalMoves(Tile tile)
+std::vector<Move> BoardManager::getLegalMoves(const Tile& tile)
 {
-	Vector<Move> legalMoves = new Vector<Move>();
-	Coord[] edgeLocations = board.getEdgeLocations();
-	
-	for(Coord edgeLocation : edgeLocations)
-	{
-		if(GameRules->isLegalMove(tile, edgeLocation))
-		{
-			legalMoves.push_back(new Move(tile, edgeLocation));
-		}
-	}
-	return legalMoves;
+        std::vector<Move> legalMoves;
+        Coord * edgeLocations = board.getEdgeLocations();
+        
+        for(Coord edgeLocation : edgeLocations)
+        {
+                if(GameRules->isLegalMove(tile, edgeLocation))
+                {
+                        legalMoves.push_back(Move(tile, edgeLocation));
+                }
+        }
+
+        return legalMoves;
 }
 
-void BoardManager::makeMove(Move move)
+void BoardManager::makeMove(const Move& move)
 {
-	// if calling this method, it is assumed that this is a legal move
-	
-	// consider checking whether the passed Tile == top?
-	
-	// to implement based on Board implementaiton
-	board->set(move.tile, move.coord);
-	
-	// tracking the minimum and maximum coordinates in use allows partial displaying of the Board grid for debugging purposes
-	if(move.coord.x < minCoord.x) { minCoord.x = move.coord.x; }
-	if(move.coord.y < minCoord.y) {	minCoord.y = move.coord.y; }
-	if(move.coord.x > maxCoord.x) {	maxCoord.x = move.coord.x; }
-	if(move.coord.y > maxCoord.y) {	maxCoord.x = move.coord.y; }
-	
-	// remove tile from list
-	tileOrder.erase(tileOrder.begin());
+        // if calling this method, it is assumed that this is a legal move
+        
+        // consider checking whether the passed Tile == top?
+        
+        // to implement based on Board implementaiton
+        board.set(move.tile, move.coord);
+        
+        // tracking the minimum and maximum coordinates in use allows partial displaying of the Board grid for debugging purposes
+        if(move.getCoord().getX() < minCoord.getX()) minCoord.setX(move.getCoord().getX());
+        if(move.getCoord().getY() < minCoord.getY()) minCoord.setY(move.getCoord().getY());
+        if(move.getCoord().getX() > maxCoord.getX()) maxCoord.setX(move.getCoord().getX());
+        if(move.getCoord().getY() > maxCoord.getY()) maxCoord.setY(move.getCoord().getY());
+        
+        // remove tile from list
+        tileOrder.erase(tileOrder.begin());
 }
