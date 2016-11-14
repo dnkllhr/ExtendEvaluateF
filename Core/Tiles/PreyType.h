@@ -1,7 +1,7 @@
-#ifndef __TERRAINTYPE_H
-#define __TERRAINTYPE_H
+#ifndef __PREYTYPE_H
+#define __PREYTYPE_H
 
-enum class TerrainType {
+enum class PreyType {
     None,
     Deer,
     Buffalo,

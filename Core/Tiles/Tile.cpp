@@ -1,7 +1,7 @@
 #include "Tile.h"
 
 Array<Array<Tile>> Tile::CreateTiles() {
-    const unsigned int numberOfTiles = 24;
+    const unsigned int numberOfTiles = 27;
     Array<Array<Tile>> arrayOfTiles(numberOfTiles);
     unsigned int startId = 0;
 
@@ -10,28 +10,28 @@ Array<Array<Tile>> Tile::CreateTiles() {
     arrayOfTiles[2] = Tile::CreateTileC(1, startId, PreyType::None);
     arrayOfTiles[3] = Tile::CreateTileD(3, startId, PreyType::None);
     arrayOfTiles[4] = Tile::CreateTileD(2, startId, PreyType::Deer);
-    arrayOfTiles[4] = Tile::CreateTileE(5, startId, PreyType::None);
+    arrayOfTiles[5] = Tile::CreateTileE(5, startId, PreyType::None);
     arrayOfTiles[6] = Tile::CreateTileG(3, startId, PreyType::None);
     arrayOfTiles[7] = Tile::CreateTileH(3, startId, PreyType::None);
     arrayOfTiles[8] = Tile::CreateTileI(2, startId, PreyType::None);
     arrayOfTiles[9] = Tile::CreateTileJ(1, startId, PreyType::None);
-    arrayOfTiles[9] = Tile::CreateTileJ(1, startId, PreyType::Buffalo);
-    arrayOfTiles[10] = Tile::CreateTileK(1, startId, PreyType::None);
-    arrayOfTiles[10] = Tile::CreateTileK(2, startId, PreyType::Boar);
-    arrayOfTiles[11] = Tile::CreateTileL(1, startId, PreyType::None);
-    arrayOfTiles[11] = Tile::CreateTileL(2, startId, PreyType::Boar);
-    arrayOfTiles[13] = Tile::CreateTileN(5, startId, PreyType::None);
-    arrayOfTiles[15] = Tile::CreateTileP(3, startId, PreyType::None);
-    arrayOfTiles[15] = Tile::CreateTileP(2, startId, PreyType::Buffalo);
-    arrayOfTiles[17] = Tile::CreateTileR(4, startId, PreyType::None);
+    arrayOfTiles[10] = Tile::CreateTileJ(1, startId, PreyType::Buffalo);
+    arrayOfTiles[11] = Tile::CreateTileK(1, startId, PreyType::None);
+    arrayOfTiles[12] = Tile::CreateTileK(2, startId, PreyType::Boar);
+    arrayOfTiles[13] = Tile::CreateTileL(1, startId, PreyType::None);
+    arrayOfTiles[14] = Tile::CreateTileL(2, startId, PreyType::Boar);
+    arrayOfTiles[15] = Tile::CreateTileN(5, startId, PreyType::None);
+    arrayOfTiles[16] = Tile::CreateTileP(3, startId, PreyType::None);
+    arrayOfTiles[17] = Tile::CreateTileP(2, startId, PreyType::Buffalo);
+    arrayOfTiles[18] = Tile::CreateTileR(4, startId, PreyType::None);
     arrayOfTiles[19] = Tile::CreateTileT(3, startId, PreyType::None);
     arrayOfTiles[20] = Tile::CreateTileU(8, startId, PreyType::None);
     arrayOfTiles[21] = Tile::CreateTileV(9, startId, PreyType::None);
     arrayOfTiles[22] = Tile::CreateTileW(4, startId, PreyType::None);
     arrayOfTiles[23] = Tile::CreateTileX(1, startId, PreyType::None);
-    arrayOfTiles[23] = Tile::CreateTileY(1, startId, PreyType::None);
-    arrayOfTiles[23] = Tile::CreateTileZ(1, startId, PreyType::None);
-    arrayOfTiles[23] = Tile::CreateTileZ(2, startId, PreyType::Deer);
+    arrayOfTiles[24] = Tile::CreateTileY(1, startId, PreyType::None);
+    arrayOfTiles[25] = Tile::CreateTileZ(1, startId, PreyType::None);
+    arrayOfTiles[26] = Tile::CreateTileZ(2, startId, PreyType::Deer);
 
     return arrayOfTiles;
 }
@@ -103,19 +103,19 @@ Tile::~Tile() {
     }
 }
 
-Tile::Tile(const Tile& other) : tileId(other.tile_id), numberSides(other.number_sides), countPerSide(other.count_per_side), prey(other.prey), tileType(other.tile_type), center(other.center), rotation(other.rotation), placed(other.placed) {
+Tile::Tile(const Tile& other) : tileId(other.tileId), numberSides(other.numberSides), countPerSide(other.countPerSide), prey(other.prey), tileType(other.tileType), center(other.center), rotation(other.rotation), placed(other.placed) {
     this->edges = new TerrainType[this->numberSides * this->countPerSide];
     this->edgeConnections = new unsigned int[this->numberSides * this->countPerSide];
     std::copy(other.edges, other.edges + (this->numberSides * this->countPerSide), this->edges);
-    std::copy(other.edgeConnections, other.edge_connections + (this->numberSides * this->countPerSide), this->edge_connections);
+    std::copy(other.edgeConnections, other.edgeConnections + (this->numberSides * this->countPerSide), this->edgeConnections);
 }
 
 Tile& Tile::operator=(const Tile& other) {
-    this->tileId = other.tile_id;
-    this->numberSides = other.number_sides;
-    this->countPerSide = other.count_per_side;
+    this->tileId = other.tileId;
+    this->numberSides = other.numberSides;
+    this->countPerSide = other.countPerSide;
     this->prey = other.prey;
-    this->tileType = other.tile_type;
+    this->tileType = other.tileType;
     this->center = other.center;
     this->rotation = other.rotation;
     this->placed = other.placed;
@@ -123,7 +123,7 @@ Tile& Tile::operator=(const Tile& other) {
     this->edges = new TerrainType[this->numberSides * this->countPerSide];
     this->edgeConnections = new unsigned int[this->numberSides * this->countPerSide];
     std::copy(other.edges, other.edges + (this->numberSides * this->countPerSide), this->edges);
-    std::copy(other.edgeConnections, other.edge_connections + (this->numberSides * this->countPerSide), this->edge_connections);
+    std::copy(other.edgeConnections, other.edgeConnections + (this->numberSides * this->countPerSide), this->edgeConnections);
 
     return *this;
 }
