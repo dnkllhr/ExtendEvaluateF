@@ -2,11 +2,10 @@
 #define __TERRAINTYPE_H
 
 enum class TerrainType {
-    Grass,
-    Road,
-    Castle,
-    Church,
-    Fork
+    None,
+    Deer,
+    Buffalo,
+    Boar
 };
 
 #endif
