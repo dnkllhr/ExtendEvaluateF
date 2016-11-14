@@ -7,9 +7,9 @@ Move::Move(const Tile& t, const Coord& c)
 }
 
 const Tile& Move::getTile() {
-        return this->tile;
+    return this->tile;
 }
 
 const Coord& Move::getCoord() {
-        return this->coord;
+    return this->coord;
 }
