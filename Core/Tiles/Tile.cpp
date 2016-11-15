@@ -93,7 +93,7 @@ Tile::Tile() {
 }
 
 Tile::~Tile() {
-    if (this->edges != NULL) { 
+    if (this->edges != NULL) {
     delete[] this->edges;
     this->edges = NULL;
     }
@@ -158,8 +158,8 @@ Array<Tile> Tile::CreateTileA(unsigned int tileCount, unsigned int& startId, Pre
     };
 
     Array<Tile> newTiles(tileCount);
-    
-    for (unsigned int i = 0; i < tileCount; i++) {    
+
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }
@@ -195,8 +195,8 @@ Array<Tile> Tile::CreateTileB(unsigned int tileCount, unsigned int& startId, Pre
     };
 
     Array<Tile> newTiles(tileCount);
-    
-    for (unsigned int i = 0; i < tileCount; i++) {    
+
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }
@@ -232,8 +232,8 @@ Array<Tile> Tile::CreateTileC(unsigned int tileCount, unsigned int& startId, Pre
     };
 
     Array<Tile> newTiles(tileCount);
-    
-    for (unsigned int i = 0; i < tileCount; i++) {    
+
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }
@@ -269,8 +269,8 @@ Array<Tile> Tile::CreateTileD(unsigned int tileCount, unsigned int& startId, Pre
     };
 
     Array<Tile> newTiles(tileCount);
-    
-    for (unsigned int i = 0; i < tileCount; i++) {    
+
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }
@@ -306,8 +306,8 @@ Array<Tile> Tile::CreateTileE(unsigned int tileCount, unsigned int& startId, Pre
     };
 
     Array<Tile> newTiles(tileCount);
-    
-    for (unsigned int i = 0; i < tileCount; i++) {    
+
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }
@@ -343,8 +343,8 @@ Array<Tile> Tile::CreateTileG(unsigned int tileCount, unsigned int& startId, Pre
     };
 
     Array<Tile> newTiles(tileCount);
-    
-    for (unsigned int i = 0; i < tileCount; i++) {    
+
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }
@@ -380,8 +380,8 @@ Array<Tile> Tile::CreateTileH(unsigned int tileCount, unsigned int& startId, Pre
     };
 
     Array<Tile> newTiles(tileCount);
-    
-    for (unsigned int i = 0; i < tileCount; i++) {    
+
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }
@@ -417,8 +417,8 @@ Array<Tile> Tile::CreateTileI(unsigned int tileCount, unsigned int& startId, Pre
     };
 
     Array<Tile> newTiles(tileCount);
-    
-    for (unsigned int i = 0; i < tileCount; i++) {    
+
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }
@@ -455,7 +455,7 @@ Array<Tile> Tile::CreateTileJ(unsigned int tileCount, unsigned int& startId, Pre
 
     Array<Tile> newTiles(tileCount);
 
-    for (unsigned int i = 0; i < tileCount; i++) {    
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }
@@ -492,7 +492,7 @@ Array<Tile> Tile::CreateTileK(unsigned int tileCount, unsigned int& startId, Pre
 
     Array<Tile> newTiles(tileCount);
 
-    for (unsigned int i = 0; i < tileCount; i++) {    
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }
@@ -529,7 +529,7 @@ Array<Tile> Tile::CreateTileL(unsigned int tileCount, unsigned int& startId, Pre
 
     Array<Tile> newTiles(tileCount);
 
-    for (unsigned int i = 0; i < tileCount; i++) {    
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }
@@ -566,7 +566,7 @@ Array<Tile> Tile::CreateTileN(unsigned int tileCount, unsigned int& startId, Pre
 
     Array<Tile> newTiles(tileCount);
 
-    for (unsigned int i = 0; i < tileCount; i++) { 
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }
@@ -603,7 +603,7 @@ Array<Tile> Tile::CreateTileP(unsigned int tileCount, unsigned int& startId, Pre
 
     Array<Tile> newTiles(tileCount);
 
-    for (unsigned int i = 0; i < tileCount; i++) { 
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }
@@ -640,7 +640,7 @@ Array<Tile> Tile::CreateTileR(unsigned int tileCount, unsigned int& startId, Pre
 
     Array<Tile> newTiles(tileCount);
 
-    for (unsigned int i = 0; i < tileCount; i++) { 
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }
@@ -677,7 +677,7 @@ Array<Tile> Tile::CreateTileT(unsigned int tileCount, unsigned int& startId, Pre
 
     Array<Tile> newTiles(tileCount);
 
-    for (unsigned int i = 0; i < tileCount; i++) { 
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }
@@ -714,7 +714,7 @@ Array<Tile> Tile::CreateTileU(unsigned int tileCount, unsigned int& startId, Pre
 
     Array<Tile> newTiles(tileCount);
 
-    for (unsigned int i = 0; i < tileCount; i++) { 
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }
@@ -751,7 +751,7 @@ Array<Tile> Tile::CreateTileV(unsigned int tileCount, unsigned int& startId, Pre
 
     Array<Tile> newTiles(tileCount);
 
-    for (unsigned int i = 0; i < tileCount; i++) { 
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }
@@ -788,7 +788,7 @@ Array<Tile> Tile::CreateTileW(unsigned int tileCount, unsigned int& startId, Pre
 
     Array<Tile> newTiles(tileCount);
 
-    for (unsigned int i = 0; i < tileCount; i++) { 
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }
@@ -825,7 +825,7 @@ Array<Tile> Tile::CreateTileX(unsigned int tileCount, unsigned int& startId, Pre
 
     Array<Tile> newTiles(tileCount);
 
-    for (unsigned int i = 0; i < tileCount; i++) { 
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }
@@ -862,7 +862,7 @@ Array<Tile> Tile::CreateTileY(unsigned int tileCount, unsigned int& startId, Pre
 
     Array<Tile> newTiles(tileCount);
 
-    for (unsigned int i = 0; i < tileCount; i++) { 
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }
@@ -899,7 +899,7 @@ Array<Tile> Tile::CreateTileZ(unsigned int tileCount, unsigned int& startId, Pre
 
     Array<Tile> newTiles(tileCount);
 
-    for (unsigned int i = 0; i < tileCount; i++) { 
+    for (unsigned int i = 0; i < tileCount; i++) {
         newTiles[i] = newTile;
         newTiles[i].tileId = startId++;
     }

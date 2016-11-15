@@ -21,7 +21,7 @@ void Regions::mergeRegions(int placedTileID, int placedEdge, int connectingTileI
         struct tileNode *iter = (placedSearch->second[placedEdge])->head;
         while(iter != NULL)
         {
-            regionTracker[(placedSearch->first)] = (connectingSearch->second[connectingEdge]); 
+            regionTracker[(placedSearch->first)] = (connectingSearch->second[connectingEdge]);
             iter = iter->next;
         }
 
