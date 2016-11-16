@@ -96,3 +96,21 @@ int Regions::checkOwner(int tileID, int edge)
     }
     return -2;
 }
+
+void Regions::createRegion(int tileID, int edge)
+{
+	tileNode currentNode;
+	currentNode.tileID = tileID;
+	currentNode.edge = edge;
+
+	regionSet newRegion;
+	newRegion.player1Meeples = 0;
+	newRegion.player2Meeples = 0;
+	newRegion.edgesTillCompletion = 0;
+	newRegion->head = currentNode;
+	newRegion->tail = currentNode;
+
+	struct regionSet* edges[12];
+	edges[edge] = &newRegion;
+	regionTracker[tileID] = &edges;
+}
