@@ -37,52 +37,39 @@ int Regions::addConnection(const Tile& newTile, const Tile ** boarderingTiles) {
     unsigned int id = newTile.getId();
 
     struct regionSet * newRegions = new struct regionSet*[totalEdges];
-    regionTracker.at(id) = newRegions;
+    regionTracker[id] = newRegions;
 
     // TODO: Sit down and go through all possible combinations to make sure logic is correct. Also, add logic to track edgesTillCompletion. Finally, add logic to add tileNodes to a region.
     for (unsigned int edge = 0; edge < totalEdges; edge++) {
         unsigned int side = edge / countPerSide;
         unsigned int correspondingSide = (side + (numOfSides / 2)) % numOfSides;
         unsigned int correspondingEdge = (countPerSide - (edge % countPerSide) - 1) + (countPerSide * correspondingSide);
-        unsigned int boarderingId = boarderingTiles[side]->getId();
 
         if (boarderingTiles[side] != NULL) {
+            unsigned int boarderingId = boarderingTiles[side]->getId();
             newRegions[edge] = regionTracker.at(boarderingId)[correspondingEdge];
             // TODO: keep track of edges till completion
         }
-
-        for (unsigned int otherEdge = 0; otherEdge < edge; otherEdge++) {
-            bool isConnected  = !newTile.isConnected(edge, otherEdge);
-            unsigned int otherSide = otherEdge / countPerSide;
-
-            if (!isConnected) continue;
-            else if (newRegions[otherEdge] != NULL && boarderingTiles[otherSide] != NULL) {
-                if (newRegions[otherEdge] == newRegions[edge]) {
-                    // undo the extra decrement we would have done above.
-                    // TODO: keep track of edges till completion
-                    continue;
-                }
-
-                mergeRegions(id, edge, id, otherEdge);
-            }
-            else if (newRegions[otherEdge] == NULL && boarderingTiles[otherSide] == NULL) {
-                newRegions[otherEdge] = newRegions[edge];
-                // TODO: keep track of edges till completion
-            }
+        else {
+           newRegions[edge] = NULL;
         }
     }
 
     for (unsigned int edge = 0; edge < totalEdges; edge++) {
-        if (newRegions[edge] != NULL) continue;
-
-        newRegions[edge] = createRegion(id, edge);
-        newRegions[edge]->edgesTillCompletion++;
+        if (newRegions[edge] == NULL) {
+            newRegions[edge] = createRegion(id, edge);
+            newRegions[edge]->edgesTillCompletion++;
+        }
 
         for (unsigned int otherEdge = edge + 1; otherEdge < totalEdges; otherEdge++) {
-           if (!newTile.isConnected(edge, otherEdge)) continue;
-
-           newRegions[otherEdge] = newRegions[edge];
-           newRegions[edge]->edgesTillCompletion++;
+            if (!newTile.isConnected(edge, otherEdge)) continue;
+            else if (newRegions[otherEdge] == newRegions[edge]) continue;
+            else if (newRegions[otherEdge] == NULL) {
+                newREgions[otherEdge] = newRegions[edge];
+            }
+            else {
+                mergeRegions(id, edge, id, otherEdge);
+            }
         }
     }
 
