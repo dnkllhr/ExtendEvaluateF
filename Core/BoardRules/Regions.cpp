@@ -1,9 +1,10 @@
 #include "Regions.h"
 
-void Regions::mergeRegions(int placedTileID, int placedEdge, int connectingTileID, int connectingEdge)
-{
-    auto placedSearch = regionTracker.find(placedTileID);
-    auto connectingSearch = regionTracker.find(connectingTileID);
+
+void mergeRegions(int placedTileID, int placedEdge, int connectingTileID, int connectingEdge)
+{   
+    auto placedSearch = regionTracker.find(std::make_tuple(placedTileID, placedEdge));
+    auto connectingSearch = regionTracker.find(std::make_tuple(connectingTileID, connectingEdge));
     if(placedSearch != regionTracker.end() && connectingSearch != regionTracker.end())
     {
         //Update meeple values
