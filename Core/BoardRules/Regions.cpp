@@ -39,54 +39,54 @@ int Regions::addConnection(const Tile& newTile, const Tile ** boarderingTiles) {
     struct regionSet * newRegions = new struct regionSet*[totalEdges];
     regionTracker.at(id) = newRegions;
 
+    // TODO: Sit down and go through all possible combinations to make sure logic is correct. Also, add logic to track edgesTillCompletion. Finally, add logic to add tileNodes to a region.
     for (unsigned int edge = 0; edge < totalEdges; edge++) {
         unsigned int side = edge / countPerSide;
-        if (boardingTiles[side] == NULL) {
-            newRegions[edge] = NULL;
-            continue;
-        }
-
-        unsigned int correspondingSide = (((edge / countPerSide) + (numOfSides / 2)) % numOfSides;
-        unsigned int correspondingEdge = (countPerSide - (edge % countPerSide) - 1) + countPerSide * correspondingSide;
-
+        unsigned int correspondingSide = (side + (numOfSides / 2)) % numOfSides;
+        unsigned int correspondingEdge = (countPerSide - (edge % countPerSide) - 1) + (countPerSide * correspondingSide);
         unsigned int boarderingId = boarderingTiles[side]->getId();
 
-        newRegions[edge] = regionTracker.at(boarderingId)[correspondingEdge];
+        if (boarderingTiles[side] != NULL) {
+            newRegions[edge] = regionTracker.at(boarderingId)[correspondingEdge];
+            // TODO: keep track of edges till completion
+        }
+
+        for (unsigned int otherEdge = 0; otherEdge < edge; otherEdge++) {
+            bool isConnected  = !newTile.isConnected(edge, otherEdge);
+            unsigned int otherSide = otherEdge / countPerSide;
+
+            if (!isConnected) continue;
+            else if (newRegions[otherEdge] != NULL && boarderingTiles[otherSide] != NULL) {
+                if (newRegions[otherEdge] == newRegions[edge]) {
+                    // undo the extra decrement we would have done above.
+                    // TODO: keep track of edges till completion
+                    continue;
+                }
+
+                mergeRegions(id, edge, id, otherEdge);
+            }
+            else if (newRegions[otherEdge] == NULL && boarderingTiles[otherSide] == NULL) {
+                newRegions[otherEdge] = newRegions[edge];
+                // TODO: keep track of edges till completion
+            }
+        }
     }
 
     for (unsigned int edge = 0; edge < totalEdges; edge++) {
         if (newRegions[edge] != NULL) continue;
 
         newRegions[edge] = createRegion(id, edge);
+        newRegions[edge]->edgesTillCompletion++;
 
         for (unsigned int otherEdge = edge + 1; otherEdge < totalEdges; otherEdge++) {
            if (!newTile.isConnected(edge, otherEdge)) continue;
+
+           newRegions[otherEdge] = newRegions[edge];
+           newRegions[edge]->edgesTillCompletion++;
         }
     }
-}
 
-int Regions::addConnection(int placedTileID, int placedEdge, int connectingTileID, int connectingEdge)
-{
-    if(connectingTileID == -1) //Empty Edge
-    {
-        createRegion(placedTileID, placedEdge);
-        auto search = regionTracker.find(tileID);
-        if(search != regionTracker.end())
-        {
-          //
-        }
-    }
-    auto search = regionTracker.find(tileID);
-    if(search != example.end())
-    {
-        (search->second[placedEdge])->edgesTillCompletion--;
-        //Add connection logic
-        //Loop through tile sides to find connections
-        (search->second[placedEdge])->edgesTillCompletion++;
-        return 0;
-    }
-
-    return -1;
+    return 0;
 }
 
 int Regions::addMeeple(int playerNumber, int tileID, int edge)
