@@ -12,14 +12,14 @@ class Regions
         static bool validMeeplePlacement(const Tile& newTile, unsigned int edgeIndex);
 
         int addConnection(const Tile& newTile, const Tile **  boarderingTiles);
-        int addMeeple(int playerNumber, int tileID, int edge);
-        int checkOwner(int tileID, int edge);
+        int addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned int edge);
+        int checkOwner(unsigned int tileID, unsigned int edge);
 
     private:
-        void createRegion(int tileID, int edge);
-        int  countEdgesTillCompletion(int placedTileID);
-        void mergeRegions(int placedTileID, int placedEdge, int connectingTileID, int connectingEdge);
-        std::unordered_map<int, struct regionSet **> regionTracker;    //Takes (tileID, edge) returns set pointer
+        struct regionSet* createRegion(unsigned int tileID, unsigned int edge);
+        int  countEdgesTillCompletion(unsigned int placedTileID);
+        void mergeRegions(unsigned int placedTileID, unsigned int placedEdge, unsigned int connectingTileID, unsigned int connectingEdge);
+        std::unordered_map<unsigned int, struct regionSet **> regionTracker;    //Takes (tileID, edge) returns set pointer
         struct meeple ownerMeeples[TOTAL_MEEPLES];
 };
 
