@@ -30,6 +30,41 @@ void Regions::mergeRegions(int placedTileID, int placedEdge, int connectingTileI
     }
 }
 
+int Regions::addConnection(const Tile& newTile, const Tile ** boarderingTiles) {
+    unsigned int numOfSides = newTile.getNumberOfSides();
+    unsigned int countPerSide = newTile.getCountPerSide();
+    unsigned int totalEdges = numOfSides * countPerSide;
+    unsigned int id = newTile.getId();
+
+    struct regionSet * newRegions = new struct regionSet*[totalEdges];
+    regionTracker.at(id) = newRegions;
+
+    for (unsigned int edge = 0; edge < totalEdges; edge++) {
+        unsigned int side = edge / countPerSide;
+        if (boardingTiles[side] == NULL) {
+            newRegions[edge] = NULL;
+            continue;
+        }
+
+        unsigned int correspondingSide = (((edge / countPerSide) + (numOfSides / 2)) % numOfSides;
+        unsigned int correspondingEdge = (countPerSide - (edge % countPerSide) - 1) + countPerSide * correspondingSide;
+
+        unsigned int boarderingId = boarderingTiles[side]->getId();
+
+        newRegions[edge] = regionTracker.at(boarderingId)[correspondingEdge];
+    }
+
+    for (unsigned int edge = 0; edge < totalEdges; edge++) {
+        if (newRegions[edge] != NULL) continue;
+
+        newRegions[edge] = createRegion(id, edge);
+
+        for (unsigned int otherEdge = edge + 1; otherEdge < totalEdges; otherEdge++) {
+           if (!newTile.isConnected(edge, otherEdge)) continue;
+        }
+    }
+}
+
 int Regions::addConnection(int placedTileID, int placedEdge, int connectingTileID, int connectingEdge)
 {
     if(connectingTileID == -1) //Empty Edge
@@ -116,7 +151,7 @@ bool Regions::validMeeplePlacement(const Tile& placed, unsigned int edgeIndex) {
     unsigned int id = placed.getId();
     bool hasRegion = regionTracker.count(id) > 0;
     if (!hasRegion) return true;
-    
+
     bool hasPlayer1 = regionTracker.at(id)[edgeIndex]->player1Meeples > 0;
     bool hasPlayer2 = regionTracker.at(id)[edgeIndex]->player2Meeples > 0;
 
