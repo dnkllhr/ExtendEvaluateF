@@ -1,5 +1,5 @@
-#ifndef __REGIONS_H
-#define __REGIONS_H
+#ifndef __RULES_H
+#define __RULES_H
 
 #include "../Tiles/Tile.h"
 #include "../Board/Board.h"
@@ -7,9 +7,15 @@
 
 class GameRules
 {
-
+    public:
+        validTilePlacement(const Tile& placed, const Tile * boarderingTiles);
+        validMeeplePlacement(const Tile& placed, unsigned int edgeIndex);
+        getCurrentScore(int tileID, int edge);
+        scoreEdge(int tileID, int edge);
+    private:
+        //Not sure?
 };
 
 
 
-#endif __REGIONS_H
+#endif __RULES_H
