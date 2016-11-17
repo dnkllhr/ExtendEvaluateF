@@ -16,7 +16,7 @@ class Regions
         int checkOwner(unsigned int tileID, unsigned int edge);
 
     private:
-        struct regionSet* createRegion(unsigned int tileID, unsigned int edge);
+        struct regionSet* createRegion(unsigned int tileID, unsigned int edge, TerrainType type);
         int  countEdgesTillCompletion(unsigned int placedTileID);
         void mergeRegions(unsigned int placedTileID, unsigned int placedEdge, unsigned int connectingTileID, unsigned int connectingEdge);
         std::unordered_map<unsigned int, struct regionSet **> regionTracker;    //Takes (tileID, edge) returns set pointer
@@ -28,12 +28,18 @@ struct tileNode
     tileNode() {
         previous = NULL;
         next = NULL;
+        preyCounts = new unsigned int[NUM_PREY];
         tileId = 0;
         edge = 0;
     };
 
+    ~tileNode() {
+        delete[] preyCounts;
+    }
+
     unsigned int tileID;
     unsigned int edge;
+    unsigned int * preyCounts;
     struct tileNode *previous;
     struct tileNode *next;
 };
@@ -51,6 +57,7 @@ struct regionSet
     unsigned int player1Meeples;
     unsigned int player2Meeples;
     unsigned int edgesTillCompletion;
+    TerrainType type;
     struct tileNode *head;
     struct tileNode *tail;
 };

@@ -1,7 +1,6 @@
 #include "Rules.h"
 
-
-bool Rules::validTilePlacement(const Tile& placed, const Tile * boarderingTiles) 
+bool Rules::validTilePlacement(const Tile& placed, const Tile * boarderingTiles)
 {
     unsigned int sides = placed.getNumberOfSides();
     unsigned int countPerSide = placed.getCountPerSide();
@@ -17,9 +16,7 @@ bool Rules::validTilePlacement(const Tile& placed, const Tile * boarderingTiles)
     return true;
 }
 
-
-
-bool Rules::validMeeplePlacement(const Tile& placed, unsigned int edgeIndex) 
+bool Rules::validMeeplePlacement(const Tile& placed, unsigned int edgeIndex)
 {
     unsigned int id = placed.getId();
     bool hasRegion = regionTracker.count(id) > 0;

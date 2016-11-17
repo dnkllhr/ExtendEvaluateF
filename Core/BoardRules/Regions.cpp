@@ -2,7 +2,7 @@
 
 
 void mergeRegions(unsigned int placedTileID, unsigned int placedEdge, unsigned int connectingTileID, unsigned int connectingEdge)
-{   
+{
     auto placedSearch = regionTracker.find(placedTileID);
     auto connectingSearch = regionTracker.find(connectingTileID);
     if(placedSearch != regionTracker.end() && connectingSearch != regionTracker.end())
@@ -57,6 +57,7 @@ int Regions::addConnection(const Tile& newTile, const Tile ** boarderingTiles) {
             struct tileNode * node = new struct tileNode();
             node->tileID = id;
             node->edge = edge;
+            node->preyCounts[newTile.getPrey()]++;
             node->previous = newRegions[edge]->tail;
             newRegions[edge]->tail->next = node;
             newRegions[edge]->tail = node;
@@ -68,7 +69,8 @@ int Regions::addConnection(const Tile& newTile, const Tile ** boarderingTiles) {
 
     for (unsigned int edge = 0; edge < totalEdges; edge++) {
         if (newRegions[edge] == NULL) {
-            newRegions[edge] = createRegion(id, edge);
+            newRegions[edge] = createRegion(id, edge, newTile.getTerrainType(edge));
+            newRegions[edge]->tail->preyCounts[newTile.getPrey()]++;
 
             if (edge % countPerSide == centerEdge)
                 newRegions[edge]->edgesTillCompletion++;
@@ -86,6 +88,7 @@ int Regions::addConnection(const Tile& newTile, const Tile ** boarderingTiles) {
                 struct tileNode * node = new struct tileNode();
                 node->tileID = id;
                 node->edge = otherEdge;
+                node->preyCounts[newTile.getPrey()]++;
                 node->previous = newRegions[otherEdge]->tail;
                 newRegions[otherEdge]->tail->next = node;
                 newRegions[otherEdge]->tail = node;
@@ -145,12 +148,13 @@ int Regions::checkOwner(unsigned int tileID, unsigned int edge)
     return -2;
 }
 
-struct regionSet* Regions::createRegion(unsigned int tileID, unsigned int edge) {
+struct regionSet* Regions::createRegion(unsigned int tileID, unsigned int edge, TerrainType type) {
     struct regionSet * newRegion = new struct regionSet();
     struct tileNode * node = new struct tileNode();
 
     node->tileID = tileID;
     node->edge = edge;
+    newRegion->type = type;
     newRegion->head = node;
     newRegion->tail = node;
     return newRegion;
