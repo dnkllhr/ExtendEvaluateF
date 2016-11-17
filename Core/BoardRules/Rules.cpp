@@ -27,3 +27,74 @@ bool Rules::validMeeplePlacement(const Tile& placed, unsigned int edgeIndex)
 
     return ((!hasPlayer1) && (!hasPlayer2));
 }
+
+
+unsigned int scoreRoad(struct regionSet * currentSet)
+{
+    std::unordered_map<unsigned int, bool> edgeTracker;
+    //Init starting values
+    struct tileNode * currentNode = currentSet->head;    
+    auto tileSearch = edgeTracker.find(currentNode->tileID);
+    unsigned int score = 0;
+    unsigned int preyCount = 0;
+
+    while(currentNode != NULL)
+    {
+        //Search for an entry in the map
+        tileSearch = edgeTracker.find(currentNode->tileID);
+        //If the entry doesn't exist, we haven't visited the tile yet
+        if(tileSearch == edgeTracker.end())
+        {
+            preyCount = 0;
+            edgeTracker[tileNode->tileID] = 1;
+            for(int i = 0; i  < NUM_PREY; i++)
+            {
+                preyCount += currentNode->preyValues[i];
+            }
+            score += ROAD_VALUE + preyCount;
+        }
+        //Get the next node in the list
+        currentNode = currentNode->next;
+    }
+
+}
+
+unsigned int scoreCastle(struct regionSet * currentSet)
+{
+
+}
+
+unsigned int scoreGrass(struct regionSet * currentSet)
+{
+
+}
+
+unsigned int scoreChurch(struct regionSet * currentSet)
+{
+
+}
+
+
+unsigned int getCurrentScore(unsigned int tileID, unsigned int edge)
+{
+    struct regionSet * currentRegion = Regions::getRegion(tileID, edge);
+    unsigned int returnValue;
+    switch (currentRegion->type)
+    {
+        case TerrainType::Grass:
+            returnValue = scoreGrass(currentRegion);
+            break;
+        case TerrainType::Road:
+            returnValue = scoreRoad(currentRegion);
+            break;
+        case TerrainType::Castle:
+            returnValue = scoreCastle(currentRegion);
+            break;
+        case TerrainType::Church:
+            returnValue = scoreChurch(currentRegion);
+            break;
+        default:
+            //Throw error
+            break;
+    }
+}
