@@ -160,7 +160,7 @@ struct regionSet* Regions::createRegion(unsigned int tileID, unsigned int edge, 
     return newRegion;
 }
 
-regionSet ** getRegions(unsigned int tileID)
+struct regionSet ** Regions::getRegions(unsigned int tileID)
 {
     auto tileSearch = regionTracker.find(tileID);
     if(tileSearch != regionTracker.end())
