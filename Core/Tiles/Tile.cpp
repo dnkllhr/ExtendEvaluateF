@@ -40,6 +40,10 @@ unsigned int Tile::getId() {
     return this->tileId;
 }
 
+unsigned int Tile::getRotation() {
+    return this->rotation;
+}
+
 bool Tile::setRotation(unsigned int rotation) {
     if (this->placed) return false;
 

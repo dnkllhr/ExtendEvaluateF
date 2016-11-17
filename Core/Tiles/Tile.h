@@ -50,6 +50,9 @@ class Tile {
         /// Sets the rotation of the current tile where each increment is a rotation of 90 degrees. So calling setRotation(2) will rotate the tile 180 degrees. After a tile is placed, a tile can no longer be rotated so the method returns true if the rotation was set and false otherwise.
         bool setRotation(unsigned int rotation);
 
+        /// Since isConnected and getTerrainType account for the rotation already, you shouldn't need to use this function unless you are trying to display a tile on the UI.
+        unsigned int getRotation();
+
         /// Returns a boolean indicating whether the tile contains a shield.
         PreyType getPrey();
 
