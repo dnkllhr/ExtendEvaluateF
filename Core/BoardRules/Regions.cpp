@@ -1,5 +1,7 @@
 #include "Regions.h"
 
+struct meeple Regions::ownerMeeples[] = {};
+std::unordered_map<unsigned int, struct regionSet **> Regions::regionTracker = std::unordered_map<unsigned int, struct regionSet **>();
 
 void mergeRegions(unsigned int placedTileID, unsigned int placedEdge, unsigned int connectingTileID, unsigned int connectingEdge)
 {

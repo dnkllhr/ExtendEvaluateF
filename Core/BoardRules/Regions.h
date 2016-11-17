@@ -8,17 +8,17 @@
 class Regions
 {
     public:
-        int addConnection(const Tile& newTile, const Tile **  boarderingTiles);
-        int addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned int edge);
-        int checkOwner(unsigned int tileID, unsigned int edge);
-        Tile * getRegion(unsigned int tileID, unsigned int edge);
+        static int addConnection(const Tile& newTile, const Tile **  boarderingTiles);
+        static int addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned int edge);
+        static int checkOwner(unsigned int tileID, unsigned int edge);
+        static struct regionSet ** getRegion(unsigned int tileID, unsigned int edge);
 
     private:
-        struct regionSet* createRegion(unsigned int tileID, unsigned int edge, TerrainType type);
-        int  countEdgesTillCompletion(unsigned int placedTileID);
-        void mergeRegions(unsigned int placedTileID, unsigned int placedEdge, unsigned int connectingTileID, unsigned int connectingEdge);
-        std::unordered_map<unsigned int, struct regionSet **> regionTracker;    //Takes (tileID, edge) returns set pointer
-        struct meeple ownerMeeples[TOTAL_MEEPLES];
+        static struct regionSet* createRegion(unsigned int tileID, unsigned int edge, TerrainType type);
+        static int countEdgesTillCompletion(unsigned int placedTileID);
+        static void mergeRegions(unsigned int placedTileID, unsigned int placedEdge, unsigned int connectingTileID, unsigned int connectingEdge);
+        static std::unordered_map<unsigned int, struct regionSet **> regionTracker;    //Takes (tileID, edge) returns set pointer
+        static struct meeple ownerMeeples[TOTAL_MEEPLES];
 };
 
 struct tileNode

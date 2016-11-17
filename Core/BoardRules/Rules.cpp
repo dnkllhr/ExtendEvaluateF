@@ -95,7 +95,7 @@ unsigned int scoreCastle(struct regionSet * currentSet)
 unsigned int scoreGrass(unsigned int tileID, unsigned int edge)
 {
     unsigned int score = 0;
-    struct regionSet ** currentSets = getRegions(tileID);
+    struct regionSet ** currentSets = Regions::getRegions(tileID);
     std::unordered_map<struct regionSet * , bool> castleTracker;
     //Init starting values
     struct tileNode * currentNode = (currentSets[edge])->head;    
