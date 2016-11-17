@@ -27,6 +27,8 @@ class BoardManager {
         std::vector<Move> getLegalMoves(const Tile& tile);
         /// Makes the given Move
         void makeMove(const Move& move);
+		/// Returns whether the given tile is fully surrounded by other tiles
+		bool isSurrounded(int tileID);
     
     private:
     

@@ -94,3 +94,34 @@ void BoardManager::makeMove(const Move& move)
     // remove tile from list
     tileOrder.erase(tileOrder.begin());
 }
+
+bool BoardManager::isSurrounded(int tileID)
+{
+	bool surrounded = false;
+	for
+		for
+			//find coord of tileID
+			Coord tileCoord;
+
+	int xLocation = tileCoord.getX();
+	int yLocation = tileCoord.getY();
+	int i = -1;
+	while (i < 2)
+	{
+		int j = -1;
+		while (j < 2)
+		{
+			if (board[xLocation + i][yLocation + j])
+			{
+				surrounded = true;
+			}
+			else
+			{
+				return false;
+			}
+			j++;
+		}
+		i++;
+	}
+	return surrounded;
+}
