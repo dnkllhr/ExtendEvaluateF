@@ -2,18 +2,16 @@
 #define __REGIONS_H
 
 #include "../Tiles/Tile.h"
+
 #include <unordered_map>
 
 class Regions
 {
     public:
-        static bool validTilePlacement(const Tile& newTile, const Tile ** boarderingTiles);
-        /// Determines if a placement of a meeple is valid where placed is the new tile that was just placed and edge index is the edge index in which the meeple was placed.
-        static bool validMeeplePlacement(const Tile& newTile, unsigned int edgeIndex);
-
         int addConnection(const Tile& newTile, const Tile **  boarderingTiles);
         int addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned int edge);
         int checkOwner(unsigned int tileID, unsigned int edge);
+        Tile * getRegion(unsigned int tileID, unsigned int edge);
 
     private:
         struct regionSet* createRegion(unsigned int tileID, unsigned int edge, TerrainType type);
@@ -42,6 +40,7 @@ struct tileNode
     unsigned int * preyCounts;
     struct tileNode *previous;
     struct tileNode *next;
+    unsigned int preyValues[NUM_PREY];
 };
 
 struct regionSet

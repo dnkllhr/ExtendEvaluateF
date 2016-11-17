@@ -27,3 +27,137 @@ bool Rules::validMeeplePlacement(const Tile& placed, unsigned int edgeIndex)
 
     return ((!hasPlayer1) && (!hasPlayer2));
 }
+
+
+unsigned int scoreRoad(struct regionSet * currentSet)
+{
+    std::unordered_map<unsigned int, bool> edgeTracker;
+    //Init starting values
+    struct tileNode * currentNode = currentSet->head;    
+    auto tileSearch = edgeTracker.find(currentNode->tileID);
+    unsigned int score = 0;
+    unsigned int preyCount = 0;
+
+    while(currentNode != NULL)
+    {
+        //Search for an entry in the map
+        tileSearch = edgeTracker.find(currentNode->tileID);
+        //If the entry doesn't exist, we haven't visited the tile yet
+        if(tileSearch == edgeTracker.end())
+        {
+            preyCount = 0;
+            edgeTracker[tileNode->tileID] = 1;
+            for(int i = 0; i  < NUM_PREY; i++)
+            {
+                preyCount += currentNode->preyValues[i];
+            }
+            score += ROAD_VALUE + preyCount;
+        }
+        //Get the next node in the list
+        currentNode = currentNode->next;
+    }
+    return score;
+}
+
+unsigned int scoreCastle(struct regionSet * currentSet)
+{
+    std::unordered_map<unsigned int, bool> edgeTracker;
+    //Init starting values
+    struct tileNode * currentNode = currentSet->head;    
+    auto tileSearch = edgeTracker.find(currentNode->tileID);
+    unsigned int score = 0;
+    unsigned int preyCount = 0;
+
+    while(currentNode != NULL)
+    {
+        //Search for an entry in the map
+        tileSearch = edgeTracker.find(currentNode->tileID);
+        //If the entry doesn't exist, we haven't visited the tile yet
+        if(tileSearch == edgeTracker.end())
+        {
+            preyCount = 0;
+            edgeTracker[tileNode->tileID] = 1;
+            for(int i = 0; i  < NUM_PREY; i++)
+            {
+                if(currentNode->preyValues[i])
+                {
+                    preyValues++;
+                }
+            }
+            score += CASTLE_VALUE * (1 + preyCount);
+        }
+        //Get the next node in the list
+        currentNode = currentNode->next;
+    }
+    return score;
+}
+
+unsigned int scoreGrass(unsigned int tileID, unsigned int edge)
+{
+    unsigned int score = 0;
+    struct regionSet ** currentSets = getRegions(tileID);
+    std::unordered_map<struct regionSet * , bool> castleTracker;
+    //Init starting values
+    struct tileNode * currentNode = (currentSets[edge])->head;    
+    auto tileSearch = castleTracker.find(currentNode->tileID);
+
+    while(currentNode != NULL)
+    {        
+        currentSets = Regions::getRegions(currentNode->tileID);
+        for(int i = 0; i < NUM_TILE_EDGES; i++)
+        {
+            //Look for the other regions on the tile
+            tileSearch = castleTracker.find(currentSets[i]);
+            //If you can't find the region
+            if(tileSearch == castleTracker.end())
+            {
+                //And the region is a completed castle
+                if((currentSets[i]->type == TerrainType::Castle) && (currentSets[i]->edgesTillCompletion == 0))
+                {
+                    //Score it, and add it to the hash map
+                    score += 3;
+                    castleTracker[currentSets[i]] = true;
+                }
+            }
+        }
+        currentNode = currentNode->next;
+    }
+    return score;
+}
+
+unsigned int scoreChurch(unsigned int tileID)
+{
+    unsigned int score = 0;
+
+    if(BoardManager::isSurrounded(tileID))
+    {
+        score += 9;
+    }
+
+    return score;
+}
+
+
+unsigned int getCurrentScore(unsigned int tileID, unsigned int edge)
+{
+    struct regionSet ** currentRegion = Regions::getRegions(tileID);
+    unsigned int returnValue;
+    switch (currentRegion[edge]->type)
+    {
+        case TerrainType::Grass:
+            returnValue = scoreGrass(currentRegion, edge);
+            break;
+        case TerrainType::Road:
+            returnValue = scoreRoad(currentRegion[edge]);
+            break;
+        case TerrainType::Castle:
+            returnValue = scoreCastle(currentRegion[edege]);
+            break;
+        case TerrainType::Church:
+            returnValue = scoreChurch(tileID[edge]);
+            break;
+        default:
+            //Throw error
+            break;
+    }
+}
