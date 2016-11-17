@@ -3,7 +3,7 @@
 struct meeple Regions::ownerMeeples[] = {};
 std::unordered_map<unsigned int, struct regionSet **> Regions::regionTracker = std::unordered_map<unsigned int, struct regionSet **>();
 
-void mergeRegions(unsigned int placedTileID, unsigned int placedEdge, unsigned int connectingTileID, unsigned int connectingEdge)
+void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, unsigned int connectingTileID, unsigned int connectingEdge)
 {
     auto placedSearch = regionTracker.find(placedTileID);
     auto connectingSearch = regionTracker.find(connectingTileID);
@@ -24,7 +24,7 @@ void mergeRegions(unsigned int placedTileID, unsigned int placedEdge, unsigned i
         struct tileNode *iter = (placedSearch->second[placedEdge])->head;
         while(iter != NULL)
         {
-            regionTracker[(placedSearch->first)] = (connectingSearch->second[connectingEdge]);
+            regionTracker[(placedSearch->first)][placedEdge] = (connectingSearch->second[connectingEdge]);
             iter = iter->next;
         }
 
@@ -40,7 +40,7 @@ int Regions::addConnection(const Tile& newTile, const Tile ** boarderingTiles) {
     unsigned int id = newTile.getId();
     unsigned int centerEdge = countPerSide / 2;
 
-    struct regionSet * newRegions = new struct regionSet*[totalEdges];
+    struct regionSet ** newRegions = new struct regionSet*[totalEdges];
     regionTracker[id] = newRegions;
 
     // from what I can tell, this can't be optimised much. This is currently O(n + n^2) and the best case is we get O(n^2)
@@ -53,13 +53,13 @@ int Regions::addConnection(const Tile& newTile, const Tile ** boarderingTiles) {
             unsigned int boarderingId = boarderingTiles[side]->getId();
             newRegions[edge] = regionTracker.at(boarderingId)[correspondingEdge];
 
-            if (edge % countPerEdge == centerEdge)
+            if (edge % countPerSide == centerEdge)
                 newRegions[edge]->edgesTillCompletion--;
 
             struct tileNode * node = new struct tileNode();
             node->tileID = id;
             node->edge = edge;
-            node->preyCounts[newTile.getPrey()]++;
+            node->preyCounts[static_cast<int>(newTile.getPrey())]++;
             node->previous = newRegions[edge]->tail;
             newRegions[edge]->tail->next = node;
             newRegions[edge]->tail = node;
@@ -72,7 +72,7 @@ int Regions::addConnection(const Tile& newTile, const Tile ** boarderingTiles) {
     for (unsigned int edge = 0; edge < totalEdges; edge++) {
         if (newRegions[edge] == NULL) {
             newRegions[edge] = createRegion(id, edge, newTile.getTerrainType(edge));
-            newRegions[edge]->tail->preyCounts[newTile.getPrey()]++;
+            newRegions[edge]->tail->preyCounts[static_cast<int>(newTile.getPrey())]++;
 
             if (edge % countPerSide == centerEdge)
                 newRegions[edge]->edgesTillCompletion++;
@@ -90,7 +90,7 @@ int Regions::addConnection(const Tile& newTile, const Tile ** boarderingTiles) {
                 struct tileNode * node = new struct tileNode();
                 node->tileID = id;
                 node->edge = otherEdge;
-                node->preyCounts[newTile.getPrey()]++;
+                node->preyCounts[static_cast<int>(newTile.getPrey())]++;
                 node->previous = newRegions[otherEdge]->tail;
                 newRegions[otherEdge]->tail->next = node;
                 newRegions[otherEdge]->tail = node;
@@ -109,7 +109,7 @@ int Regions::addConnection(const Tile& newTile, const Tile ** boarderingTiles) {
 
 int Regions::addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned int edge)
 {
-    int i;
+    unsigned int i;
     bool valid = false;
     for(i = (playerNumber)*7; i < ((playerNumber)*7 + 7); i++)
     {
@@ -126,7 +126,7 @@ int Regions::addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned 
     if(Regions::checkOwner(tileID, edge) == -2) //No owner
     {
         ownerMeeples[i].inUse = true;
-        ownedMeeples[i].ownedRegion = regionTracker.find(tileID)[edge];
+        ownerMeeples[i].ownedRegion = regionTracker.find(tileID)->second[edge];
         return 0;
     }
     return -1;
@@ -134,8 +134,8 @@ int Regions::addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned 
 
 int Regions::checkOwner(unsigned int tileID, unsigned int edge)
 {
-    auto search = regionTracker.find(tileID, edge);
-    if(search != example.end())
+    auto search = regionTracker.find(tileID);
+    if(search != regionTracker.end())
     {
         if((search->second[edge])->player1Meeples > (search->second[edge])->player2Meeples)
         {
@@ -150,7 +150,7 @@ int Regions::checkOwner(unsigned int tileID, unsigned int edge)
     return -2;
 }
 
-struct regionSet* Regions::createRegion(unsigned int tileID, unsigned int edge, TerrainType type) {
+struct regionSet * Regions::createRegion(unsigned int tileID, unsigned int edge, TerrainType type) {
     struct regionSet * newRegion = new struct regionSet();
     struct tileNode * node = new struct tileNode();
 
@@ -169,4 +169,6 @@ struct regionSet ** Regions::getRegions(unsigned int tileID)
     {
         return (tileSearch->second);
     }
+
+    return NULL;
 }

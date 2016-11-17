@@ -18,7 +18,7 @@
 class GameRules
 {
     public:
-        static bool validTilePlacement(const Tile& placed, const Tile * boarderingTiles);
+        static bool validTilePlacement(const Tile& placed, const Tile ** boarderingTiles);
         static bool validMeeplePlacement(const Tile& placed, unsigned int edgeIndex);
         static unsigned int getCurrentScore(int tileID, int edge);
         static unsigned int scoreEdge(int tileID, int edge);
@@ -31,4 +31,4 @@ class GameRules
 
 
 
-#endif __RULES_H
+#endif

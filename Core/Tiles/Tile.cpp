@@ -36,11 +36,11 @@ Array<Array<Tile>> Tile::CreateTiles() {
     return arrayOfTiles;
 }
 
-unsigned int Tile::getId() {
+unsigned int Tile::getId() const {
     return this->tileId;
 }
 
-unsigned int Tile::getRotation() {
+unsigned int Tile::getRotation() const {
     return this->rotation;
 }
 
@@ -52,27 +52,27 @@ bool Tile::setRotation(unsigned int rotation) {
     return true;
 }
 
-PreyType Tile::getPrey() {
+PreyType Tile::getPrey() const {
     return this->prey;
 }
 
-unsigned int Tile::getNumberOfSides() {
+unsigned int Tile::getNumberOfSides() const {
     return this->numberSides;
 }
 
-unsigned int Tile::getCountPerSide() {
+unsigned int Tile::getCountPerSide() const {
     return this->countPerSide;
 }
 
-TileType Tile::getTileType() {
+TileType Tile::getTileType() const {
     return this->tileType;
 }
 
-TerrainType Tile::getTerrainType(unsigned int edge) {
+TerrainType Tile::getTerrainType(unsigned int edge) const {
     return this->edges[edge];
 }
 
-bool Tile::isConnected(unsigned int inEdge, unsigned int outEdge) {
+bool Tile::isConnected(unsigned int inEdge, unsigned int outEdge) const {
     unsigned int offsetIn = (inEdge + this->rotation) % (this->numberSides * this->countPerSide);
     unsigned int offsetOut = (outEdge + this->rotation) % (this->numberSides * this->countPerSide);
 
@@ -83,7 +83,7 @@ void Tile::placeTile() {
     this->placed = true;
 }
 
-bool Tile::isPlaced() {
+bool Tile::isPlaced() const {
     return this->placed;
 }
 

@@ -51,34 +51,34 @@ class Tile {
         bool setRotation(unsigned int rotation);
 
         /// Since isConnected and getTerrainType account for the rotation already, you shouldn't need to use this function unless you are trying to display a tile on the UI.
-        unsigned int getRotation();
+        unsigned int getRotation() const;
 
         /// Returns a boolean indicating whether the tile contains a shield.
-        PreyType getPrey();
+        PreyType getPrey() const;
 
         /// Gets the number of sides a tile has.
-        unsigned int getNumberOfSides();
+        unsigned int getNumberOfSides() const;
 
         /// Gets the number of array indices that belong to each side.
-        unsigned int getCountPerSide();
+        unsigned int getCountPerSide() const;
 
         /// Returns the terrain type indicated at the specified edge index. For example, getTerrainType(2) will get the terrain type for the middle trisection of the top edge.
-        TerrainType getTerrainType(unsigned int edge);
+        TerrainType getTerrainType(unsigned int edge) const;
 
         /// Gets the tile type for the current tile.
-        TileType getTileType();
+        TileType getTileType() const;
 
         /// Takes two edge indices and outputs whether they are connected. Direction does not matter so isConnected(in, out) is equal to isConnected(out, int).
-        bool isConnected(unsigned int inEdge, unsigned int outEdge);
+        bool isConnected(unsigned int inEdge, unsigned int outEdge) const;
 
         /// Sets the tile state to placed so that no modifications can be made to it.
         void placeTile();
 
         /// Returns true if the tile has been placed and false otherwise.
-        bool isPlaced();
+        bool isPlaced() const;
 
         /// Gets the id of the current tile.
-        unsigned int getId();
+        unsigned int getId() const;
 
     private:
         Tile();

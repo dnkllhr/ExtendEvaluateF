@@ -2,8 +2,9 @@
 #define __REGIONS_H
 
 #include "../Tiles/Tile.h"
-
 #include <unordered_map>
+
+#define TOTAL_MEEPLES   14
 
 class Regions
 {
@@ -11,10 +12,10 @@ class Regions
         static int addConnection(const Tile& newTile, const Tile **  boarderingTiles);
         static int addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned int edge);
         static int checkOwner(unsigned int tileID, unsigned int edge);
-        static struct regionSet ** getRegion(unsigned int tileID, unsigned int edge);
+        static struct regionSet ** getRegions(unsigned int tileID);
 
     private:
-        static struct regionSet* createRegion(unsigned int tileID, unsigned int edge, TerrainType type);
+        static struct regionSet * createRegion(unsigned int tileID, unsigned int edge, TerrainType type);
         static int countEdgesTillCompletion(unsigned int placedTileID);
         static void mergeRegions(unsigned int placedTileID, unsigned int placedEdge, unsigned int connectingTileID, unsigned int connectingEdge);
         static std::unordered_map<unsigned int, struct regionSet **> regionTracker;    //Takes (tileID, edge) returns set pointer
@@ -27,7 +28,7 @@ struct tileNode
         previous = NULL;
         next = NULL;
         preyCounts = new unsigned int[NUM_PREY];
-        tileId = 0;
+        tileID = 0;
         edge = 0;
     };
 
