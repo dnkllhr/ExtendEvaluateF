@@ -11,16 +11,16 @@ class Board {
 		// Creates a new Board as a grid of tiles of the maximum needed size
 		Board();
 		// Returns the Board as a 2D Array of Tiles
-		const Array<Array<Tile&>&>& getBoard();
+		const Array<Array<Tile&>>& getBoard();
 		// Gets the Tile at the given Coord
 		const Tile& get(const Coord& coord);
-		// Place the given Tile at the given Coord
-		void place(const Tile& tile, const Coord& coord);
+		// For a given Move, place the specifed Tile at the specified Coord
+		void place(const Move& move);
         
 	private:
 	
-		Array<Array<Tile&>&>& board;
-        
+		Array<Array<Tile&>> board;
+        std::set<unsigned int> availableLocations;
 };
 
 #endif
