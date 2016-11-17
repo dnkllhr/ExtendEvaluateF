@@ -3,15 +3,19 @@
 
 #include "../Tiles/Tile.h"
 #include "../Board/Board.h"
+#include "Regions.h"
+
+#include <unordered_map>
+
 
 
 class GameRules
 {
     public:
-        validTilePlacement(const Tile& placed, const Tile * boarderingTiles);
-        validMeeplePlacement(const Tile& placed, unsigned int edgeIndex);
-        getCurrentScore(int tileID, int edge);
-        scoreEdge(int tileID, int edge);
+        bool validTilePlacement(const Tile& placed, const Tile * boarderingTiles);
+        bool validMeeplePlacement(const Tile& placed, unsigned int edgeIndex);
+        unsigned int getCurrentScore(int tileID, int edge);
+        unsigned int scoreEdge(int tileID, int edge);
     private:
         //Not sure?
 };
