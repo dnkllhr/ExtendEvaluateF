@@ -25,7 +25,7 @@ class GameRules
     private:
         unsigned int scoreRoad(struct regionSet * currentSet);
         unsigned int scoreCastle(struct regionSet * currentSet);
-        unsigned int scoreGrass(struct regionSet * currentSet);
+        unsigned int scoreGrass(struct regionSet ** currentSet, unsigned int edge);
         unsigned int scoreChurch(struct regionSet * currentSet);
 };
 

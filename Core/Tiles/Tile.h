@@ -7,6 +7,11 @@
 #include "TerrainType.h"
 #include "../../Common/Array.h"
 
+
+#define NUM_TILE_SIDES              4
+#define NUM_TILE_EDGES_PER_SIDE     3
+#define NUM_TILE_EDGES              (NUM_TILE_EDGES_PER_SIDE * NUM_TILE_SIDES)
+
 class Tile {
     public:
         /// Creates an array of tiles with the standard number of tiles for the game and assigns each tile a unique id

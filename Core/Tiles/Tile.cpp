@@ -86,8 +86,8 @@ bool Tile::isPlaced() {
 Tile::Tile() {
     this->edges = NULL;
     this->edgeConnections = NULL;
-    this->numberSides = 4;
-    this->countPerSide = 3;
+    this->numberSides = NUM_TILE_SIDES;
+    this->countPerSide = NUM_TILE_EDGES_PER_SIDE;
     this->rotation = 0;
     this->placed = false;
 }
