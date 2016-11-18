@@ -9,17 +9,15 @@
 #include <vector>
 #include <zmq.hpp>
 #include <string>
-#include <iostream>
+#include <cstring>
 #include <sstream>
-
-#define MAX_MSG_SIZE   100
 
 class GuiManager {
   public:
 
     ///Constructor will open connection
     GuiManager();
-    ///Deconstructor closes connection
+    ///Deconstructor
     ~GuiManager();
     ///Print will serialize and send the current board structure to the python server
     void print(const gameBoard, const unsigned int offset);
