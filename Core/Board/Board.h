@@ -16,6 +16,8 @@ class Board {
 		const Array<Array<Tile&>>& getBoard();
 		// Gets the Tile at the given Coord
 		const Tile& get(const Coord& coord);
+		//Gets the Tile for a given tileID
+		const Tile& get(unsigned int tileID);
 		//Find a way to get the coordinates from the ID
 		const Move& getCoordinates(unsigned int tileID);
 		// For a given Move, place the specifed Tile at the specified Coord
