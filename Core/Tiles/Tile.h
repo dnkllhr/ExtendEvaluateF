@@ -62,6 +62,8 @@ class Tile {
         /// Gets the number of array indices that belong to each side.
         unsigned int getCountPerSide() const;
 
+        TerrainType getCenter() const;
+
         /// Returns the terrain type indicated at the specified edge index. For example, getTerrainType(2) will get the terrain type for the middle trisection of the top edge.
         TerrainType getTerrainType(unsigned int edge) const;
 

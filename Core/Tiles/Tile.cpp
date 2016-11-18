@@ -68,6 +68,10 @@ TileType Tile::getTileType() const {
     return this->tileType;
 }
 
+TerrainType Tile::getCenter() const {
+    return this->center;
+}
+
 TerrainType Tile::getTerrainType(unsigned int edge) const {
     return this->edges[edge];
 }

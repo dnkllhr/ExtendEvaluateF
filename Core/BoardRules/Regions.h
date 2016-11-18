@@ -14,6 +14,11 @@ class Regions
         static int checkOwner(unsigned int tileID, unsigned int edge);
         static struct regionSet ** getRegions(unsigned int tileID);
 
+#ifdef testing
+        static void clearRegionTracker();
+        static void clearOwnerMeeples();
+#endif
+
     private:
         static struct regionSet * createRegion(unsigned int tileID, unsigned int edge, TerrainType type);
         static int countEdgesTillCompletion(unsigned int placedTileID);
