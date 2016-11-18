@@ -5,6 +5,10 @@
 #include <unordered_map>
 
 #define TOTAL_MEEPLES   14
+#define OWNER_P1        1
+#define OWNER_TIE       0
+#define OWNER_P2        -1
+#define OWNER_NONE      -2
 
 class Regions
 {
