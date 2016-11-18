@@ -100,17 +100,18 @@ unsigned int GameRules::scoreGrass(unsigned int tileID, unsigned int edge)
     //Init starting values
     struct tileNode * currentNode = (currentSets[edge])->head;    
     auto tileSearch = fieldTracker.find(currentSets[edge]);
-    Tile * currentTile = Board::get(tileID);
+    Tile * currentTile;
 
     while(currentNode != NULL)
     {        
         currentSets = Regions::getRegions(currentNode->tileID);
+        currentTile = Board::get(tileID);
         for(int i = 0; i < NUM_TILE_EDGES; i++)
         {
             //Look for the other regions on the tile
             tileSearch = fieldTracker.find(currentSets[i]);
             //If you can't find the region
-            if(tileSearch == fieldTracker.end() && currentTile->isConnected(i,tileID))
+            if(tileSearch == fieldTracker.end() && currentTile->isConnected(i,currentNode->edge))
             {
                 //And the region is a completed castle
                 if((currentSets[i]->type == TerrainType::Castle) && (currentSets[i]->edgesTillCompletion == 0))
