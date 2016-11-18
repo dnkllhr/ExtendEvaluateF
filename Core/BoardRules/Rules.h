@@ -1,6 +1,9 @@
 #ifndef __RULES_H
 #define __RULES_H
 
+#include "../Board/Board.h"
+#include "../BoardManager/Move.h"
+#include "../BoardManager/Coord.h"
 #include "../Tiles/Tile.h"
 #include "Regions.h"
 

@@ -1,5 +1,8 @@
 #include "Board.h"
 
+std::unordered_map<unsigned int, Move *> Board::tileIDTracker = std::unordered_map<unsigned int, Move *>();
+std::unordered_set<unsigned int> Board::availableLocations = std::unordered_set<unsigned int>();
+
 Board::Board()
 {
 	const int NUMBER_OF_PLAYABLE_TILES = 76; // excluding starting tile
