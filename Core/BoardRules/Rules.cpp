@@ -100,6 +100,7 @@ unsigned int GameRules::scoreGrass(unsigned int tileID, unsigned int edge)
     //Init starting values
     struct tileNode * currentNode = (currentSets[edge])->head;    
     auto tileSearch = fieldTracker.find(currentSets[edge]);
+    Tile * currentTile = Board::get(tileID);
 
     while(currentNode != NULL)
     {        
@@ -109,13 +110,19 @@ unsigned int GameRules::scoreGrass(unsigned int tileID, unsigned int edge)
             //Look for the other regions on the tile
             tileSearch = fieldTracker.find(currentSets[i]);
             //If you can't find the region
-            if(tileSearch == fieldTracker.end())
+            if(tileSearch == fieldTracker.end() && currentTile->isConnected(i,tileID))
             {
                 //And the region is a completed castle
                 if((currentSets[i]->type == TerrainType::Castle) && (currentSets[i]->edgesTillCompletion == 0))
                 {
                     //Score it, and add it to the hash map
-                    score += 3;
+                    score += FIELD_CASTLE_VALUE;
+                    fieldTracker[currentSets[i]] = true;
+                }
+                else if((currentSets[i]->type == TerrainType::Church) && (currentSets[i]->edgesTillCompletion == 0))
+                {
+                    //Score it, and add it to the hash map
+                    score += FIELD_CHURCH_VALUE;
                     fieldTracker[currentSets[i]] = true;
                 }
             }

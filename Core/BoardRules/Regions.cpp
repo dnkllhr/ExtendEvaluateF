@@ -169,7 +169,7 @@ int Regions::checkOwner(unsigned int tileID, unsigned int edge)
         {
             return 1;
         }
-        else if((search->second[edge])->player1Meeples == (search->second[edge])->player2Meeples)
+        else if((search->second[edge])->player1Meeples == (search->second[edge])->player2Meeples && ((search->second[edge])->player2Meeples) != 0)
         {
             return 0;
         }
