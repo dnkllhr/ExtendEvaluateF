@@ -46,7 +46,7 @@ unsigned int GameRules::scoreRoad(struct regionSet * currentSet)
         if(tileSearch == edgeTracker.end())
         {
             preyCount = 0;
-            edgeTracker[tileNode->tileID] = 1;
+            edgeTracker[currentNode->tileID] = 1;
             for(int i = 0; i  < NUM_PREY; i++)
             {
                 preyCount += currentNode->preyValues[i];
@@ -76,12 +76,12 @@ unsigned int GameRules::scoreCastle(struct regionSet * currentSet)
         if(tileSearch == edgeTracker.end())
         {
             preyCount = 0;
-            edgeTracker[tileNode->tileID] = 1;
+            edgeTracker[currentNode->tileID] = 1;
             for(int i = 0; i  < NUM_PREY; i++)
             {
                 if(currentNode->preyValues[i])
                 {
-                    preyValues++;
+                    preyCount++;
                 }
             }
             score += CASTLE_VALUE * (1 + preyCount);
@@ -96,10 +96,10 @@ unsigned int GameRules::scoreGrass(unsigned int tileID, unsigned int edge)
 {
     unsigned int score = 0;
     struct regionSet ** currentSets = Regions::getRegions(tileID);
-    std::unordered_map<struct regionSet * , bool> castleTracker;
+    std::unordered_map<struct regionSet * , bool> fieldTracker;
     //Init starting values
     struct tileNode * currentNode = (currentSets[edge])->head;    
-    auto tileSearch = castleTracker.find(currentNode->tileID);
+    auto tileSearch = fieldTracker.find(currentSets[edge]);
 
     while(currentNode != NULL)
     {        
@@ -107,16 +107,16 @@ unsigned int GameRules::scoreGrass(unsigned int tileID, unsigned int edge)
         for(int i = 0; i < NUM_TILE_EDGES; i++)
         {
             //Look for the other regions on the tile
-            tileSearch = castleTracker.find(currentSets[i]);
+            tileSearch = fieldTracker.find(currentSets[i]);
             //If you can't find the region
-            if(tileSearch == castleTracker.end())
+            if(tileSearch == fieldTracker.end())
             {
                 //And the region is a completed castle
                 if((currentSets[i]->type == TerrainType::Castle) && (currentSets[i]->edgesTillCompletion == 0))
                 {
                     //Score it, and add it to the hash map
                     score += 3;
-                    castleTracker[currentSets[i]] = true;
+                    fieldTracker[currentSets[i]] = true;
                 }
             }
         }
@@ -125,11 +125,11 @@ unsigned int GameRules::scoreGrass(unsigned int tileID, unsigned int edge)
     return score;
 }
 
-unsigned int GameRules::scoreChurch(unsigned int tileID)
+unsigned int GameRules::scoreChurch(bool isSurrounded)
 {
     unsigned int score = 0;
 
-    if(BoardManager::isSurrounded(tileID))
+    if(isSurrounded)
     {
         score += 9;
     }
@@ -138,26 +138,27 @@ unsigned int GameRules::scoreChurch(unsigned int tileID)
 }
 
 
-unsigned int GameRules::getCurrentScore(unsigned int tileID, unsigned int edge)
+unsigned int GameRules::getCurrentScore(unsigned int tileID, unsigned int edge, bool isSurrounded)
 {
     struct regionSet ** currentRegion = Regions::getRegions(tileID);
-    unsigned int returnValue;
+    unsigned int returnValue = 0;
     switch (currentRegion[edge]->type)
     {
         case TerrainType::Grass:
-            returnValue = scoreGrass(currentRegion, edge);
+            returnValue = scoreGrass(tileID, edge);
             break;
         case TerrainType::Road:
             returnValue = scoreRoad(currentRegion[edge]);
             break;
         case TerrainType::Castle:
-            returnValue = scoreCastle(currentRegion[edege]);
+            returnValue = scoreCastle(currentRegion[edge]);
             break;
         case TerrainType::Church:
-            returnValue = scoreChurch(tileID[edge]);
+            returnValue = scoreChurch(isSurrounded);
             break;
         default:
             //Throw error
             break;
     }
+    return returnValue;
 }

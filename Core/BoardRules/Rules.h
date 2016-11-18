@@ -2,7 +2,6 @@
 #define __RULES_H
 
 #include "../Tiles/Tile.h"
-#include "../Board/Board.h"
 #include "Regions.h"
 
 #include <unordered_map>
@@ -20,13 +19,13 @@ class GameRules
     public:
         static bool validTilePlacement(const Tile& placed, const Tile ** boarderingTiles);
         static bool validMeeplePlacement(const Tile& placed, unsigned int edgeIndex);
-        static unsigned int getCurrentScore(int tileID, int edge);
-        static unsigned int scoreEdge(int tileID, int edge);
+        static unsigned int getCurrentScore(unsigned int tileID, unsigned int edge, bool isSurrounded);
+        static unsigned int scoreEdge(unsigned int tileID, unsigned int edge);
     private:
         static unsigned int scoreRoad(struct regionSet * currentSet);
         static unsigned int scoreCastle(struct regionSet * currentSet);
-        static unsigned int scoreGrass(struct regionSet ** currentSet, unsigned int edge);
-        static unsigned int scoreChurch(struct regionSet * currentSet);
+        static unsigned int scoreGrass(unsigned int tileID, unsigned int edge);
+        static unsigned int scoreChurch(bool isSurrounded);
 };
 
 
