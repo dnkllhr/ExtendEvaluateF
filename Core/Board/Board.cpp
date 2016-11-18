@@ -28,3 +28,8 @@ void Board::place(const Move& move)
 {
 	this->board[move.getCoord().getX()][move.getCoord().getY()] = move.getTile();
 }
+
+std::set Board::getAvailableLocations()
+{
+	return this->availableLocations;
+}

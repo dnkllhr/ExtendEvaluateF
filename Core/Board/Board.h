@@ -18,6 +18,8 @@ class Board {
 		const Tile& get(const Coord& coord);
 		// For a given Move, place the specifed Tile at the specified Coord
 		void place(const Move& move);
+		// Returns a set of gridID's of loactions adjacent to the border of already placed tiles 
+		std::set getAvailableLocations();
         
 	private:
 	
