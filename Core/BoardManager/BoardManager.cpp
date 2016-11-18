@@ -2,62 +2,60 @@
 
 BoardManager::BoardManager()
 {
-    
+
 }
 
-Board BoardManager::getBoard()
+const Board& BoardManager::getBoard()
 {
     return board;
 }
-
-std::ostream& BoardManager::operator<<(std::ostream& os, const BoardManager& obj)
+    
+void BoardManager::gameInit(int numberOfPlayers)
 {
-    /// TODO: consider basic image-based board grid
+	// Create new Board
+	Board board();
+	
+	// Initalize TileStack
+	TileStack tileStack(numberOfPlayers);
+	
+    // Build the Tile list   
+    Tile& startingTile;
+    Array<Array<Tile>> tiles = Tile::CreateTiles();
     
-    Tile[][] boardTiles = board.getTileMatrix();
+    std::vector<Tile&> tileList();
     
-    for(Tile[] row : boardTiles)
+    for(unsigned int i = 0; i < tiles.getSize(); i++)
     {
-        for(Tile[] tile : row)
-        {
-            if(tile == null)
-            {
-                os << "-";
-            }
-            else
-            {
-                /// TODO: make this an enum / something better
-                os << tile.getTileType();
-            }
-        }
-    }
-
-    return os;
-}
-    
-void BoardManager::gameInit()
-{
-    Coord center(77,77);
-    
-    minCoord = center;
-    maxCoord = center;
-    
-    // place inital center tile
-    Tile startingTile = Tile.... /// TODO
-    Move startingMove(startingTile, center);
-    
-    // create the Tile stack
-    tileOrder = new TilePool(); // outside method?
+		for(unsigned int j = 0; j < tiles[i].getSize(); j++)
+		{
+			if(tiles[i][j].getTileType() == TileType::D && j == 0)
+			{
+				// Place starting tile in center
+				Coord center(76,76);
+				Tile& startingTile = tiles[i][j];
+				Move startingMove(startingTile, center);
+				board.place(startingMove);
+			}
+			else
+			{
+				tileList.push_back(tiles[i][j]);
+			}
+		}
+	}
+	
+	// Randomize tile order
+	std::random_shuffle( tileList.begin(), tileOrder.end() );
+	
+	// Build the TileStack from randomized list
+	for(unsigned int i = 0; i < tileList.size(); i++)
+	{
+		tileStack.push(tileList[i]);
+	}
 }
 
-const Tile& BoardManager::nextTile()
+const TileStack& BoardManager::getTileStack()
 {
-    return tileOrder.front();
-}
-
-const std::vector<Tile&>& BoardManager::getTileOrder()
-{
-    return tileOrder;
+    return tileStack;
 }
 
 std::vector<Move> BoardManager::getLegalMoves(const Tile& tile)
@@ -83,28 +81,23 @@ void BoardManager::makeMove(const Move& move)
     // consider checking whether the passed Tile == top?
     
     // to implement based on Board implementaiton
-    board.set(move.tile, move.coord);
+    board.place(move.getTile(), move.getCoord());
     
-    // tracking the minimum and maximum coordinates in use allows partial displaying of the Board grid for debugging purposes
-    if(move.getCoord().getX() < minCoord.getX()) minCoord.setX(move.getCoord().getX());
-    if(move.getCoord().getY() < minCoord.getY()) minCoord.setY(move.getCoord().getY());
-    if(move.getCoord().getX() > maxCoord.getX()) maxCoord.setX(move.getCoord().getX());
-    if(move.getCoord().getY() > maxCoord.getY()) maxCoord.setY(move.getCoord().getY());
-    
-    // remove tile from list
-    tileOrder.erase(tileOrder.begin());
+    // remove top Tile from list
+    tileStack.pop();
 }
 
 bool BoardManager::isSurrounded(int tileID)
 {
 	bool surrounded = false;
-	for
-		for
+	/*for
+		for*/
 			//find coord of tileID
 			Coord tileCoord;
 
 	int xLocation = tileCoord.getX();
 	int yLocation = tileCoord.getY();
+	
 	int i = -1;
 	while (i < 2)
 	{

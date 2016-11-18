@@ -2,7 +2,9 @@
 #define __BOARD_H
 
 #include "../Tiles/Tile.h"
+#include "../Tiles/TileStack.h"
 #include "../BoardManager/Coord.h"
+#include "../BoardManager/Move.h"
 
 class Board {
         
