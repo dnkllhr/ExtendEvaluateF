@@ -33,15 +33,43 @@ void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, u
     }
 }
 
-int Regions::addConnection(const Tile& newTile, const Tile ** boarderingTiles) {
+int Regions::addConnection(const Tile& newTile, const Tile ** allBoarderingTiles) {
     unsigned int numOfSides = newTile.getNumberOfSides();
     unsigned int countPerSide = newTile.getCountPerSide();
     unsigned int totalEdges = numOfSides * countPerSide;
     unsigned int id = newTile.getId();
     unsigned int centerEdge = countPerSide / 2;
 
-    struct regionSet ** newRegions = new struct regionSet*[totalEdges];
+    // add one to total edges so that we have an array location for the center
+    struct regionSet ** newRegions = new struct regionSet*[totalEdges + 1];
     regionTracker[id] = newRegions;
+
+    if (newTile.getCenter() == TerrainType::Church) {
+        newRegions[totalEdges] = Regions::createRegion(id, totalEdges, newTile.getCenter());
+        newRegions[totalEdges]->edgesTillCompletion = 8;
+    }
+    else {
+        newRegions[totalEdges] = NULL;
+    }
+
+    const Tile* boarderingTiles[numOfSides];
+    unsigned int sideInc = 0;
+    for (unsigned int currSide = 0; currSide < numOfSides * 2; currSide++) {
+        if (allBoarderingTiles[currSide] != NULL) {
+            if (allBoarderingTiles[currSide]->getCenter() == TerrainType::Church) {
+                unsigned int boarderingId = allBoarderingTiles[currSide]->getId();
+
+                // decrement the church's region edges till completion tracker if we were placed as a tile around it
+                regionTracker[boarderingId][totalEdges]->edgesTillCompletion--;
+            }
+            if (newTile.getCenter() == TerrainType::Church) regionTracker[id][totalEdges]->edgesTillCompletion--;
+        }
+
+        if ((currSide % 2) == 1) {
+            boarderingTiles[sideInc] = allBoarderingTiles[currSide];
+            sideInc++;
+        }
+    }
 
     // from what I can tell, this can't be optimised much. This is currently O(n + n^2) and the best case is we get O(n^2)
     for (unsigned int edge = 0; edge < totalEdges; edge++) {
@@ -51,7 +79,7 @@ int Regions::addConnection(const Tile& newTile, const Tile ** boarderingTiles) {
 
         if (boarderingTiles[side] != NULL) {
             unsigned int boarderingId = boarderingTiles[side]->getId();
-            newRegions[edge] = regionTracker.at(boarderingId)[correspondingEdge];
+            newRegions[edge] = regionTracker[boarderingId][correspondingEdge];
 
             if (edge % countPerSide == centerEdge)
                 newRegions[edge]->edgesTillCompletion--;
@@ -172,3 +200,21 @@ struct regionSet ** Regions::getRegions(unsigned int tileID)
 
     return NULL;
 }
+
+#ifdef testing
+
+void Regions::clearRegionTracker() {
+    regionTracker = std::unordered_map<unsigned int, struct regionSet **>();
+}
+
+void Regions::clearOwnerMeeples() {
+    for (int i = 0; i < TOTAL_MEEPLES; i++) {
+        ownerMeeples[i].inUse = false;
+        if (ownerMeeples[i].ownedRegion != NULL) {
+            delete ownerMeeples[i].ownedRegion;
+            ownerMeeples[i].ownedRegion = NULL;
+        }
+    }
+}
+
+#endif
