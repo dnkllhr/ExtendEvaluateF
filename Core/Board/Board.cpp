@@ -27,9 +27,25 @@ const Tile& Board::get(const Coord& coord)
 void Board::place(const Move& move)
 {
 	this->board[move.getCoord().getX()][move.getCoord().getY()] = move.getTile();
+	//Used for accounting
+	tileIDTracker[move.getTile().getID()] = move;
 }
 
 std::set Board::getAvailableLocations()
 {
 	return this->availableLocations;
+}
+
+const Move& getCoordinates(unsigned int tileID)
+{
+    auto tileSearch = tileIDTracker.find(tileID);
+    if(tileSearch != tileIDTracker.end())
+    {
+    	return tileSearch->second;
+    }
+    else
+    {
+    	//THROW ERRROR HERE
+    	return NULL;
+    }
 }
