@@ -1,5 +1,6 @@
 #ifndef __BOARD_MANAGER_H
 #define __BOARD_MANAGER_H
+#define NUMBER_OF_PLAYERS 2
 
 #include "../Tiles/Tile.h"
 #include "../Board/Board.h"
@@ -21,7 +22,7 @@ class BoardManager {
         /// Returns the next Tile to be played
         const Tile& nextTile();
         /// Returns all following Tiles to be played
-        const TileStack& getTileStack();
+        const TileStack* getTileStack();
         /// Gets all possible legal moves with the given Tile and current Board
         std::vector<Move> getLegalMoves(const Tile& tile);
         /// Makes the given Move
@@ -34,7 +35,7 @@ class BoardManager {
         // current Board
         Board board;
         // remaining Tiles to be played
-        TileStack tileStack;
+        TileStack* tileStack;
     
 };
 

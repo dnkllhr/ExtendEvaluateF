@@ -3,8 +3,8 @@
 
 class Coord {
     public:
-        int getX();
-        int getY();
+        int getX() const;
+        int getY() const;
 
         Coord()=delete;
         Coord(int x, int y);

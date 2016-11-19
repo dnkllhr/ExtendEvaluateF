@@ -2,7 +2,7 @@
 
 BoardManager::BoardManager()
 {
-
+	this->tileStack = new TileStack(NUMBER_OF_PLAYERS);
 }
 
 const Board& BoardManager::getBoard()
@@ -10,19 +10,17 @@ const Board& BoardManager::getBoard()
     return board;
 }
     
-void BoardManager::gameInit(int numberOfPlayers)
+void BoardManager::gameInit()
 {
 	// Create new Board
-	Board board();
+	Board board;
 	
 	// Initalize TileStack
-	TileStack tileStack(numberOfPlayers);
 	
     // Build the Tile list   
-    Tile& startingTile;
     Array<Array<Tile>> tiles = Tile::CreateTiles();
     
-    std::vector<Tile&> tileList();
+    std::vector<Tile> tileList;
     
     for(unsigned int i = 0; i < tiles.getSize(); i++)
     {
@@ -44,30 +42,32 @@ void BoardManager::gameInit(int numberOfPlayers)
 	}
 	
 	// Randomize tile order
-	std::random_shuffle( tileList.begin(), tileOrder.end() );
+	std::random_shuffle( tileList.begin(), tileList.end() );
 	
 	// Build the TileStack from randomized list
 	for(unsigned int i = 0; i < tileList.size(); i++)
 	{
-		tileStack.push(tileList[i]);
+		this->tileStack->push(tileList[i]);
 	}
 }
 
-const TileStack& BoardManager::getTileStack()
+const TileStack* BoardManager::getTileStack()
 {
-    return tileStack;
+    return this->tileStack;
 }
 
 std::vector<Move> BoardManager::getLegalMoves(const Tile& tile)
 {
     std::vector<Move> legalMoves;
-    Coord * edgeLocations = board.getEdgeLocations();
+    std::unordered_set<unsigned int> availableLocations = board.getAvailableLocations();
     
-    for(Coord edgeLocation : edgeLocations)
+    for(const int gridId : availableLocations)
     {
-        if(GameRules->isLegalMove(tile, edgeLocation))
+    	Coord location = Board::getCoordinatesFromGridId(gridId);
+
+        if(true)//GameRules->isLegalMove(tile, location))
         {
-            legalMoves.push_back(Move(tile, edgeLocation));
+            legalMoves.push_back(Move(tile, location));
         }
     }
 
@@ -81,30 +81,27 @@ void BoardManager::makeMove(const Move& move)
     // consider checking whether the passed Tile == top?
     
     // to implement based on Board implementaiton
-    board.place(move.getTile(), move.getCoord());
+    this->board.place(move);
     
     // remove top Tile from list
-    tileStack.pop();
+    this->tileStack->pop();
 }
 
 bool BoardManager::isSurrounded(int tileID)
 {
 	bool surrounded = false;
-	/*for
-		for*/
-			//find coord of tileID
-			Coord tileCoord;
-
+	const Coord& tileCoord = Board::getCoordinatesFromTileId(tileID);
+	
 	int xLocation = tileCoord.getX();
 	int yLocation = tileCoord.getY();
+
+	const Array<Array<Tile>>& boardGrid = this->board.getBoard();
 	
-	int i = -1;
-	while (i < 2)
+	for(int i = -1; i <= 1; i++)
 	{
-		int j = -1;
-		while (j < 2)
+		for(int j = -1; j <= 1; j++)
 		{
-			if (board[xLocation + i][yLocation + j])
+			if (boardGrid[xLocation + i][yLocation + j] != NULL) /* THIS LINE DOES NOT COMPILE */
 			{
 				surrounded = true;
 			}
@@ -112,9 +109,7 @@ bool BoardManager::isSurrounded(int tileID)
 			{
 				return false;
 			}
-			j++;
 		}
-		i++;
 	}
 	return surrounded;
 }

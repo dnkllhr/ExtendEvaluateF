@@ -14,10 +14,10 @@ void Coord::setY(int y) {
     this->y = y;
 }
 
-int Coord::getX() {
+int Coord::getX() const {
     return this->x;
 }
 
-int Coord::getY() {
+int Coord::getY() const {
     return this->y;
 }

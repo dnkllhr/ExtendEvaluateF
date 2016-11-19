@@ -3,8 +3,8 @@
 
 class Move {
     public:
-        const Tile& getTile();
-        const Coord& getCoord();
+        const Tile& getTile() const;
+        const Coord& getCoord() const;
 
         Move(const Tile& t, const Coord& c);
         Move()=delete;
