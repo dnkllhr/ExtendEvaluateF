@@ -112,6 +112,7 @@ unsigned int GameRules::scoreCastle(struct regionSet * currentSet, bool actually
 unsigned int GameRules::scoreGrass(unsigned int tileID, unsigned int edge)
 {
     unsigned int score = 0;
+    unsigned int leftOfEdge, rightOfEdge;
     struct regionSet ** currentSets = Regions::getRegions(tileID);
     std::unordered_map<struct regionSet * , bool> fieldTracker;
     //Init starting values
@@ -126,28 +127,77 @@ unsigned int GameRules::scoreGrass(unsigned int tileID, unsigned int edge)
         currentSets = Regions::getRegions(currentNode->tileID);
         //We need the actual tile to be able to determine which regions are actually touching.
         currentTile = &Board::get(tileID);
-        for(int i = 0; i < NUM_TILE_EDGES; i++)
+
+        //Init the starting values of left and right.
+        if(currentNode->edge == (NUM_TILE_EDGES - 1)) rightOfEdge = 0;
+        else rightOfEdge = currentNode->edge + 1;
+        if(currentNode->edge == 0) leftOfEdge = (NUM_TILE_EDGES - 1);
+        else leftOfEdge = currentNode->edge - 1;
+
+
+        //Check through all edges on tile to the left of the edge inside of the region we care about
+        for(; leftOfEdge != edge; leftOfEdge--)
         {
-            //Look for the other regions on the tile
-            tileSearch = fieldTracker.find(currentSets[i]);
-            //If you can't find the region
-            if(tileSearch == fieldTracker.end() && currentTile->isConnected(i,currentNode->edge)) //Is connected is not the right function.  Need to know isTouching()
+            if(!(currentTile->isConnected(leftOfEdge, edge)))
             {
-                //And the region is a completed castle
-                if((currentSets[i]->type == TerrainType::Castle) && (currentSets[i]->edgesTillCompletion == 0))
-                {
-                    //Score it, and add it to the hash map
-                    score += FIELD_CASTLE_VALUE;
-                    //Add the region to the hash map to make sure we don't re-score it.
-                    fieldTracker[currentSets[i]] = true;
-                }
-                else if((currentSets[i]->type == TerrainType::Church) && (currentSets[i]->edgesTillCompletion == 0))
-                {
-                    //Score it, and add it to the hash map
-                    score += FIELD_CHURCH_VALUE;
-                    //Add the region to the hash map to make sure we don't re-score it.
-                    fieldTracker[currentSets[i]] = true;
-                }
+                break; //Found the adjacent region
+            }
+            if(leftOfEdge == 0)
+            {
+                leftOfEdge = NUM_TILE_EDGES; //Decrement will make this the right number
+            }
+        }
+
+        //Check through all edges on tile to the right of the edge inside of the region we care about
+        for(; rightOfEdge != edge; rightOfEdge--)
+        {
+            if(!(currentTile->isConnected(rightOfEdge, edge)))
+            {
+                break; //Found the adjacent region
+            }
+            if(rightOfEdge == (NUM_TILE_EDGES - 1))
+            {
+                rightOfEdge = 0; //Decrement will make this the right number
+            }
+        }
+
+        tileSearch = fieldTracker.find(currentSets[leftOfEdge]);
+        //If we haven't scored this region before, and leftOfEdge hasn't looped back around
+        if(leftOfEdge != edge && tileSearch == fieldTracker.end())
+        {
+            if((currentSets[leftOfEdge]->type == TerrainType::Church) && (currentSets[leftOfEdge]->edgesTillCompletion == 0))
+            {
+                //Score it, and add it to the hash map
+                score += FIELD_CHURCH_VALUE;
+                //Add the region to the hash map to make sure we don't re-score it.
+                fieldTracker[currentSets[leftOfEdge]] = true;
+            }
+            else if((currentSets[leftOfEdge]->type == TerrainType::Castle) && (currentSets[leftOfEdge]->edgesTillCompletion == 0))
+            {
+                //Score it, and add it to the hash map
+                score += FIELD_CASTLE_VALUE;
+                //Add the region to the hash map to make sure we don't re-score it.
+                fieldTracker[currentSets[leftOfEdge]] = true;
+            }
+
+        }
+
+        tileSearch = fieldTracker.find(currentSets[rightOfEdge]);
+        if(rightOfEdge != edge && tileSearch == fieldTracker.end())
+        {
+            if((currentSets[rightOfEdge]->type == TerrainType::Church) && (currentSets[rightOfEdge]->edgesTillCompletion == 0))
+            {
+                //Score it, and add it to the hash map
+                score += FIELD_CHURCH_VALUE;
+                //Add the region to the hash map to make sure we don't re-score it.
+                fieldTracker[currentSets[rightOfEdge]] = true;
+            }
+            else if((currentSets[rightOfEdge]->type == TerrainType::Castle) && (currentSets[rightOfEdge]->edgesTillCompletion == 0))
+            {
+                //Score it, and add it to the hash map
+                score += FIELD_CASTLE_VALUE;
+                //Add the region to the hash map to make sure we don't re-score it.
+                fieldTracker[currentSets[rightOfEdge]] = true;
             }
         }
         currentNode = currentNode->next;
@@ -198,7 +248,7 @@ unsigned int GameRules::getCurrentScore(unsigned int tileID, unsigned int edge)
 }
 
 
-unsigned int scoreEdge(unsigned int tileID, unsigned int edge)
+unsigned int GameRules::scoreEdge(unsigned int tileID, unsigned int edge)
 {
     bool isSurrounded = BoardManager::isSurrounded(tileID);
 
@@ -223,7 +273,7 @@ unsigned int scoreEdge(unsigned int tileID, unsigned int edge)
             //Throw error
             break;
     }
-    
+
     if (returnValue != 0)
     {
         Regions::removeMeeple(tileID, edge);
