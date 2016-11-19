@@ -167,15 +167,15 @@ int Regions::checkOwner(unsigned int tileID, unsigned int edge)
     {
         if((search->second[edge])->player1Meeples > (search->second[edge])->player2Meeples)
         {
-            return 1;
+            return OWNER_P1;
         }
         else if((search->second[edge])->player1Meeples == (search->second[edge])->player2Meeples && ((search->second[edge])->player2Meeples) != 0)
         {
-            return 0;
+            return OWNER_TIE;
         }
-        return -1;
+        return OWNER_P2;
     }
-    return -2;
+    return OWNER_NONE;
 }
 
 struct regionSet * Regions::createRegion(unsigned int tileID, unsigned int edge, TerrainType type) {

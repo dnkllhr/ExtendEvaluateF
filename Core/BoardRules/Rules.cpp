@@ -106,7 +106,7 @@ unsigned int GameRules::scoreGrass(unsigned int tileID, unsigned int edge)
     //Init starting values
     struct tileNode * currentNode = (currentSets[edge])->head;    
     auto tileSearch = fieldTracker.find(currentSets[edge]);
-    Tile * currentTile;
+    const Tile * currentTile;
 
     //Iterate through the linked list of the given region
     while(currentNode != NULL)
@@ -114,7 +114,7 @@ unsigned int GameRules::scoreGrass(unsigned int tileID, unsigned int edge)
         //Get all of the regions for the current tileID (associated with the current node)
         currentSets = Regions::getRegions(currentNode->tileID);
         //We need the actual tile to be able to determine which regions are actually touching.
-        currentTile = Board::get(tileID);
+        currentTile = &Board::get(tileID);
         for(int i = 0; i < NUM_TILE_EDGES; i++)
         {
             //Look for the other regions on the tile

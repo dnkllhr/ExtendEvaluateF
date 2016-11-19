@@ -11,7 +11,7 @@ TEST(TileTests, CreateTiles) {
 
     unsigned int actualSize = tiles.getSize();
     ASSERT_EQ(actualSize, expectedSize);
-    
+
     for (unsigned int i = 0; i < actualSize; i++) {
         unsigned int innerSize = tiles[i].getSize();
         EXPECT_LE(minInnerArray, innerSize);
@@ -22,7 +22,7 @@ TEST(TileTests, CreateTiles) {
 TEST(TileTests, SetRotation) {
     Array<Array<Tile>> tiles = Tile::CreateTiles();
     Tile& tile = tiles[0][0];
-    
+
     bool result = tile.setRotation(1);
     EXPECT_TRUE(result);
 }
@@ -30,7 +30,7 @@ TEST(TileTests, SetRotation) {
 TEST(TileTests, SetRotationAfterPlacement) {
     Array<Array<Tile>> tiles = Tile::CreateTiles();
     Tile& tile = tiles[0][0];
-       
+
     bool result = tile.setRotation(1);
     EXPECT_TRUE(result);
 
@@ -65,6 +65,15 @@ TEST(TileTests, GetCountPerSide) {
 
     EXPECT_EQ(tileA.getCountPerSide(), (unsigned int)3);
     EXPECT_EQ(tileC.getCountPerSide(), (unsigned int)3);
+}
+
+TEST(TileTests, GetCenter) {
+    Array<Array<Tile>> tiles = Tile::CreateTiles();
+    Tile& tileA = tiles[0][0];
+    Tile& tileC = tiles[2][0];
+
+    EXPECT_EQ(tileA.getCenter(), TerrainType::Church);
+    EXPECT_EQ(tileC.getCenter(), TerrainType::Castle);
 }
 
 TEST(TileTests, GetTerrainType) {
