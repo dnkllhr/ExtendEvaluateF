@@ -4,7 +4,8 @@
 #include "../Tiles/Tile.h"
 #include <unordered_map>
 
-#define TOTAL_MEEPLES   14
+#define MEEPLES_PER_PLAYER   7
+#define TOTAL_MEEPLES   (MEEPLES_PER_PLAYER * 2)
 #define OWNER_P1        1
 #define OWNER_TIE       0
 #define OWNER_P2        -1
@@ -17,6 +18,7 @@ class Regions
         static int addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned int edge);
         static int checkOwner(unsigned int tileID, unsigned int edge);
         static struct regionSet ** getRegions(unsigned int tileID);
+        static int removeMeeple(unsigned int tileID, unsigned int edge);
 
 #ifdef testing
         static void clearRegionTracker();

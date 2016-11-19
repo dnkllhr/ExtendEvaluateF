@@ -29,7 +29,7 @@ bool GameRules::validMeeplePlacement(const Tile& placed, unsigned int edgeIndex)
 }
 
 
-unsigned int GameRules::scoreRoad(struct regionSet * currentSet)
+unsigned int GameRules::scoreRoad(struct regionSet * currentSet, bool actuallyScore)
 {
     std::unordered_map<unsigned int, bool> edgeTracker;
     //Init starting values
@@ -37,6 +37,11 @@ unsigned int GameRules::scoreRoad(struct regionSet * currentSet)
     auto tileSearch = edgeTracker.find(currentNode->tileID);
     unsigned int score = 0;
     unsigned int preyCount = 0;
+
+    if(actuallyScore && currentSet->edgesTillCompletion != 0)
+    {
+        return 0;
+    }
 
     //Iterate through the linked list of the region
     while(currentNode != NULL)
@@ -62,7 +67,7 @@ unsigned int GameRules::scoreRoad(struct regionSet * currentSet)
     return score;
 }
 
-unsigned int GameRules::scoreCastle(struct regionSet * currentSet)
+unsigned int GameRules::scoreCastle(struct regionSet * currentSet, bool actuallyScore)
 {
     std::unordered_map<unsigned int, bool> edgeTracker;
     //Init starting values
@@ -70,6 +75,12 @@ unsigned int GameRules::scoreCastle(struct regionSet * currentSet)
     auto tileSearch = edgeTracker.find(currentNode->tileID);
     unsigned int score = 0;
     unsigned int preyCount = 0;
+
+    if(actuallyScore && currentSet->edgesTillCompletion != 0)
+    {
+        return 0;
+    }
+
 
     //Iterate through the linked list of the region
     while(currentNode != NULL)
@@ -158,20 +169,23 @@ unsigned int GameRules::scoreChurch(bool isSurrounded)
 
 
 //Entry point for scoring a region.
-unsigned int GameRules::getCurrentScore(unsigned int tileID, unsigned int edge, bool isSurrounded)
+unsigned int GameRules::getCurrentScore(unsigned int tileID, unsigned int edge)
 {
+    bool isSurrounded = BoardManager::isSurrounded(tileID);
+
     struct regionSet ** currentRegion = Regions::getRegions(tileID);
     unsigned int returnValue = 0;
+
     switch (currentRegion[edge]->type)
     {
         case TerrainType::Grass:
             returnValue = scoreGrass(tileID, edge);
             break;
         case TerrainType::Road:
-            returnValue = scoreRoad(currentRegion[edge]);
+            returnValue = scoreRoad(currentRegion[edge], false);
             break;
         case TerrainType::Castle:
-            returnValue = scoreCastle(currentRegion[edge]);
+            returnValue = scoreCastle(currentRegion[edge], false);
             break;
         case TerrainType::Church:
             returnValue = scoreChurch(isSurrounded);
@@ -180,5 +194,40 @@ unsigned int GameRules::getCurrentScore(unsigned int tileID, unsigned int edge, 
             //Throw error
             break;
     }
+    return returnValue;
+}
+
+
+unsigned int scoreEdge(unsigned int tileID, unsigned int edge)
+{
+    bool isSurrounded = BoardManager::isSurrounded(tileID);
+
+    struct regionSet ** currentRegion = Regions::getRegions(tileID);
+    unsigned int returnValue = 0;
+
+    switch (currentRegion[edge]->type)
+    {
+        case TerrainType::Grass:
+            returnValue = scoreGrass(tileID, edge);
+            break;
+        case TerrainType::Road:
+            returnValue = scoreRoad(currentRegion[edge], true);
+            break;
+        case TerrainType::Castle:
+            returnValue = scoreCastle(currentRegion[edge], true);
+            break;
+        case TerrainType::Church:
+            returnValue = scoreChurch(isSurrounded);
+            break;
+        default:
+            //Throw error
+            break;
+    }
+    
+    if (returnValue != 0)
+    {
+        Regions::removeMeeple(tileID, edge);
+    }
+
     return returnValue;
 }

@@ -139,7 +139,7 @@ int Regions::addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned 
 {
     unsigned int i;
     bool valid = false;
-    for(i = (playerNumber)*7; i < ((playerNumber)*7 + 7); i++)
+    for(i = (playerNumber)*(MEEPLES_PER_PLAYER); i < ((playerNumber)*(MEEPLES_PER_PLAYER) + (MEEPLES_PER_PLAYER)); i++)
     {
         if(!(ownerMeeples[i].inUse))
         {
@@ -159,6 +159,21 @@ int Regions::addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned 
     }
     return -1;
 }
+
+int Regions::removeMeeple(unsigned int tileID, unsigned int edge)
+{
+    struct regionSet *wantedRegion = regionTracker.find(tileID)->second[edge];
+    for(int i = 0; i < TOTAL_MEEPLES; i++)
+    {
+        if(ownerMeeples[i].inUse && (ownerMeeples[i].ownedRegion == wantedRegion))
+        {
+            ownerMeeples[i].inUse = false;
+            ownerMeeples[i].ownedRegion = NULL;
+        }
+    }
+    return 0;
+}
+
 
 int Regions::checkOwner(unsigned int tileID, unsigned int edge)
 {

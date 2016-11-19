@@ -2,8 +2,7 @@
 #define __RULES_H
 
 #include "../Board/Board.h"
-#include "../BoardManager/Move.h"
-#include "../BoardManager/Coord.h"
+#include "../BoardManager/BoardManager.h"
 #include "../Tiles/Tile.h"
 #include "Regions.h"
 
@@ -22,11 +21,11 @@ class GameRules
     public:
         static bool validTilePlacement(const Tile& placed, const Tile ** boarderingTiles);
         static bool validMeeplePlacement(const Tile& placed, unsigned int edgeIndex);
-        static unsigned int getCurrentScore(unsigned int tileID, unsigned int edge, bool isSurrounded);
+        static unsigned int getCurrentScore(unsigned int tileID, unsigned int edge);
         static unsigned int scoreEdge(unsigned int tileID, unsigned int edge);
     private:
-        static unsigned int scoreRoad(struct regionSet * currentSet);
-        static unsigned int scoreCastle(struct regionSet * currentSet);
+        static unsigned int scoreRoad(struct regionSet * currentSet, bool actuallyScore);
+        static unsigned int scoreCastle(struct regionSet * currentSet, bool actuallyScore);
         static unsigned int scoreGrass(unsigned int tileID, unsigned int edge);
         static unsigned int scoreChurch(bool isSurrounded);
 };
