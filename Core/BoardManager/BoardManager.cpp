@@ -29,7 +29,7 @@ void BoardManager::gameInit()
 			if(tiles[i][j].getTileType() == TileType::D && j == 0)
 			{
 				// Place starting tile in center
-				Coord center(76,76);
+				Coord center(NUMBER_OF_PLAYABLE_TILES, NUMBER_OF_PLAYABLE_TILES);
 				Tile& startingTile = tiles[i][j];
 				Move startingMove(startingTile, center);
 				board.place(startingMove);
@@ -64,8 +64,9 @@ std::vector<Move> BoardManager::getLegalMoves(const Tile& tile)
     for(const int gridId : availableLocations)
     {
     	Coord location = Board::getCoordinatesFromGridId(gridId);
+    	const Tile ** borderingTiles = Board::getBorderingTiles(Board::get(location));
 
-        if(true)//GameRules->isLegalMove(tile, location))
+        if(GameRules::validTilePlacement(tile, borderingTiles))
         {
             legalMoves.push_back(Move(tile, location));
         }
@@ -80,9 +81,12 @@ void BoardManager::makeMove(const Move& move)
     
     // consider checking whether the passed Tile == top?
     
-    // to implement based on Board implementaiton
     this->board.place(move);
     
+    const Tile& tile = move.getTile();
+    const Tile ** borderingTiles = Board::getBorderingTiles(tile);
+	Regions::addConnection(tile, borderingTiles);
+
     // remove top Tile from list
     this->tileStack->pop();
 }
@@ -95,13 +99,13 @@ bool BoardManager::isSurrounded(int tileID)
 	int xLocation = tileCoord.getX();
 	int yLocation = tileCoord.getY();
 
-	const Array<Array<Tile>>& boardGrid = this->board.getBoard();
+	const Array<Array<Tile>>& boardGrid = Board::getBoard();
 	
 	for(int i = -1; i <= 1; i++)
 	{
 		for(int j = -1; j <= 1; j++)
 		{
-			if (boardGrid[xLocation + i][yLocation + j] != NULL) /* THIS LINE DOES NOT COMPILE */
+			if (&boardGrid[xLocation + i][yLocation + j] != NULL)
 			{
 				surrounded = true;
 			}

@@ -4,6 +4,7 @@
 
 #include "../Tiles/Tile.h"
 #include "../Board/Board.h"
+#include "../BoardRules/Rules.h"
 #include "Coord.h"
 #include "Move.h"
 

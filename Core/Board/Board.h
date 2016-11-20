@@ -8,6 +8,7 @@
 #include "../BoardManager/Coord.h"
 #include "../BoardManager/Move.h"
 #include <unordered_set>
+#include <stdexcept>
 
 class Board {
     public:
@@ -19,13 +20,14 @@ class Board {
         static const Tile& get(const Coord& coord);
         //Gets the Tile for a given tileID
         static const Tile& get(unsigned int tileID);
+        //Get all neighbors of a given Tile
+        static const Tile** getBorderingTiles(const Tile& tile);
         //Find a way to get the coordinates from the ID
         static const Coord& getCoordinatesFromTileId(unsigned int tileID);
-
         // GridId is used for the set of Available Locations
-        static const Coord& getCoordinatesFromGridId(unsigned int gridId);
-        static const unsigned int getGridId(const Coord& coord);
-
+        static const Coord getCoordinatesFromGridId(unsigned int gridId);
+        // Get the GridId for a given Coord
+        static unsigned int getGridId(const Coord& coord);
         // For a given Move, place the specifed Tile at the specified Coord
         static void place(const Move& move);
         // Returns a set of gridID's of loactions adjacent to the border of already placed tiles
@@ -34,10 +36,10 @@ class Board {
     private:
         static Array<Array<Tile>> board;
         //Keep track of the tile coordinates;
-        static std::unordered_map<unsigned int , Move *> tileIDTracker;
+        static std::unordered_map<unsigned int , Move&> tileIDTracker;
         static std::unordered_set<unsigned int> availableLocations;
-        int boardWidth;
-        int boardHeight;
+        static unsigned int boardWidth;
+        static unsigned int boardHeight;
 };
 
 #endif
