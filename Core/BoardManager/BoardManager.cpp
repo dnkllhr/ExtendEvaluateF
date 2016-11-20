@@ -2,7 +2,7 @@
 
 BoardManager::BoardManager()
 {
-	this->tileStack = new TileStack(NUMBER_OF_PLAYERS);
+	tileStack = new TileStack(NUMBER_OF_PLAYERS);
 }
 
 const Board& BoardManager::getBoard()
@@ -47,13 +47,13 @@ void BoardManager::gameInit()
 	// Build the TileStack from randomized list
 	for(unsigned int i = 0; i < tileList.size(); i++)
 	{
-		this->tileStack->push(tileList[i]);
+		tileStack->push(tileList[i]);
 	}
 }
 
 const TileStack* BoardManager::getTileStack()
 {
-    return this->tileStack;
+    return tileStack;
 }
 
 std::vector<Move> BoardManager::getLegalMoves(const Tile& tile)
@@ -81,14 +81,14 @@ void BoardManager::makeMove(const Move& move)
     
     // consider checking whether the passed Tile == top?
     
-    this->board.place(move);
+    board.place(move);
     
     const Tile& tile = move.getTile();
     const Tile ** borderingTiles = Board::getBorderingTiles(tile);
 	Regions::addConnection(tile, borderingTiles);
 
     // remove top Tile from list
-    this->tileStack->pop();
+    tileStack->pop();
 }
 
 bool BoardManager::isSurrounded(int tileID)

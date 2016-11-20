@@ -17,26 +17,26 @@ class BoardManager {
         /// Creates a new BoardManager
         BoardManager();
         /// Returns the current Board
-        const Board& getBoard();
+        static const Board& getBoard();
         /// Sets up a new Board with starting Tile for a new game
-        void gameInit();
+        static void gameInit();
         /// Returns the next Tile to be played
-        const Tile& nextTile();
+        static const Tile& nextTile();
         /// Returns all following Tiles to be played
-        const TileStack* getTileStack();
+        static const TileStack* getTileStack();
         /// Gets all possible legal moves with the given Tile and current Board
-        std::vector<Move> getLegalMoves(const Tile& tile);
+        static std::vector<Move> getLegalMoves(const Tile& tile);
         /// Makes the given Move
-        void makeMove(const Move& move);
+        static void makeMove(const Move& move);
 		/// Returns whether the given tile is fully surrounded by other tiles
-		bool isSurrounded(int tileID);
+		static bool isSurrounded(int tileID);
     
     private:
     
         // current Board
-        Board board;
+        static Board board;
         // remaining Tiles to be played
-        TileStack* tileStack;
+        static TileStack* tileStack;
     
 };
 
