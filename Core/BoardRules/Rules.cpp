@@ -126,7 +126,7 @@ unsigned int GameRules::scoreGrass(unsigned int tileID, unsigned int edge)
         //Get all of the regions for the current tileID (associated with the current node)
         currentSets = Regions::getRegions(currentNode->tileID);
         //We need the actual tile to be able to determine which regions are actually touching.
-        currentTile = &Board::get(tileID);
+        currentTile = Board::get(tileID);
 
         //Init the starting values of left and right.
         if(currentNode->edge == (NUM_TILE_EDGES - 1)) rightOfEdge = 0;

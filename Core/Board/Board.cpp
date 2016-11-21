@@ -28,7 +28,7 @@ const Tile& Board::get(const Coord& coord)
 }
 
 /* Error handling needed to get it to compile */
-const Tile& Board::get(unsigned int tileID)
+const Tile * Board::get(unsigned int tileID)
 {
     auto tileSearch = tileIDTracker.find(tileID);
     if(tileSearch != tileIDTracker.end())
