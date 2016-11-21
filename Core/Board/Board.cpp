@@ -33,7 +33,7 @@ const Tile * Board::get(unsigned int tileID)
     auto tileSearch = tileIDTracker.find(tileID);
     if(tileSearch != tileIDTracker.end())
     {
-        return (Board::get((tileSearch->second).getCoord()));
+        return (&Board::get((tileSearch->second).getCoord()));
     }
     else
     {
