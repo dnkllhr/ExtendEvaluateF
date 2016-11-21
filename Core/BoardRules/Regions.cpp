@@ -7,6 +7,12 @@ void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, u
 {
     auto placedSearch = regionTracker.find(placedTileID);
     auto connectingSearch = regionTracker.find(connectingTileID);
+
+#ifdef testing
+    assert((placedSearch != regionTracker.end()));
+    assert((placedSearch != regionTracker.end()));
+#endif
+
     if(placedSearch != regionTracker.end() && connectingSearch != regionTracker.end())
     {
         //Update meeple values
@@ -178,6 +184,11 @@ int Regions::removeMeeple(unsigned int tileID, unsigned int edge)
 int Regions::checkOwner(unsigned int tileID, unsigned int edge)
 {
     auto search = regionTracker.find(tileID);
+
+#ifdef testing
+    assert((search != regionTracker.end()));
+#endif
+
     if(search != regionTracker.end())
     {
         if((search->second[edge])->player1Meeples > (search->second[edge])->player2Meeples)
@@ -220,6 +231,31 @@ struct regionSet ** Regions::getRegions(unsigned int tileID)
 
 void Regions::clearRegionTracker() {
     regionTracker = std::unordered_map<unsigned int, struct regionSet **>();
+}
+
+bool Regions::checkRegionExistence(unsigned int tileID, unsigned int edge) {
+    auto search = regionTracker.find(tileID);
+    if(search != regionTracker.end())
+    {
+        if((search->second)[edge] != NULL)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+unsigned int Regions::checkRegionEdgesTillCompletion(unsigned int tileID, unsigned int edge) {
+    auto search = regionTracker.find(tileID);
+    if(search != regionTracker.end())
+    {
+        if((search->second)[edge] != NULL)
+        {
+            return ((search->second)[edge]->edgesTillCompletion);
+        }
+    }
+    assert(false);
+    return 0;
 }
 
 void Regions::clearOwnerMeeples() {
