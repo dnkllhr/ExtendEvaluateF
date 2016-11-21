@@ -7,7 +7,7 @@
 #include "TerrainType.h"
 #include "../../Common/Array.h"
 
-
+#define NUM_TILES                   28
 #define NUM_TILE_SIDES              4
 #define NUM_TILE_EDGES_PER_SIDE     3
 #define NUM_TILE_EDGES              (NUM_TILE_EDGES_PER_SIDE * NUM_TILE_SIDES)

@@ -1,7 +1,7 @@
 #include "Tile.h"
 
 Array<Array<Tile>> Tile::CreateTiles() {
-    const unsigned int numberOfTiles = 27;
+    const unsigned int numberOfTiles = NUM_TILES;
     Array<Array<Tile>> arrayOfTiles(numberOfTiles);
     unsigned int startId = 0;
 
@@ -24,14 +24,15 @@ Array<Array<Tile>> Tile::CreateTiles() {
     arrayOfTiles[16] = Tile::CreateTileP(3, startId, PreyType::None);
     arrayOfTiles[17] = Tile::CreateTileP(2, startId, PreyType::Buffalo);
     arrayOfTiles[18] = Tile::CreateTileR(4, startId, PreyType::None);
-    arrayOfTiles[19] = Tile::CreateTileT(3, startId, PreyType::None);
-    arrayOfTiles[20] = Tile::CreateTileU(8, startId, PreyType::None);
-    arrayOfTiles[21] = Tile::CreateTileV(9, startId, PreyType::None);
-    arrayOfTiles[22] = Tile::CreateTileW(4, startId, PreyType::None);
-    arrayOfTiles[23] = Tile::CreateTileX(1, startId, PreyType::None);
-    arrayOfTiles[24] = Tile::CreateTileY(1, startId, PreyType::None);
-    arrayOfTiles[25] = Tile::CreateTileZ(1, startId, PreyType::None);
-    arrayOfTiles[26] = Tile::CreateTileZ(2, startId, PreyType::Deer);
+    arrayOfTiles[19] = Tile::CreateTileT(1, startId, PreyType::None);
+    arrayOfTiles[20] = Tile::CreateTileT(2, startId, PreyType::Croc);
+    arrayOfTiles[21] = Tile::CreateTileU(8, startId, PreyType::None);
+    arrayOfTiles[22] = Tile::CreateTileV(9, startId, PreyType::None);
+    arrayOfTiles[23] = Tile::CreateTileW(4, startId, PreyType::None);
+    arrayOfTiles[24] = Tile::CreateTileX(1, startId, PreyType::None);
+    arrayOfTiles[25] = Tile::CreateTileY(1, startId, PreyType::None);
+    arrayOfTiles[26] = Tile::CreateTileZ(1, startId, PreyType::None);
+    arrayOfTiles[27] = Tile::CreateTileZ(2, startId, PreyType::Deer);
 
     return arrayOfTiles;
 }

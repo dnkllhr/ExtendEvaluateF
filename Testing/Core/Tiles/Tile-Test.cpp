@@ -5,7 +5,7 @@
 
 TEST(TileTests, CreateTiles) {
     Array<Array<Tile>> tiles = Tile::CreateTiles();
-    unsigned int expectedSize = 27;
+    unsigned int expectedSize = 28;
     unsigned int minInnerArray = 1;
     unsigned int maxInnerArray = 9;
 
@@ -44,9 +44,16 @@ TEST(TileTests, GetPreyType) {
     Array<Array<Tile>> tiles = Tile::CreateTiles();
     Tile& tileA = tiles[0][0];
     Tile& tileD = tiles[4][0];
+    Tile& tileJ = tiles[10][0];
+    Tile& tileK = tiles[12][0];
+    Tile& tileT = tiles[20][0];
+
 
     EXPECT_TRUE(tileA.getPrey() == PreyType::None);
     EXPECT_TRUE(tileD.getPrey() == PreyType::Deer);
+    EXPECT_TRUE(tileJ.getPrey() == PreyType::Buffalo);
+    EXPECT_TRUE(tileK.getPrey() == PreyType::Boar);
+    EXPECT_TRUE(tileT.getPrey() == PreyType::Croc);
 }
 
 TEST(TileTests, GetNumberOfSides) {
