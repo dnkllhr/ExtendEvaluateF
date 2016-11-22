@@ -6,6 +6,12 @@ Move::Move(const Tile& t, const Coord& c)
 	this->coord = c;
 }
 
+Move::Move(const Tile& t, unsigned int x, unsigned int y)
+{
+	thile->tile = t;
+	this->coord(x, y);
+}
+
 const Tile& Move::getTile() const {
     return this->tile;
 }

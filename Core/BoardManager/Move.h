@@ -7,6 +7,7 @@ class Move {
         const Coord& getCoord() const;
 
         Move(const Tile& t, const Coord& c);
+        Move(const Tile& t, unsigned int x, unsigned int y);
         Move()=delete;
 
     private:
