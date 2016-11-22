@@ -3,16 +3,24 @@
 
 class Move {
     public:
-        const Tile& getTile() const;
+        Tile& getTile() const;
         const Coord& getCoord() const;
+        const unsigned int getRotation() const;
 
-        Move(const Tile& t, const Coord& c);
-        Move(const Tile& t, unsigned int x, unsigned int y);
+        // default rotation = 0
+        Move(Tile& t, const Coord& c);
+        Move(Tile& t, unsigned int x, unsigned int y);
+
+        // can specify rotation ( 90 * r degrees CCW )
+        Move(Tile& t, const Coord& c, unsigned int r);
+        Move(Tile& t, unsigned int x, unsigned int y, unsigned int r);
+
         Move()=delete;
 
     private:
         Tile& tile;
         Coord& coord;
+        unsigned int rotation;
 };
 
 #endif

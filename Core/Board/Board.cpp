@@ -27,7 +27,6 @@ const Tile& Board::get(const Coord& coord)
 	return board[coord.getX()][coord.getY()];
 }
 
-/* Error handling needed to get it to compile */
 const Tile * Board::get(unsigned int tileID)
 {
     auto tileSearch = tileIDTracker.find(tileID);
@@ -70,7 +69,6 @@ unsigned int Board::getGridId(const Coord& coord)
     return gridId;
 }
 
-/* Work needed to make this compile */
 void Board::place(const Move& move)
 {
     const Coord& coord = move.getCoord();
@@ -88,7 +86,6 @@ const std::unordered_set<unsigned int>& Board::getAvailableLocations()
 	return Board::availableLocations;
 }
 
-/* Method unfinished */
 const Coord& Board::getCoordinatesFromTileId(unsigned int tileID)
 {
     auto tileSearch = tileIDTracker.find(tileID);

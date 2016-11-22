@@ -56,7 +56,7 @@ const TileStack* BoardManager::getTileStack()
     return tileStack;
 }
 
-std::vector<Move> BoardManager::getLegalMoves(const Tile& tile)
+std::vector<Move> BoardManager::getLegalMoves(Tile& tile)
 {
     std::vector<Move> legalMoves;
     std::unordered_set<unsigned int> availableLocations = board.getAvailableLocations();
@@ -65,11 +65,16 @@ std::vector<Move> BoardManager::getLegalMoves(const Tile& tile)
     {
     	Coord location = Board::getCoordinatesFromGridId(gridId);
     	const Tile ** borderingTiles = Board::getBorderingTiles(Board::get(location));
+    	Tile tileCopy = tile;
 
-        if(GameRules::validTilePlacement(tile, borderingTiles))
-        {
-            legalMoves.push_back(Move(tile, location));
-        }
+    	for(int r = 0; r < NUM_TILE_SIDES; r++)
+    	{
+    		tileCopy.setRotation(r);
+	        if(GameRules::validTilePlacement(tileCopy, borderingTiles))
+	        {
+	            legalMoves.push_back(Move(tile, location, r));
+	        }   		
+    	}
     }
 
     return legalMoves;
@@ -79,16 +84,14 @@ void BoardManager::makeMove(const Move& move)
 {
     // if calling this method, it is assumed that this is a legal move
     
-    // consider checking whether the passed Tile == top?
-    
     board.place(move);
     
-    const Tile& tile = move.getTile();
+    Tile& tile = move.getTile();
     const Tile ** borderingTiles = Board::getBorderingTiles(tile);
 	Regions::addConnection(tile, borderingTiles);
 
-    // remove top Tile from list
-    tileStack->pop();
+    tile.placeTile(); // mark Tile as placed so it can no longer be rotated
+    tileStack->pop(); // remove top Tile from list
 }
 
 bool BoardManager::isSurrounded(int tileID)

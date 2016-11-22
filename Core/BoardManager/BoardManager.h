@@ -20,12 +20,10 @@ class BoardManager {
         static const Board& getBoard();
         /// Sets up a new Board with starting Tile for a new game
         static void gameInit();
-        /// Returns the next Tile to be played
-        static const Tile& nextTile();
         /// Returns all following Tiles to be played
         static const TileStack* getTileStack();
         /// Gets all possible legal moves with the given Tile and current Board
-        static std::vector<Move> getLegalMoves(const Tile& tile);
+        static std::vector<Move> getLegalMoves(Tile& tile);
         /// Makes the given Move
         static void makeMove(const Move& move);
 		/// Returns whether the given tile is fully surrounded by other tiles
