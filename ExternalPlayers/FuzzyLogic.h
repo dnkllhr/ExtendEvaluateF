@@ -1,4 +1,8 @@
+#ifndef __FUZZY_H
+#define __FUZZY_H
+
 #include <string>
+#include <iostream>
 
 #define NUM_SETS        3
 #define HURTING_ENEMY   0
@@ -9,9 +13,8 @@
 #define HURTING_NEUTRAL_IDX 1
 #define HURTING_BAD_IDX     2
 
-#define TURNS_SHORT_WHT     20
 #define HURTING_GOOD_WHT    10
-#define HURTING_NEUTRAL_WHT 3
+#define HURTING_NEUTRAL_WHT -1
 #define HURTING_BAD_WHT     -10
 
 #define HELPING_GOOD_IDX    2
@@ -20,13 +23,13 @@
 
 #define HELPING_GOOD_WHT    10
 #define HELPING_NEUTRAL_WHT 5
-#define HELPING_BAD_WHT     -20
+#define HELPING_BAD_WHT     -10
 
 #define TURNS_SHORT_IDX     0
 #define TURNS_MEDIUM_IDX    1
 #define TURNS_LONG_IDX      2
 
-#define TURNS_SHORT_WHT     20
+#define TURNS_SHORT_WHT     10
 #define TURNS_MEDIUM_WHT    5
 #define TURNS_LONG_WHT      1
 
@@ -66,15 +69,13 @@ struct AIMove
 
 };
 
-
-
 class FuzzySet
 {
 public:
     std::string getName();
     unsigned int getIdentifier();
     float getTurnScore();
-    void enterData(void *p1);
+    void enterData(unsigned int input);
     ~FuzzySet();
     FuzzySet(unsigned int identifier, std::string name, Graph *g);
 private:
@@ -94,7 +95,9 @@ public:
     void enterData(AIMove *m);
     float getResults();
     ~FuzzyLogic();
+    FuzzyLogic();
 private:
     FuzzySet **mySets;
-    FuzzyLogic();
 };
+
+#endif
