@@ -15,26 +15,24 @@ void setupServerAddr (struct sockaddr_in *serverAddr, int portNumber)
 int main( int argc, char *argv[] ) {
     int masterSocket, connectionSocket;
     int portNumber, clientAddrLength, forkedPID;
-    char messageBuffer[256];
     struct sockaddr_in serverAddr, clientAddr;
 
 
     std::cout << "Enter portNumber: ";
-    std::cin >> portNumber;
-   
+    std::cin >> portNumber;   
 
     setupServerAddr(&serverAddr, portNumber);
    
     /* First call to socket() function */
     masterSocket = socket(AF_INET, SOCK_STREAM, 0);
-   
+
+
+/*  SERVER CODE
     if (masterSocket < 0) 
     {
         printf("Can't open master socket.\n");
         exit(1);
-    }
-   
-    
+    }    
    
     if (bind(masterSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr)) < 0) 
     {
@@ -81,14 +79,13 @@ int main( int argc, char *argv[] ) {
         }
         
     }
+*/
 }
 
 void handleGame (int gameSocket, int gamePort) 
 {
     int bytes, forkedPID;
-    char messageBuffer[256];
-    //Zero out data.
-    bzero(messageBuffer,256);
+    char messageBuffer[2048];
 
     char *gameArgs = new char[10]; //Way more than enough digits
     itoa(gamePort, gameArgs, 10); //Convert gamePort into a char* so that it can be passed as an arg
@@ -103,12 +100,23 @@ void handleGame (int gameSocket, int gamePort)
     if (forkedPID == 0) 
     {
         //Create a game process
-        execl(PATH_TO_GAME, gameArgs);
+        execl(PATH_TO_GAME, gamePort);
         exit(0);
     }
 
+
+    int gameSendSocket;
+    struct sockaddr_in gameAddr;
+
+    setupServerAddr(&gameAddr, portNumber);
+   
+    /* First call to socket() function */
+    masterSocket = socket(AF_INET, SOCK_STREAM, 0);
+
     while(true)
     {
+        //Zero out data.
+        bzero(messageBuffer,256);
         bytes = read(gameSocket,messageBuffer,255);
        
         if (bytes < 0) 
