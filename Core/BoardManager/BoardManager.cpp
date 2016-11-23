@@ -56,9 +56,9 @@ const TileStack* BoardManager::getTileStack()
     return tileStack;
 }
 
-std::vector<Move> BoardManager::getLegalMoves(Tile& tile)
+std::vector<Move> BoardManager::getValidMoves(Tile& tile)
 {
-    std::vector<Move> legalMoves;
+    std::vector<Move> validMoves;
     std::unordered_set<unsigned int> availableLocations = board.getAvailableLocations();
     
     for(const int gridId : availableLocations)
@@ -72,12 +72,12 @@ std::vector<Move> BoardManager::getLegalMoves(Tile& tile)
     		tileCopy.setRotation(r);
 	        if(GameRules::validTilePlacement(tileCopy, borderingTiles))
 	        {
-	            legalMoves.push_back(Move(tile, location, r));
+	            validMoves.push_back(Move(tile, location, r));
 	        }   		
     	}
     }
 
-    return legalMoves;
+    return validMoves;
 }
 
 void BoardManager::makeMove(const Move& move)

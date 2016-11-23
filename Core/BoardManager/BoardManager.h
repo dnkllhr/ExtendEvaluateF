@@ -23,7 +23,7 @@ class BoardManager {
         /// Returns all following Tiles to be played
         static const TileStack* getTileStack();
         /// Gets all possible legal moves with the given Tile and current Board
-        static std::vector<Move> getLegalMoves(Tile& tile);
+        static std::vector<Move> getValidMoves(Tile& tile);
         /// Makes the given Move
         static void makeMove(const Move& move);
 		/// Returns whether the given tile is fully surrounded by other tiles
