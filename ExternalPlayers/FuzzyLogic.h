@@ -1,4 +1,4 @@
-#include <unordered_set>
+#include <string>
 
 #define NUM_SETS        3
 #define HURTING_ENEMY   0
@@ -41,7 +41,7 @@ struct Graph
         midStart = 0;
         midEnd = 0;
         rightStart = 0;
-        rigthEnd = 0;
+        rightEnd = 0;
     };
 
     unsigned int leftStart;
@@ -56,13 +56,11 @@ struct AIMove
 {
     AIMove() {
         edgesTillCompletion = 0;
-        myOwnership = 0;
         diffMyScore = 0;
         diffEnemyScore = 0;
     };
 
     unsigned int edgesTillCompletion;
-    bool myOwnership;
     unsigned int diffMyScore;
     unsigned int diffEnemyScore;
 
@@ -73,36 +71,20 @@ struct AIMove
 class FuzzySet
 {
 public:
-    string getName();
+    std::string getName();
     unsigned int getIdentifier();
     float getTurnScore();
-    void enterData(void *);
+    void enterData(void *p1);
     ~FuzzySet();
+    FuzzySet(unsigned int identifier, std::string name, Graph *g);
 private:
     unsigned int identifier;
-    string name;
+    std::string name;
     Graph *graphDescriptor;
     float percentMembership[3];
-    FuzzySet(unsigned int identifier, string name, Graph *g);
-    unsigned int scoreLeft(unsigned int diffScore);
-    unsigned int scoreMid(unsigned int diffScore);
-    unsigned int scoreRight(unsigned int diffScore);
-};
-
-class Fuzzifier
-{
-public:
-    void enterData(AIMove *m);
-private:
-    void sendDataToSets();
-};
-
-class Defuzzifier
-{
-public:
-    float getFinalTurnScore();
-private:
-    float getSetScore();
+    float scoreLeft(unsigned int diffScore);
+    float scoreMid(unsigned int diffScore);
+    float scoreRight(unsigned int diffScore);
 };
 
 
@@ -114,7 +96,5 @@ public:
     ~FuzzyLogic();
 private:
     FuzzySet **mySets;
-    Defuzzifier *df;
-    Fuzzifier *fz;
     FuzzyLogic();
 };
