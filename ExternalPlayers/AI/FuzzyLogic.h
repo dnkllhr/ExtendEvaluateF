@@ -42,6 +42,8 @@ struct Graph
         leftStart = 0;
         leftEnd = 0;
         midStart = 0;
+        midPlatStart = 0;
+        midPlatEnd = 0;
         midEnd = 0;
         rightStart = 0;
         rightEnd = 0;
@@ -50,6 +52,8 @@ struct Graph
     unsigned int leftStart;
     unsigned int leftEnd;
     unsigned int midStart;
+    unsigned int midPlatStart;
+    unsigned int midPlatEnd;
     unsigned int midEnd;
     unsigned int rightStart;
     unsigned int rightEnd;
@@ -92,7 +96,7 @@ private:
 class FuzzyLogic
 {
 public:
-    void enterData(AIMove *m);
+    void enterData(struct AIMove *m);
     float getResults();
     ~FuzzyLogic();
     FuzzyLogic();

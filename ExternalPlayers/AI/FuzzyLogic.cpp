@@ -29,21 +29,21 @@ float FuzzySet::getTurnScore()
     float turnScore = 0;
     if(this->identifier == HURTING_ENEMY)
     {
-        //printf("Hurting Enemy memberships %4.4f, %4.4f, %4.4f\n", this->percentMembership[0],this->percentMembership[1],this->percentMembership[2]);
+        //printf("\nHurting Enemy memberships %4.4f, %4.4f, %4.4f\n", this->percentMembership[0],this->percentMembership[1],this->percentMembership[2]);
         turnScore = (this->percentMembership[HURTING_GOOD_IDX]) * HURTING_GOOD_WHT + (this->percentMembership[HURTING_NEUTRAL_IDX]) * HURTING_NEUTRAL_WHT
                   + (this->percentMembership[HURTING_BAD_IDX]) * HURTING_BAD_WHT;
         //printf("Hurting Enemy return %4.4f\n", turnScore);
     }  
     else if(this->identifier == HELPING_ME)
     {
-        //printf("Helping Me memberships %4.4f, %4.4f, %4.4f\n", this->percentMembership[0],this->percentMembership[1],this->percentMembership[2]);
+        //printf("\nHelping Me memberships %4.4f, %4.4f, %4.4f\n", this->percentMembership[0],this->percentMembership[1],this->percentMembership[2]);
         turnScore = (this->percentMembership[HELPING_GOOD_IDX]) * HELPING_GOOD_WHT + (this->percentMembership[HELPING_NEUTRAL_IDX]) * HELPING_NEUTRAL_WHT
                   + (this->percentMembership[HELPING_BAD_IDX]) * HELPING_BAD_WHT;
         //printf("Helping Me return %4.4f\n", turnScore);
     }
     else if(this->identifier == TURNS_AWAY)
     {
-        //printf("Turns Away memberships %4.4f, %4.4f, %4.4f\n", this->percentMembership[0],this->percentMembership[1],this->percentMembership[2]);
+        //printf("\nTurns Away memberships %4.4f, %4.4f, %4.4f\n", this->percentMembership[0],this->percentMembership[1],this->percentMembership[2]);
         turnScore = (this->percentMembership[TURNS_SHORT_IDX]) * TURNS_SHORT_WHT + (this->percentMembership[TURNS_MEDIUM_IDX]) * TURNS_MEDIUM_WHT
                   + (this->percentMembership[TURNS_LONG_IDX]) * TURNS_LONG_WHT;
         //printf("Turns Away return %4.4f\n", turnScore);
@@ -72,7 +72,7 @@ float FuzzySet::getTurnScore()
 
 void FuzzySet::enterData(unsigned int input)
 {
-    std::cout << this->getName() << std::endl;
+    std::cout << std::endl << this->getName() << std::endl;
 
     this->percentMembership[0] = this->scoreLeft(input);
     this->percentMembership[1] = this->scoreMid(input);
@@ -106,8 +106,8 @@ float FuzzySet::scoreLeft(unsigned int diffScore)
 
 float FuzzySet::scoreMid(unsigned int diffScore)
 {
-    float midPoint = ((float)this->graphDescriptor->midEnd + (float)this->graphDescriptor->midStart)/2.f;
-    //printf("Score Mid input: %d, start %d, mid %4.4f, end %d\n", diffScore, this->graphDescriptor->midStart, midPoint, this->graphDescriptor->midEnd);
+    //float midPoint = ((float)this->graphDescriptor->midEnd + (float)this->graphDescriptor->midStart)/2.f;
+    //printf("Score Mid input: %d, start %d,  end %d\n", diffScore, this->graphDescriptor->midStart, this->graphDescriptor->midEnd);
     if(diffScore <= this->graphDescriptor->midStart)
     {
         //printf("mid equation: y = 0\n");
@@ -118,9 +118,13 @@ float FuzzySet::scoreMid(unsigned int diffScore)
         //printf("mid equation: y = 0\n");
         return 0.f;
     }
-    else if(diffScore <= midPoint)
+    else if(diffScore >= this->graphDescriptor->midPlatStart && diffScore <= this->graphDescriptor->midPlatEnd)
     {
-        float slope = (100.f/(midPoint - (float)this->graphDescriptor->midStart));
+        return 100.f;
+    }
+    else if(diffScore <= this->graphDescriptor->midPlatStart)
+    {
+        float slope = (100.f/(this->graphDescriptor->midPlatStart - (float)this->graphDescriptor->midStart));
         float offset = (float)this->graphDescriptor->midStart;
         float intercept = 0.f;
 
@@ -130,8 +134,8 @@ float FuzzySet::scoreMid(unsigned int diffScore)
     }
     else
     {
-        float slope = -(100.f/((float)this->graphDescriptor->midEnd - midPoint)) ;
-        float offset = (float)this->graphDescriptor->midStart;
+        float slope = -(100.f/((float)this->graphDescriptor->midEnd - (float)this->graphDescriptor->midPlatEnd)) ;
+        float offset = (float)this->graphDescriptor->midPlatEnd;
         float intercept = 100.f;
 
         //printf("right mid equation: y = %4.4f * (x - %4.4f) + %4.4f\n", slope, offset, intercept);
@@ -172,9 +176,11 @@ FuzzyLogic::FuzzyLogic()
     struct Graph *g;
     g = new Graph;
     g->leftStart = 0;
-    g->leftEnd = 2;
-    g->midStart = 1;
-    g->midEnd = 5;
+    g->leftEnd = 3;
+    g->midStart = 0;
+    g->midPlatStart = 3;
+    g->midPlatEnd = 4;
+    g->midEnd = 10;
     g->rightStart = 4;
     g->rightEnd = 10;
     this->mySets[HURTING_ENEMY] = new FuzzySet(HURTING_ENEMY, "Hurting Enemy", g);
@@ -182,9 +188,11 @@ FuzzyLogic::FuzzyLogic()
 
     g = new Graph;
     g->leftStart = 0;
-    g->leftEnd = 2;
-    g->midStart = 1;
-    g->midEnd = 5;
+    g->leftEnd = 3;
+    g->midStart = 0;
+    g->midPlatStart = 3;
+    g->midPlatEnd = 4;
+    g->midEnd = 10;
     g->rightStart = 4;
     g->rightEnd = 10;
     this->mySets[HELPING_ME] = new FuzzySet(HELPING_ME, "Helping Me", g);
@@ -193,8 +201,10 @@ FuzzyLogic::FuzzyLogic()
     g = new Graph;
     g->leftStart = 0;
     g->leftEnd = 3;
-    g->midStart = 2;
-    g->midEnd = 5;
+    g->midStart = 0;
+    g->midPlatStart = 3;
+    g->midPlatEnd = 4;
+    g->midEnd = 6;
     g->rightStart = 4;
     g->rightEnd = 6;
     this->mySets[TURNS_AWAY] = new FuzzySet(TURNS_AWAY, "Turns Away", g);
@@ -208,7 +218,7 @@ FuzzyLogic::~FuzzyLogic()
     }
 }
 
-void FuzzyLogic::enterData(AIMove *m)
+void FuzzyLogic::enterData(struct AIMove *m)
 {
     this->mySets[HURTING_ENEMY]->enterData(m->diffEnemyScore);
     this->mySets[HELPING_ME]->enterData(m->diffMyScore);
