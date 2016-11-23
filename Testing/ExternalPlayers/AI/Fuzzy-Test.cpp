@@ -98,6 +98,6 @@ TEST(FuzzyTests, getTurnScore)
     assert(fs->getTurnScore() == expectedScore);
 
     fs->enterData(5);
-    expectedScore = (500/6) * TURNS_MEDIUM_WHT + (1 - (500/6)) * TURNS_LONG_WHT;
+    expectedScore = (1/2) * TURNS_MEDIUM_WHT + (1/2)) * TURNS_LONG_WHT;
     assert(fs->getTurnScore() == expectedScore);
 }
