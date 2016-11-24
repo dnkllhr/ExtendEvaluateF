@@ -1,5 +1,13 @@
 #include "Rules.h"
 
+
+
+GameRules::GameRules()
+{
+    GameRules::player1Score = 0;
+    GameRules::player1Score = 0;
+}
+
 bool GameRules::validTilePlacement(const Tile& placed, const Tile ** boarderingTiles)
 {
     unsigned int sides = placed.getNumberOfSides();
@@ -279,5 +287,35 @@ unsigned int GameRules::scoreEdge(unsigned int tileID, unsigned int edge)
         Regions::removeMeeple(tileID, edge);
     }
 
+    //Update the current score for the owning player(s)
+    int ret = Regions::checkOwner(tileID, edge);
+    if(ret == OWNER_P1)
+    {
+        GameRules::player1Score += returnValue;
+    }
+    else if(ret == OWNER_P2)
+    {
+        GameRules::player2Score += returnValue;
+    }
+    else if(ret == OWNER_TIE)
+    {
+
+        GameRules::player1Score += returnValue;
+        GameRules::player2Score += returnValue;
+    }
+
     return returnValue;
+}
+
+unsigned int GameRules::getPlayerScore(unsigned int player)
+{
+    if (player == 1)
+    {
+        return GameRules::player1Score;
+    }
+    else if (player == 2)
+    {
+        return GameRules::player2Score;
+    }
+    return 0;
 }

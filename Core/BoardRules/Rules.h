@@ -19,15 +19,19 @@
 class GameRules
 {
     public:
+        GameRules();
         static bool validTilePlacement(const Tile& placed, const Tile ** boarderingTiles);
         static bool validMeeplePlacement(const Tile& placed, unsigned int edgeIndex);
         static unsigned int getCurrentScore(unsigned int tileID, unsigned int edge);
         static unsigned int scoreEdge(unsigned int tileID, unsigned int edge);
+        static unsigned int getPlayerScore(unsigned int player);
     private:
         static unsigned int scoreRoad(struct regionSet * currentSet, bool actuallyScore);
         static unsigned int scoreCastle(struct regionSet * currentSet, bool actuallyScore);
         static unsigned int scoreGrass(unsigned int tileID, unsigned int edge);
         static unsigned int scoreChurch(bool isSurrounded);
+        static unsigned int player1Score;
+        static unsigned int player2Score;
 };
 
 
