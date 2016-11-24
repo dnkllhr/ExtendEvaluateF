@@ -24,7 +24,7 @@ void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, u
         (connectingSearch->second[connectingEdge])->tail                 = (placedSearch->second[placedEdge])->tail;
 
         //Update Hash entries
-        struct tileNode *iter = (placedSearch->second[placedEdge])->head;
+        std::shared_ptr<struct tileNode> iter = (placedSearch->second[placedEdge])->head;
         while(iter != NULL)
         {
             regionTracker[(placedSearch->first)][placedEdge] = (connectingSearch->second[connectingEdge]);
@@ -90,7 +90,7 @@ struct regionSet ** Regions::addConnection(const Tile& newTile, const Tile ** al
             if (edge % countPerSide == centerEdge)
                 newRegions[edge]->edgesTillCompletion--;
 
-            struct tileNode * node = new struct tileNode();
+            std::shared_ptr<struct tileNode> node = std::shared_ptr<struct tileNode>(new struct tileNode());
             node->tileID = id;
             node->edge = edge;
             node->preyCounts[static_cast<int>(newTile.getPrey())]++;
@@ -121,7 +121,7 @@ struct regionSet ** Regions::addConnection(const Tile& newTile, const Tile ** al
                 if (otherEdge % countPerSide == centerEdge)
                     newRegions[otherEdge]->edgesTillCompletion++;
 
-                struct tileNode * node = new struct tileNode();
+                std::shared_ptr<struct tileNode> node = std::shared_ptr<struct tileNode>(new struct tileNode());
                 node->tileID = id;
                 node->edge = otherEdge;
                 node->preyCounts[static_cast<int>(newTile.getPrey())]++;
@@ -190,14 +190,15 @@ int Regions::removeMeeple(unsigned int tileID, unsigned int edge)
     return 0;
 }
 
-
-int Regions::checkOwner(unsigned int tileID, unsigned int edge)
+int Regions::checkOwner(unsigned int tileID, unsigned int edge, std::unordered_map<unsigned int, struct regionSet **> * tracker)
 {
-    auto search = regionTracker.find(tileID);
+    if (tracker == NULL) tracker = &regionTracker;
 
-    if (search == regionTracker.end()) throw std::logic_error("The tile can't be found in the regions.");
+    auto search = tracker->find(tileID);
 
-    if(search != regionTracker.end())
+    if (search == tracker->end()) throw std::logic_error("The tile can't be found in the regions.");
+
+    if(search != tracker->end())
     {
         if((search->second[edge])->player1Meeples > (search->second[edge])->player2Meeples)
         {
@@ -214,7 +215,7 @@ int Regions::checkOwner(unsigned int tileID, unsigned int edge)
 
 struct regionSet * Regions::createRegion(unsigned int tileID, unsigned int edge, TerrainType type) {
     struct regionSet * newRegion = new struct regionSet();
-    struct tileNode * node = new struct tileNode();
+    std::shared_ptr<struct tileNode> node = std::shared_ptr<struct tileNode>(new struct tileNode());
 
     node->tileID = tileID;
     node->edge = edge;
@@ -235,28 +236,49 @@ struct regionSet ** Regions::getRegions(unsigned int tileID)
     return NULL;
 }
 
-<<<<<<< HEAD
-struct moveResult Regions::tryMove(const Move& move, const Tile ** boarderingTiles) {
+struct moveResult Regions::tryMove(const Tile& tile, const Tile ** boarderingTiles) {
     std::unordered_map<unsigned int, struct regionSet **> myTracker;
     for (auto iter = regionTracker.begin(); iter != regionTracker.end(); iter++)
         myTracker.emplace(iter->first, iter->second);
 
-    struct regionSet ** testRegions = addConnection(move.getTile(), boarderingTiles, &myTracker);
+    struct regionSet ** testRegions = addConnection(tile, boarderingTiles, &myTracker);
 
-    for (auto iter = myTracker.begin(); iter != myTracker.end(); iter++) {
-        struct regionSet * currRegion = iter->second->head;
-        while (currRegion != NULL) {
-            struct regionSet * next = currRegion->next;
-            delete currRegion;
-            currRegion = next;
+    unsigned int numSides = tile.getNumberOfSides();
+    unsigned int allSides = numSides * 2;
+    unsigned int countPerSide = tile.getCountPerSide();
+    unsigned int centerEdge = countPerSide / 2;
+    unsigned int totalIndices = numSides * countPerSide;
+
+    unsigned int surrounding = 0;
+    for (unsigned int i = 0; i < allSides; i++)
+        if (boarderingTiles[i] != NULL) surrounding++;
+
+    struct moveResult result;
+    for (unsigned int edge = 0; edge < totalIndices; edge++) {
+        unsigned int side = edge / countPerSide;
+        unsigned int correspondingSide = (side + (numSides / 2)) % numSides;
+        unsigned int correspondingEdge = (countPerSide - (edge % countPerSide) - 1) + (countPerSide * correspondingSide);
+
+        if (edge % countPerSide == centerEdge) result.edgesTillCompletion += testRegions[edge]->edgesTillCompletion;
+
+        unsigned int origScore = GameRules::getCurrentScore(boarderingTiles[side]->getId(), correspondingEdge);
+        unsigned int score = GameRules::getCurrentScore(testRegions, edge, &tile, surrounding);
+        int scoreDiff = score - origScore;
+
+        int owner = checkOwner(tile.getId(), edge, &myTracker);
+        if (owner == OWNER_P1) result.player1ScoreChange += scoreDiff;
+        else if (owner == OWNER_P2) result.player2ScoreChange += scoreDiff;
+        else if (owner == OWNER_TIE) {
+            result.player1ScoreChange += scoreDiff;
+            result.player2ScoreChange += scoreDiff;
         }
-
-        delete[] iter->second;
     }
+
+    for (auto iter = myTracker.begin(); iter != myTracker.end(); iter++)
+        delete[] iter->second;
+
+    return result;
 }
-
-=======
-
 
 int Regions::addCroc(unsigned int playerNumber, unsigned int tileID, unsigned int edge)
 {
@@ -303,7 +325,6 @@ unsigned int Regions::crocsAvailable(unsigned int playerNumber)
 }
 
 
->>>>>>> 3689a625f862d967931a8c312230916050328e97
 #ifdef testing
 
 void Regions::clearRegionTracker() {

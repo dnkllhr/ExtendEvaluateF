@@ -1,12 +1,7 @@
 #include "Rules.h"
 
-
-
-GameRules::GameRules()
-{
-    GameRules::player1Score = 0;
-    GameRules::player1Score = 0;
-}
+unsigned int GameRules::player1Score = 0;
+unsigned int GameRules::player2Score = 0;
 
 bool GameRules::validTilePlacement(const Tile& placed, const Tile ** boarderingTiles)
 {
@@ -41,7 +36,7 @@ unsigned int GameRules::scoreRoad(struct regionSet * currentSet, bool actuallySc
 {
     std::unordered_map<unsigned int, bool> edgeTracker;
     //Init starting values
-    struct tileNode * currentNode = currentSet->head;
+    std::shared_ptr<struct tileNode> currentNode = currentSet->head;
     auto tileSearch = edgeTracker.find(currentNode->tileID);
     unsigned int score = 0;
     unsigned int preyCount = 0;
@@ -64,7 +59,7 @@ unsigned int GameRules::scoreRoad(struct regionSet * currentSet, bool actuallySc
             edgeTracker[currentNode->tileID] = 1;
             for(int i = 0; i  < NUM_PREY; i++)
             {
-                if(i == 3 && currentNode->preyValues[i]) //Croc index
+                if(i == 3 && currentNode->preyCounts[i]) //Croc index
                 {
                     preyCount--; //Eats prey.
                     continue;
@@ -84,7 +79,7 @@ unsigned int GameRules::scoreCastle(struct regionSet * currentSet, bool actually
 {
     std::unordered_map<unsigned int, bool> edgeTracker;
     //Init starting values
-    struct tileNode * currentNode = currentSet->head;
+    std::shared_ptr<struct tileNode> currentNode = currentSet->head;
     auto tileSearch = edgeTracker.find(currentNode->tileID);
     unsigned int score = 0;
     unsigned int preyCount = 0;
@@ -114,7 +109,6 @@ unsigned int GameRules::scoreCastle(struct regionSet * currentSet, bool actually
                     continue;
                 }
                 if(currentNode->preyCounts[i])
->>>>>>> 3689a625f862d967931a8c312230916050328e97
                 {
                     preyCount++;
                 }
@@ -134,7 +128,7 @@ unsigned int GameRules::scoreGrass(struct regionSet ** passedSets, unsigned int 
     unsigned int leftOfEdge, rightOfEdge;
     std::unordered_map<struct regionSet * , bool> fieldTracker;
     //Init starting values
-    struct tileNode * currentNode = (passedSets[edge])->head;
+    std::shared_ptr<struct tileNode> currentNode = (passedSets[edge])->head;
     auto tileSearch = fieldTracker.find(passedSets[edge]);
     struct regionSet ** currentSets = passedSets;
     const Tile * currentTile;
@@ -246,7 +240,7 @@ unsigned int GameRules::scoreChurch(unsigned int tilesSurrounded, bool actuallyS
     return score;
 }
 
-unsigned int GameRules::getCurrentScore(struct regionSet ** currentRegion, unsigned int edge, const Tile * tile, bool isSurrounded)
+unsigned int GameRules::getCurrentScore(struct regionSet ** currentRegion, unsigned int edge, const Tile * tile, unsigned int tilesSurrounded)
 {
     unsigned int returnValue = 0;
 
@@ -262,7 +256,7 @@ unsigned int GameRules::getCurrentScore(struct regionSet ** currentRegion, unsig
             returnValue = scoreCastle(currentRegion[edge], false);
             break;
         case TerrainType::Church:
-            returnValue = scoreChurch(isSurrounded);
+            returnValue = scoreChurch(tilesSurrounded, false);
             break;
         default:
             //Throw error
