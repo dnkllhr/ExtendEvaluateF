@@ -57,7 +57,7 @@ unsigned int GameRules::scoreRoad(struct regionSet * currentSet, bool actuallySc
             for(int i = 0; i  < NUM_PREY; i++)
             {
                 //Scoring for animal-road interaction
-                preyCount += currentNode->preyValues[i];
+                preyCount += currentNode->preyCounts[i];
             }
             score += ROAD_VALUE + preyCount;
         }
@@ -95,7 +95,7 @@ unsigned int GameRules::scoreCastle(struct regionSet * currentSet, bool actually
             edgeTracker[currentNode->tileID] = 1;
             for(int i = 0; i  < NUM_PREY; i++)
             {
-                if(currentNode->preyValues[i])
+                if(currentNode->preyCounts[i])
                 {
                     preyCount++;
                 }
@@ -109,23 +109,30 @@ unsigned int GameRules::scoreCastle(struct regionSet * currentSet, bool actually
     return score;
 }
 
-unsigned int GameRules::scoreGrass(struct regionSet ** currentSets, unsigned int tileID, unsigned int edge)
+unsigned int GameRules::scoreGrass(struct regionSet ** passedSets, unsigned int tileID, unsigned int edge, const Tile * passedTile)
 {
     unsigned int score = 0;
     unsigned int leftOfEdge, rightOfEdge;
     std::unordered_map<struct regionSet * , bool> fieldTracker;
     //Init starting values
-    struct tileNode * currentNode = (currentSets[edge])->head;
-    auto tileSearch = fieldTracker.find(currentSets[edge]);
+    struct tileNode * currentNode = (passedSets[edge])->head;
+    auto tileSearch = fieldTracker.find(passedSets[edge]);
+    struct regionSet ** currentSets = passedSets;
     const Tile * currentTile;
 
     //Iterate through the linked list of the given region
     while(currentNode != NULL)
     {
-        //Get all of the regions for the current tileID (associated with the current node)
-        currentSets = Regions::getRegions(currentNode->tileID);
-        //We need the actual tile to be able to determine which regions are actually touching.
-        currentTile = Board::get(tileID);
+        if (currentNode->tileID == tileID) {
+            currentSets = passedSets;
+            currentTile = passedTile;
+        }
+        else {
+            //Get all of the regions for the current tileID (associated with the current node)
+            currentSets = Regions::getRegions(currentNode->tileID);
+            //We need the actual tile to be able to determine which regions are actually touching.
+            currentTile = Board::get(tileID);
+        }
 
         //Init the starting values of left and right.
         if(currentNode->edge == (NUM_TILE_EDGES - 1)) rightOfEdge = 0;
@@ -216,6 +223,30 @@ unsigned int GameRules::scoreChurch(bool isSurrounded)
     return score;
 }
 
+unsigned int GameRules::getCurrentScore(struct regionSet ** currentRegion, unsigned int edge, const Tile * tile, bool isSurrounded)
+{
+    unsigned int returnValue = 0;
+
+    switch (currentRegion[edge]->type)
+    {
+        case TerrainType::Grass:
+            returnValue = scoreGrass(currentRegion, tile->getId(), edge, tile);
+            break;
+        case TerrainType::Road:
+            returnValue = scoreRoad(currentRegion[edge], false);
+            break;
+        case TerrainType::Castle:
+            returnValue = scoreCastle(currentRegion[edge], false);
+            break;
+        case TerrainType::Church:
+            returnValue = scoreChurch(isSurrounded);
+            break;
+        default:
+            //Throw error
+            break;
+    }
+    return returnValue;
+}
 
 //Entry point for scoring a region.
 unsigned int GameRules::getCurrentScore(unsigned int tileID, unsigned int edge)

@@ -36,16 +36,19 @@ void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, u
     }
 }
 
-int Regions::addConnection(const Tile& newTile, const Tile ** allBoarderingTiles) {
+struct regionSet ** Regions::addConnection(const Tile& newTile, const Tile ** allBoarderingTiles, std::unordered_map<unsigned int, struct regionSet **> * trackerToUse) {
     unsigned int numOfSides = newTile.getNumberOfSides();
     unsigned int countPerSide = newTile.getCountPerSide();
     unsigned int totalEdges = numOfSides * countPerSide;
     unsigned int id = newTile.getId();
     unsigned int centerEdge = countPerSide / 2;
+    std::unordered_map<unsigned int, struct regionSet **>& tracker = regionTracker;
+
+    if (trackerToUse != NULL) tracker = *trackerToUse;
 
     // add one to total edges so that we have an array location for the center
     struct regionSet ** newRegions = new struct regionSet*[totalEdges + 1];
-    regionTracker[id] = newRegions;
+    tracker[id] = newRegions;
 
     if (newTile.getCenter() == TerrainType::Church) {
         newRegions[totalEdges] = Regions::createRegion(id, totalEdges, newTile.getCenter());
@@ -63,9 +66,9 @@ int Regions::addConnection(const Tile& newTile, const Tile ** allBoarderingTiles
                 unsigned int boarderingId = allBoarderingTiles[currSide]->getId();
 
                 // decrement the church's region edges till completion tracker if we were placed as a tile around it
-                regionTracker[boarderingId][totalEdges]->edgesTillCompletion--;
+                tracker[boarderingId][totalEdges]->edgesTillCompletion--;
             }
-            if (newTile.getCenter() == TerrainType::Church) regionTracker[id][totalEdges]->edgesTillCompletion--;
+            if (newTile.getCenter() == TerrainType::Church) tracker[id][totalEdges]->edgesTillCompletion--;
         }
 
         if ((currSide % 2) == 1) {
@@ -82,7 +85,7 @@ int Regions::addConnection(const Tile& newTile, const Tile ** allBoarderingTiles
 
         if (boarderingTiles[side] != NULL) {
             unsigned int boarderingId = boarderingTiles[side]->getId();
-            newRegions[edge] = regionTracker[boarderingId][correspondingEdge];
+            newRegions[edge] = tracker[boarderingId][correspondingEdge];
 
             if (edge % countPerSide == centerEdge)
                 newRegions[edge]->edgesTillCompletion--;
@@ -135,7 +138,7 @@ int Regions::addConnection(const Tile& newTile, const Tile ** allBoarderingTiles
         }
     }
 
-    return 0;
+    return newRegions;
 }
 
 int Regions::addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned int edge)
@@ -220,6 +223,25 @@ struct regionSet ** Regions::getRegions(unsigned int tileID)
     }
 
     return NULL;
+}
+
+struct moveResult Regions::tryMove(const Move& move, const Tile ** boarderingTiles) {
+    std::unordered_map<unsigned int, struct regionSet **> myTracker;
+    for (auto iter = regionTracker.begin(); iter != regionTracker.end(); iter++)
+        myTracker.emplace(iter->first, iter->second);
+
+    struct regionSet ** testRegions = addConnection(move.getTile(), boarderingTiles, &myTracker);
+
+    for (auto iter = myTracker.begin(); iter != myTracker.end(); iter++) {
+        struct regionSet * currRegion = iter->second->head;
+        while (currRegion != NULL) {
+            struct regionSet * next = currRegion->next;
+            delete currRegion;
+            currRegion = next;
+        }
+
+        delete[] iter->second;
+    }
 }
 
 #ifdef testing

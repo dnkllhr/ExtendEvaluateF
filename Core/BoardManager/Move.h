@@ -1,6 +1,9 @@
 #ifndef __MOVE_H
 #define __MOVE_H
 
+#include "../Tiles/Tile.h"
+#include "Coord.h"
+
 class Move {
     public:
         Tile& getTile() const;

@@ -1,6 +1,7 @@
 #ifndef __REGIONS_H
 #define __REGIONS_H
 
+#include "../BoardManager/Move.h"
 #include "../Tiles/Tile.h"
 #include <unordered_map>
 
@@ -14,13 +15,14 @@
 class Regions
 {
     public:
-        static int addConnection(const Tile& newTile, const Tile **  boarderingTiles);
+        static struct regionSet ** addConnection(const Tile& newTile, const Tile **  boarderingTiles, std::unordered_map<unsigned int, struct regionSet **> * tracker = NULL);
         static int addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned int edge);
         static int checkOwner(unsigned int tileID, unsigned int edge);
         static struct regionSet ** getRegions(unsigned int tileID);
         static int removeMeeple(unsigned int tileID, unsigned int edge);
         static bool checkRegionExistence(unsigned int tileID, unsigned int edge);
         static unsigned int checkRegionEdgesTillCompletion(unsigned int tileID, unsigned int edge);
+        static struct moveResult tryMove(const Move& move, const Tile ** boarderingTiles);
 
 #ifdef testing
         static void clearRegionTracker();
@@ -35,6 +37,13 @@ class Regions
         static struct meeple ownerMeeples[TOTAL_MEEPLES];
 };
 
+struct moveResult
+{
+    unsigned int edgesTillCompletion;
+    unsigned int player1ScoreChange;
+    unsigned int player2ScoreChange;
+};
+
 struct tileNode
 {
     tileNode() {
@@ -43,6 +52,22 @@ struct tileNode
         preyCounts = new unsigned int[NUM_PREY];
         tileID = 0;
         edge = 0;
+    };
+
+    tileNode(const struct tileNode& other) : tileID(other.tileID), edge(other.edge) {
+        std::copy(other.preyCounts, other.preyCounts + NUM_PREY, this->preyCounts);
+        this->previous = new struct tileNode(*other.previous);
+        this->next = new struct tileNode(*other.next);
+    };
+
+    struct tileNode& operator=(const struct tileNode& other) {
+        this->tileID = other.tileID;
+        this->edge = other.edge;
+        std::copy(other.preyCounts, other.preyCounts + NUM_PREY, this->preyCounts);
+        this->previous = new struct tileNode(*other.previous);
+        this->next = new struct tileNode(*other.next);
+
+        return *this;
     };
 
     ~tileNode() {
@@ -54,7 +79,6 @@ struct tileNode
     unsigned int * preyCounts;
     struct tileNode *previous;
     struct tileNode *next;
-    unsigned int preyValues[NUM_PREY];
 };
 
 struct regionSet
@@ -65,6 +89,20 @@ struct regionSet
         player1Meeples = 0;
         player2Meeples = 0;
         edgesTillCompletion = 0;
+    };
+
+    regionSet(const struct regionSet& other) : player1Meeples(other.player1Meeples), player2Meeples(other.player2Meeples), type(other.type) {
+        this->head = new struct tileNode(*head);
+        this->tail = new struct tileNode(*tail);
+    };
+
+    struct regionSet& operator=(const struct regionSet& other) {
+        this->player1Meeples = other.player1Meeples;
+        this->player2Meeples = other.player2Meeples;
+        this->head = new struct tileNode(*head);
+        this->tail = new struct tileNode(*tail);
+
+        return *this;
     };
 
     unsigned int player1Meeples;
