@@ -1,27 +1,27 @@
 #include "Move.h"
 
-Move::Move(const Tile& t, const Coord& c)
+Move::Move(Tile& t, const Coord& c)
 {
 	this->tile = t;
 	this->coord = c;
 	this->rotation = 0;
 }
 
-Move::Move(const Tile& t, unsigned int x, unsigned int y)
+Move::Move(Tile& t, unsigned int x, unsigned int y)
 {
 	thile->tile = t;
 	this->coord(x, y);
 	this->rotation = 0;
 }
 
-Move::Move(const Tile& t, const Coord& c, unsigned int r)
+Move::Move(Tile& t, const Coord& c, unsigned int r)
 {
 	this->tile = t;
 	this->coord = c;
 	this->rotation = r;
 }
 
-Move::Move(const Tile& t, unsigned int x, unsigned int y, unsigned int r)
+Move::Move(Tile& t, unsigned int x, unsigned int y, unsigned int r)
 {
 	thile->tile = t;
 	this->coord(x, y);

@@ -49,7 +49,7 @@ template <typename T> class Array {
             return *this;
         };
 
-        unsigned int getSize() {
+        unsigned int getSize() const {
             return this->size;
         };
 
