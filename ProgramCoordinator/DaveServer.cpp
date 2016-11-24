@@ -87,7 +87,7 @@ void Tournament_Protocol (int sock)
    int totalRounds = 5;
 
    bzero(buffer,256);
-   sprintf(buffer,"NEW CHALLENGE <cid> YOU WILL PLAY %d MATCHES", totalRounds);
+   sprintf(buffer,"NEW CHALLENGE 123 YOU WILL PLAY %d MATCHES", totalRounds);
    write(sock,buffer,255);
 
    for(int round = 1; round <= totalRounds; round++)
