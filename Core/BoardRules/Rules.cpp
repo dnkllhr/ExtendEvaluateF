@@ -32,7 +32,7 @@ bool GameRules::validMeeplePlacement(const Tile& placed, unsigned int edgeIndex)
 }
 
 
-unsigned int GameRules::scoreRoad(struct regionSet * currentSet, bool actuallyScore)
+unsigned int GameRules::scoreRoad(std::shared_ptr<struct regionSet> currentSet, bool actuallyScore)
 {
     std::unordered_map<unsigned int, bool> edgeTracker;
     //Init starting values
@@ -75,7 +75,7 @@ unsigned int GameRules::scoreRoad(struct regionSet * currentSet, bool actuallySc
     return score;
 }
 
-unsigned int GameRules::scoreCastle(struct regionSet * currentSet, bool actuallyScore)
+unsigned int GameRules::scoreCastle(std::shared_ptr<struct regionSet> currentSet, bool actuallyScore)
 {
     std::unordered_map<unsigned int, bool> edgeTracker;
     //Init starting values
@@ -122,15 +122,15 @@ unsigned int GameRules::scoreCastle(struct regionSet * currentSet, bool actually
     return score;
 }
 
-unsigned int GameRules::scoreGrass(struct regionSet ** passedSets, unsigned int tileID, unsigned int edge, const Tile * passedTile)
+unsigned int GameRules::scoreGrass(std::shared_ptr<struct regionSet> * passedSets, unsigned int tileID, unsigned int edge, const Tile * passedTile)
 {
     unsigned int score = 0;
     unsigned int leftOfEdge, rightOfEdge;
-    std::unordered_map<struct regionSet * , bool> fieldTracker;
+    std::unordered_map<std::shared_ptr<struct regionSet>, bool> fieldTracker;
     //Init starting values
     std::shared_ptr<struct tileNode> currentNode = (passedSets[edge])->head;
     auto tileSearch = fieldTracker.find(passedSets[edge]);
-    struct regionSet ** currentSets = passedSets;
+    std::shared_ptr<struct regionSet> * currentSets = passedSets;
     const Tile * currentTile;
 
     //Iterate through the linked list of the given region
@@ -240,7 +240,7 @@ unsigned int GameRules::scoreChurch(unsigned int tilesSurrounded, bool actuallyS
     return score;
 }
 
-unsigned int GameRules::getCurrentScore(struct regionSet ** currentRegion, unsigned int edge, const Tile * tile, unsigned int tilesSurrounded)
+unsigned int GameRules::getCurrentScore(std::shared_ptr<struct regionSet> * currentRegion, unsigned int edge, const Tile * tile, unsigned int tilesSurrounded)
 {
     unsigned int returnValue = 0;
 
@@ -270,7 +270,7 @@ unsigned int GameRules::getCurrentScore(unsigned int tileID, unsigned int edge)
 {
     unsigned int tilesSurrounded = BoardManager::isSurrounded(tileID);
 
-    struct regionSet ** currentRegion = Regions::getRegions(tileID);
+    std::shared_ptr<struct regionSet> * currentRegion = Regions::getRegions(tileID);
     unsigned int returnValue = 0;
 
     switch (currentRegion[edge]->type)
@@ -299,7 +299,7 @@ unsigned int GameRules::scoreEdge(unsigned int tileID, unsigned int edge)
 {
     unsigned int tilesSurrounded = BoardManager::isSurrounded(tileID);
 
-    struct regionSet ** currentRegion = Regions::getRegions(tileID);
+    std::shared_ptr<struct regionSet> * currentRegion = Regions::getRegions(tileID);
     unsigned int returnValue = 0;
 
     switch (currentRegion[edge]->type)

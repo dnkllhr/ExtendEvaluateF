@@ -21,10 +21,10 @@
 class Regions
 {
     public:
-        static struct regionSet ** addConnection(const Tile& newTile, const Tile **  boarderingTiles, std::unordered_map<unsigned int, struct regionSet **> * tracker = NULL);
+        static std::shared_ptr<struct regionSet> * addConnection(const Tile& newTile, const Tile **  boarderingTiles, std::unordered_map<unsigned int, std::shared_ptr<struct regionSet> *> * tracker = NULL);
         static int addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned int edge);
-        static int checkOwner(unsigned int tileID, unsigned int edge, std::unordered_map<unsigned int, struct regionSet **> * tracker = NULL);
-        static struct regionSet ** getRegions(unsigned int tileID);
+        static int checkOwner(unsigned int tileID, unsigned int edge, std::unordered_map<unsigned int, std::shared_ptr<struct regionSet> *> * tracker = NULL);
+        static std::shared_ptr<struct regionSet> * getRegions(unsigned int tileID);
         static int removeMeeple(unsigned int tileID, unsigned int edge);
         static bool checkRegionExistence(unsigned int tileID, unsigned int edge);
         static unsigned int checkRegionEdgesTillCompletion(unsigned int tileID, unsigned int edge);
@@ -41,11 +41,11 @@ class Regions
 #endif
 
     private:
-        static struct regionSet * createRegion(unsigned int tileID, unsigned int edge, TerrainType type);
+        static std::shared_ptr<struct regionSet> createRegion(unsigned int tileID, unsigned int edge, TerrainType type);
         static int countEdgesTillCompletion(unsigned int placedTileID);
         static void mergeRegions(unsigned int placedTileID, unsigned int placedEdge, unsigned int connectingTileID, unsigned int connectingEdge);
 
-        static std::unordered_map<unsigned int, struct regionSet **> regionTracker;    //Takes (tileID, edge) returns set pointer
+        static std::unordered_map<unsigned int, std::shared_ptr<struct regionSet> *> regionTracker;    //Takes (tileID, edge) returns set pointer
 
         static struct meeple ownerMeeples[TOTAL_MEEPLES];
         static unsigned int availableMeeples[2];
@@ -134,7 +134,7 @@ struct meeple
     };
 
     bool inUse;
-    struct regionSet *ownedRegion;
+    std::shared_ptr<struct regionSet> ownedRegion;
 };
 
 struct croc
@@ -145,7 +145,7 @@ struct croc
     };
 
     bool inUse;
-    struct regionSet *ownedRegion;
+    std::shared_ptr<struct regionSet> ownedRegion;
 };
 
 #endif
