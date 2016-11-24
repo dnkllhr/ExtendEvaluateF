@@ -142,7 +142,7 @@ int Regions::addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned 
 {
     unsigned int i;
     bool valid = false;
-    for(i = (playerNumber)*(MEEPLES_PER_PLAYER); i < ((playerNumber)*(MEEPLES_PER_PLAYER) + (MEEPLES_PER_PLAYER)); i++)
+    for(i = (playerNumber -  1)*(MEEPLES_PER_PLAYER); i < ((playerNumber - 1)*(MEEPLES_PER_PLAYER) + (MEEPLES_PER_PLAYER)); i++)
     {
         if(!(ownerMeeples[i].inUse))
         {
@@ -158,6 +158,7 @@ int Regions::addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned 
     {
         ownerMeeples[i].inUse = true;
         ownerMeeples[i].ownedRegion = regionTracker.find(tileID)->second[edge];
+        Regions::availableMeeples[playerNumber - 1]--;
         return 0;
     }
     return -1;
@@ -172,6 +173,15 @@ int Regions::removeMeeple(unsigned int tileID, unsigned int edge)
         {
             ownerMeeples[i].inUse = false;
             ownerMeeples[i].ownedRegion = NULL;
+
+            if(i < MEEPLES_PER_PLAYER) //First player owner
+            {
+                Regions::availableMeeples[0]++; //Free up the meeple
+            }
+            else //Player 2
+            {
+                Regions::availableMeeples[1]++; //Free up the meeple
+            }
         }
     }
     return 0;
@@ -221,6 +231,53 @@ struct regionSet ** Regions::getRegions(unsigned int tileID)
 
     return NULL;
 }
+
+
+
+int Regions::addCroc(unsigned int playerNumber, unsigned int tileID, unsigned int edge)
+{
+    unsigned int i;
+    bool valid = false;
+    for(i = (playerNumber -  1)*(CROCS_PER_PLAYER); i < ((playerNumber - 1)*(CROCS_PER_PLAYER) + (CROCS_PER_PLAYER)); i++)
+    {
+        if(!(ownerCrocs[i].inUse))
+        {
+            valid = true;
+        }
+    }
+    if(!valid)
+    {
+        return -1;
+    }
+
+    if(Regions::checkOwner(tileID, edge) == -2) //No owner
+    {
+        ownerCrocs[i].inUse = true;
+        ownerCrocs[i].ownedRegion = regionTracker.find(tileID)->second[edge];
+        Regions::availableCrocs[playerNumber - 1]--;
+        return 0;
+    }
+    return -1;
+}
+
+unsigned int Regions::meeplesAvailable(unsigned int playerNumber)
+{
+    if(playerNumber < 3)
+    {
+        return Regions::availableMeeples[playerNumber - 1];
+    }
+    return 0;
+}
+
+unsigned int Regions::crocsAvailable(unsigned int playerNumber)
+{
+    if(playerNumber < 3)
+    {
+        return Regions::availableCrocs[playerNumber - 1];
+    }
+    return 0;
+}
+
 
 #ifdef testing
 

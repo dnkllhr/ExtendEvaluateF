@@ -64,6 +64,11 @@ unsigned int GameRules::scoreRoad(struct regionSet * currentSet, bool actuallySc
             edgeTracker[currentNode->tileID] = 1;
             for(int i = 0; i  < NUM_PREY; i++)
             {
+                if(i == 3 && currentNode->preyValues[i]) //Croc index
+                {
+                    preyCount--; //Eats prey.
+                    continue;
+                }
                 //Scoring for animal-road interaction
                 preyCount += currentNode->preyValues[i];
             }
@@ -103,6 +108,11 @@ unsigned int GameRules::scoreCastle(struct regionSet * currentSet, bool actually
             edgeTracker[currentNode->tileID] = 1;
             for(int i = 0; i  < NUM_PREY; i++)
             {
+                if(i == 3 && currentNode->preyValues[i])
+                {
+                    preyCount--; //eaten by a croc
+                    continue;
+                }
                 if(currentNode->preyValues[i])
                 {
                     preyCount++;
@@ -281,11 +291,6 @@ unsigned int GameRules::scoreEdge(unsigned int tileID, unsigned int edge)
             break;
     }
 
-    if (returnValue != 0)
-    {
-        Regions::removeMeeple(tileID, edge);
-    }
-
     //Update the current score for the owning player(s)
     int ret = Regions::checkOwner(tileID, edge);
     if(ret == OWNER_P1)
@@ -301,6 +306,12 @@ unsigned int GameRules::scoreEdge(unsigned int tileID, unsigned int edge)
 
         GameRules::player1Score += returnValue;
         GameRules::player2Score += returnValue;
+    }
+
+
+    if (returnValue != 0)
+    {
+        Regions::removeMeeple(tileID, edge);
     }
 
     return returnValue;
