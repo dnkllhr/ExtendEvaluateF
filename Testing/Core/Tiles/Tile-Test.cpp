@@ -25,6 +25,7 @@ TEST(TileTests, SetRotation) {
 
     bool result = tile.setRotation(1);
     EXPECT_TRUE(result);
+    EXPECT_EQ(tile.getRotation(), (unsigned int)1);
 }
 
 TEST(TileTests, SetRotationAfterPlacement) {

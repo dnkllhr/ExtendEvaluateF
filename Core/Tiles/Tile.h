@@ -98,6 +98,7 @@ class Tile {
         TerrainType * edges;
         // Seperate variable to hold what is in the center
         TerrainType center;
+        unsigned int defaultRotation;
         // Rotation is an offset to the edges and edge_connections array
         unsigned int rotation;
         // Edge Connections is an array of integer arrays where the index correlates to an edge part and the array of integers at that location contains all of the edge parts that it connects to.

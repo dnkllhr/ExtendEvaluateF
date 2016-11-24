@@ -19,6 +19,8 @@ class Regions
         static int checkOwner(unsigned int tileID, unsigned int edge);
         static struct regionSet ** getRegions(unsigned int tileID);
         static int removeMeeple(unsigned int tileID, unsigned int edge);
+        static bool checkRegionExistence(unsigned int tileID, unsigned int edge);
+        static unsigned int checkRegionEdgesTillCompletion(unsigned int tileID, unsigned int edge);
 
 #ifdef testing
         static void clearRegionTracker();

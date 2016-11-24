@@ -41,7 +41,7 @@ unsigned int GameRules::scoreRoad(struct regionSet * currentSet, bool actuallySc
 {
     std::unordered_map<unsigned int, bool> edgeTracker;
     //Init starting values
-    struct tileNode * currentNode = currentSet->head;    
+    struct tileNode * currentNode = currentSet->head;
     auto tileSearch = edgeTracker.find(currentNode->tileID);
     unsigned int score = 0;
     unsigned int preyCount = 0;
@@ -79,7 +79,7 @@ unsigned int GameRules::scoreCastle(struct regionSet * currentSet, bool actually
 {
     std::unordered_map<unsigned int, bool> edgeTracker;
     //Init starting values
-    struct tileNode * currentNode = currentSet->head;    
+    struct tileNode * currentNode = currentSet->head;
     auto tileSearch = edgeTracker.find(currentNode->tileID);
     unsigned int score = 0;
     unsigned int preyCount = 0;
@@ -117,20 +117,19 @@ unsigned int GameRules::scoreCastle(struct regionSet * currentSet, bool actually
     return score;
 }
 
-unsigned int GameRules::scoreGrass(unsigned int tileID, unsigned int edge)
+unsigned int GameRules::scoreGrass(struct regionSet ** currentSets, unsigned int tileID, unsigned int edge)
 {
     unsigned int score = 0;
     unsigned int leftOfEdge, rightOfEdge;
-    struct regionSet ** currentSets = Regions::getRegions(tileID);
     std::unordered_map<struct regionSet * , bool> fieldTracker;
     //Init starting values
-    struct tileNode * currentNode = (currentSets[edge])->head;    
+    struct tileNode * currentNode = (currentSets[edge])->head;
     auto tileSearch = fieldTracker.find(currentSets[edge]);
     const Tile * currentTile;
 
     //Iterate through the linked list of the given region
     while(currentNode != NULL)
-    {        
+    {
         //Get all of the regions for the current tileID (associated with the current node)
         currentSets = Regions::getRegions(currentNode->tileID);
         //We need the actual tile to be able to determine which regions are actually touching.
@@ -237,7 +236,7 @@ unsigned int GameRules::getCurrentScore(unsigned int tileID, unsigned int edge)
     switch (currentRegion[edge]->type)
     {
         case TerrainType::Grass:
-            returnValue = scoreGrass(tileID, edge);
+            returnValue = scoreGrass(currentRegion, tileID, edge);
             break;
         case TerrainType::Road:
             returnValue = scoreRoad(currentRegion[edge], false);
@@ -266,7 +265,7 @@ unsigned int GameRules::scoreEdge(unsigned int tileID, unsigned int edge)
     switch (currentRegion[edge]->type)
     {
         case TerrainType::Grass:
-            returnValue = scoreGrass(tileID, edge);
+            returnValue = scoreGrass(currentRegion, tileID, edge);
             break;
         case TerrainType::Road:
             returnValue = scoreRoad(currentRegion[edge], true);
