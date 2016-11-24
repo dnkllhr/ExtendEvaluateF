@@ -98,13 +98,15 @@ unsigned int BoardManager::isSurrounded(int tileID)
 {
 	unsigned int surrounded = 0;
 	const Coord& coord = Board::getCoordinatesFromTileId(tileID);
+    const Array<Array<Tile*>> boardGrid = Board::getBoard();
+    unsigned int xLocation = coord.getX();
+    unsigned int yLocation = coord.getY();
 	
 	for(int i = -1; i <= 1; i++)
 	{
 		for(int j = -1; j <= 1; j++)
 		{
-			Coord current(coord.getX() + i, coord.getY() + j);
-			if (&Board::get(current) != NULL && (xLocation != i && yLocation != j))
+			if (boardGrid[xLocation + i][yLocation + j] != NULL && (i != 0 && j != 0))
 			{
 				surrounded++;
 			}
