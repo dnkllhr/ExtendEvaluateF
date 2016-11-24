@@ -152,3 +152,83 @@ TEST(RegionTests, addConnection) {
 
     assert((Regions::checkRegionEdgesTillCompletion(currentTile->getID(), 10)) == 3); //Make sure the castle has three sides open. 
 }
+
+TEST(RulesTest, ScoreChurch) {
+	Array<Array<Tile>> tiles = Tile::CreateTiles();
+	Board board;
+	// Church is worth 1 point regardless of surrounding tiles
+	unsigned int expectedScore = 1;
+	unsigned int actualScore;
+
+	// Place church tile in center
+	Coord center(76, 76);
+	Tile& churchTile = tiles[0][0];
+	Move churchMove(churchTile, center);
+	board.place(churchMove);
+
+	unsigned int tileID = churchTile.getID();
+	bool surrounded = isSurrounded(tileID);
+	actualScore = scoreChurch(surrounded);
+	ASSERT(actualScore == 1);
+
+	//place other tiles around churchTile
+	for (int i = -1; i <= 1; i++)
+	{
+		for (int j = -1; j <= 1; j++)
+		{
+			if (i == 0 && j == 0)
+			{
+				break; // avoid overwriting church tile
+			}
+			else
+			{
+				Coord churchBoarder((center.getX() + i), (center.getY() + j));
+				Tile& boarderingTile = tiles[24][0]; // chose to surround with field tiles
+				Move boarderMove(boarderingTile, churchBoarder);
+				board.place(boarderMove);
+
+				expectedScore++;
+				surrounded = isSurrounded(tileID);
+				actualScore = scoreChurch(surrounded);
+
+				ASSERT(actualScore == expectedScore);
+			}
+		}
+	}
+}
+
+TEST(RulesTest, ScoreCastle) {
+	Array<Array<Tile>> tiles = Tile::CreateTiles();
+	Board board;
+	struct regionSet ** newRegion;
+
+	unsigned int actualScore;
+
+	Tile& castleTile1 = tiles[4][0];
+	unsigned int tileID1 = castleTile1.getId();
+	Coord position1(76, 76);
+	Move castleMove1(castleTile1, position1);
+	board.place(castleMove1);
+	newRegion = Regions::getRegions(tileID1);
+
+	// How should actuallyScore change the return value?
+	actualScore = scoreCastle(newRegion*, true);
+	ASSERT(actualScore == 2);
+	actualScore = scoreCastle(newRegion*, false);
+	ASSERT(actualScore == 2);
+
+	// add another tile to extend the lake region
+	Tile& castleTile2 = tiles[12][0];
+	bool rotate = setRotation(2);
+	unsigned int tileID2 = castleTile2.getId();
+	Coord position2(77, 77);
+	Move castleMove2(castleTile2, position2);
+	board.place(castleMove2);
+	newRegion = Regions::getRegions(tileID2);
+
+	// How should actuallyScore change the return value?
+	actualScore = scoreCastle(newRegion*, true);
+	ASSERT(actualScore == 12);
+	actualScore = scoreCastle(newRegion*, false);
+	ASSERT(actualScore == 12);
+}
