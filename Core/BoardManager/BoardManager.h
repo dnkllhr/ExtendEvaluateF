@@ -27,7 +27,7 @@ class BoardManager {
         /// Makes the given Move
         static void makeMove(const Move& move);
 		/// Returns whether the given tile is fully surrounded by other tiles
-		static bool isSurrounded(int tileID);
+		static unsigned int isSurrounded(int tileID);
     
     private:
     

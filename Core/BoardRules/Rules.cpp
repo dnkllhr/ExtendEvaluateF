@@ -222,13 +222,17 @@ unsigned int GameRules::scoreGrass(struct regionSet ** currentSets, unsigned int
     return score;
 }
 
-unsigned int GameRules::scoreChurch(bool isSurrounded)
+unsigned int GameRules::scoreChurch(unsigned int tilesSurrounded, bool actuallyScore)
 {
     unsigned int score = 0;
 
-    if(isSurrounded)
+    if(tilesSurrounded == 8)
     {
         score += 9;
+    }
+    else if (!actuallyScore)
+    {
+        score += tilesSurrounded;
     }
 
     return score;
@@ -238,7 +242,7 @@ unsigned int GameRules::scoreChurch(bool isSurrounded)
 //Entry point for scoring a region.
 unsigned int GameRules::getCurrentScore(unsigned int tileID, unsigned int edge)
 {
-    bool isSurrounded = BoardManager::isSurrounded(tileID);
+    unsigned int tilesSurrounded = BoardManager::isSurrounded(tileID);
 
     struct regionSet ** currentRegion = Regions::getRegions(tileID);
     unsigned int returnValue = 0;
@@ -255,7 +259,7 @@ unsigned int GameRules::getCurrentScore(unsigned int tileID, unsigned int edge)
             returnValue = scoreCastle(currentRegion[edge], false);
             break;
         case TerrainType::Church:
-            returnValue = scoreChurch(isSurrounded);
+            returnValue = scoreChurch(tilesSurrounded, false);
             break;
         default:
             //Throw error
@@ -267,7 +271,7 @@ unsigned int GameRules::getCurrentScore(unsigned int tileID, unsigned int edge)
 
 unsigned int GameRules::scoreEdge(unsigned int tileID, unsigned int edge)
 {
-    bool isSurrounded = BoardManager::isSurrounded(tileID);
+    unsigned int tilesSurrounded = BoardManager::isSurrounded(tileID);
 
     struct regionSet ** currentRegion = Regions::getRegions(tileID);
     unsigned int returnValue = 0;
@@ -284,7 +288,7 @@ unsigned int GameRules::scoreEdge(unsigned int tileID, unsigned int edge)
             returnValue = scoreCastle(currentRegion[edge], true);
             break;
         case TerrainType::Church:
-            returnValue = scoreChurch(isSurrounded);
+            returnValue = scoreChurch(tilesSurrounded, true);
             break;
         default:
             //Throw error

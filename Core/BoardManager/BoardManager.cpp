@@ -94,9 +94,9 @@ void BoardManager::makeMove(const Move& move)
     tileStack->pop(); // remove top Tile from list
 }
 
-bool BoardManager::isSurrounded(int tileID)
+unsigned int BoardManager::isSurrounded(int tileID)
 {
-	bool surrounded = false;
+	unsigned int surrounded = 0;
 	const Coord& tileCoord = Board::getCoordinatesFromTileId(tileID);
 	
 	int xLocation = tileCoord.getX();
@@ -108,13 +108,9 @@ bool BoardManager::isSurrounded(int tileID)
 	{
 		for(int j = -1; j <= 1; j++)
 		{
-			if (&boardGrid[xLocation + i][yLocation + j] != NULL)
+			if (&boardGrid[xLocation + i][yLocation + j] != NULL && (xLocation != i && yLocation != j))
 			{
-				surrounded = true;
-			}
-			else
-			{
-				return false;
+				surrounded++;
 			}
 		}
 	}
