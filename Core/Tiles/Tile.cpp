@@ -736,26 +736,26 @@ Array<Tile> Tile::CreateTileV(unsigned int tileCount, unsigned int& startId, Pre
     newTile.prey = preyType;
     newTile.tileType = TileType::V;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
-        TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
-        TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
         TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
+        TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
+        TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
         TerrainType::Grass, TerrainType::Road, TerrainType::Grass
     };
 
     newTile.center = TerrainType::Road;
     newTile.edgeConnections = new unsigned int[(newTile.numberSides * newTile.countPerSide)] {
-        0b100001111111,
-        0b100001111111,
-        0b100001111111,
-        0b100001111111,
-        0b100001111111,
-        0b100001111111,
-        0b100001111111,
-        0b010010000000,
-        0b001100000000,
-        0b001100000000,
-        0b010010000000,
-        0b100001111111
+        0b100000000001,
+        0b010000000010,
+        0b001111111100,
+        0b001111111100,
+        0b001111111100,
+        0b001111111100,
+        0b001111111100,
+        0b001111111100,
+        0b001111111100,
+        0b001111111100,
+        0b010000000010,
+        0b100000000001
     };
 
     Array<Tile> newTiles(tileCount);
@@ -773,26 +773,26 @@ Array<Tile> Tile::CreateTileW(unsigned int tileCount, unsigned int& startId, Pre
     newTile.prey = preyType;
     newTile.tileType = TileType::W;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
-        TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
         TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
+        TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
         TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
         TerrainType::Grass, TerrainType::Road, TerrainType::Grass
     };
 
     newTile.center = TerrainType::Fork;
     newTile.edgeConnections = new unsigned int[(newTile.numberSides * newTile.countPerSide)] {
-        0b100000001111,
-        0b100000001111,
-        0b100000001111,
-        0b100000001111,
-        0b000000010000,
-        0b000001100000,
-        0b000001100000,
-        0b000010000000,
+        0b100000000001,
+        0b010010000010,
+        0b000001111100,
+        0b000001111100,
+        0b000001111100,
+        0b000001111100,
+        0b000001111100,
+        0b010010000010,
         0b001100000000,
         0b001100000000,
-        0b010000000000,
-        0b100000001111
+        0b010010000010,
+        0b100000000001
     };
 
     Array<Tile> newTiles(tileCount);
