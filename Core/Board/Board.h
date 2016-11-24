@@ -15,11 +15,11 @@ class Board {
         // Creates a new Board as a grid of tiles of the maximum needed size
         Board();
         // Returns the Board as a 2D Array of Tiles
-        static const Array<Array<Tile>>& getBoard();
+        static const Array<Array<Tile*>>& getBoard();
         // Gets the Tile at the given Coord
         static const Tile& get(const Coord& coord);
         //Gets the Tile for a given tileID
-        static const Tile * get(unsigned int tileID);
+        static const Tile& get(unsigned int tileID);
         //Get all neighbors of a given Tile
         static const Tile** getBorderingTiles(const Tile& tile);
         //Find a way to get the coordinates from the ID
@@ -34,7 +34,7 @@ class Board {
         static const std::unordered_set<unsigned int>& getAvailableLocations();
 
     private:
-        static Array<Array<Tile>> board;
+        static Array<Array<Tile*>> board;
         //Keep track of the tile coordinates;
         static std::unordered_map<unsigned int , Move&> tileIDTracker;
         static std::unordered_set<unsigned int> availableLocations;

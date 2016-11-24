@@ -97,18 +97,14 @@ void BoardManager::makeMove(const Move& move)
 unsigned int BoardManager::isSurrounded(int tileID)
 {
 	unsigned int surrounded = 0;
-	const Coord& tileCoord = Board::getCoordinatesFromTileId(tileID);
-	
-	int xLocation = tileCoord.getX();
-	int yLocation = tileCoord.getY();
-
-	const Array<Array<Tile>>& boardGrid = Board::getBoard();
+	const Coord& coord = Board::getCoordinatesFromTileId(tileID);
 	
 	for(int i = -1; i <= 1; i++)
 	{
 		for(int j = -1; j <= 1; j++)
 		{
-			if (&boardGrid[xLocation + i][yLocation + j] != NULL && (xLocation != i && yLocation != j))
+			Coord current(coord.getX() + i, coord.getY() + j);
+			if (&Board::get(current) != NULL && (xLocation != i && yLocation != j))
 			{
 				surrounded++;
 			}
