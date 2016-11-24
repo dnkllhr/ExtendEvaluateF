@@ -1,5 +1,13 @@
 #include "Rules.h"
 
+
+
+GameRules::GameRules()
+{
+    GameRules::player1Score = 0;
+    GameRules::player1Score = 0;
+}
+
 bool GameRules::validTilePlacement(const Tile& placed, const Tile ** boarderingTiles)
 {
     unsigned int sides = placed.getNumberOfSides();
@@ -56,6 +64,11 @@ unsigned int GameRules::scoreRoad(struct regionSet * currentSet, bool actuallySc
             edgeTracker[currentNode->tileID] = 1;
             for(int i = 0; i  < NUM_PREY; i++)
             {
+                if(i == 3 && currentNode->preyValues[i]) //Croc index
+                {
+                    preyCount--; //Eats prey.
+                    continue;
+                }
                 //Scoring for animal-road interaction
                 preyCount += currentNode->preyCounts[i];
             }
@@ -95,7 +108,13 @@ unsigned int GameRules::scoreCastle(struct regionSet * currentSet, bool actually
             edgeTracker[currentNode->tileID] = 1;
             for(int i = 0; i  < NUM_PREY; i++)
             {
+                if(i == 3 && currentNode->preyCounts[i])
+                {
+                    preyCount--; //eaten by a croc
+                    continue;
+                }
                 if(currentNode->preyCounts[i])
+>>>>>>> 3689a625f862d967931a8c312230916050328e97
                 {
                     preyCount++;
                 }
@@ -211,13 +230,17 @@ unsigned int GameRules::scoreGrass(struct regionSet ** passedSets, unsigned int 
     return score;
 }
 
-unsigned int GameRules::scoreChurch(bool isSurrounded)
+unsigned int GameRules::scoreChurch(unsigned int tilesSurrounded, bool actuallyScore)
 {
     unsigned int score = 0;
 
-    if(isSurrounded)
+    if(tilesSurrounded == 8)
     {
         score += 9;
+    }
+    else if (!actuallyScore)
+    {
+        score += tilesSurrounded;
     }
 
     return score;
@@ -251,7 +274,7 @@ unsigned int GameRules::getCurrentScore(struct regionSet ** currentRegion, unsig
 //Entry point for scoring a region.
 unsigned int GameRules::getCurrentScore(unsigned int tileID, unsigned int edge)
 {
-    bool isSurrounded = BoardManager::isSurrounded(tileID);
+    unsigned int tilesSurrounded = BoardManager::isSurrounded(tileID);
 
     struct regionSet ** currentRegion = Regions::getRegions(tileID);
     unsigned int returnValue = 0;
@@ -268,7 +291,7 @@ unsigned int GameRules::getCurrentScore(unsigned int tileID, unsigned int edge)
             returnValue = scoreCastle(currentRegion[edge], false);
             break;
         case TerrainType::Church:
-            returnValue = scoreChurch(isSurrounded);
+            returnValue = scoreChurch(tilesSurrounded, false);
             break;
         default:
             //Throw error
@@ -280,7 +303,7 @@ unsigned int GameRules::getCurrentScore(unsigned int tileID, unsigned int edge)
 
 unsigned int GameRules::scoreEdge(unsigned int tileID, unsigned int edge)
 {
-    bool isSurrounded = BoardManager::isSurrounded(tileID);
+    unsigned int tilesSurrounded = BoardManager::isSurrounded(tileID);
 
     struct regionSet ** currentRegion = Regions::getRegions(tileID);
     unsigned int returnValue = 0;
@@ -297,12 +320,30 @@ unsigned int GameRules::scoreEdge(unsigned int tileID, unsigned int edge)
             returnValue = scoreCastle(currentRegion[edge], true);
             break;
         case TerrainType::Church:
-            returnValue = scoreChurch(isSurrounded);
+            returnValue = scoreChurch(tilesSurrounded, true);
             break;
         default:
             //Throw error
             break;
     }
+
+    //Update the current score for the owning player(s)
+    int ret = Regions::checkOwner(tileID, edge);
+    if(ret == OWNER_P1)
+    {
+        GameRules::player1Score += returnValue;
+    }
+    else if(ret == OWNER_P2)
+    {
+        GameRules::player2Score += returnValue;
+    }
+    else if(ret == OWNER_TIE)
+    {
+
+        GameRules::player1Score += returnValue;
+        GameRules::player2Score += returnValue;
+    }
+
 
     if (returnValue != 0)
     {
@@ -310,4 +351,17 @@ unsigned int GameRules::scoreEdge(unsigned int tileID, unsigned int edge)
     }
 
     return returnValue;
+}
+
+unsigned int GameRules::getPlayerScore(unsigned int player)
+{
+    if (player == 1)
+    {
+        return GameRules::player1Score;
+    }
+    else if (player == 2)
+    {
+        return GameRules::player2Score;
+    }
+    return 0;
 }

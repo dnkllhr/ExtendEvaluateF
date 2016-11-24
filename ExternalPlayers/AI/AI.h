@@ -3,7 +3,7 @@
 
 
 #include "FuzzyLogic.h"
-#include "../TurnManger/TurnManager.h"
+#include "../../Core/BoardManager/BoardManager.h"
 
 class AI
 {
