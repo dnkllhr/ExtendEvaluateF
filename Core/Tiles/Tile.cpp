@@ -42,7 +42,7 @@ unsigned int Tile::getId() const {
 }
 
 unsigned int Tile::getRotation() const {
-    return this->rotation;
+    return (this->numberSides - (this->rotation / this->countPerSide)) % this->numberSides;
 }
 
 bool Tile::setRotation(unsigned int rotation) {
@@ -329,26 +329,26 @@ Array<Tile> Tile::CreateTileG(unsigned int tileCount, unsigned int& startId, Pre
     newTile.prey = preyType;
     newTile.tileType = TileType::G;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
-        TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
         TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
         TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
-        TerrainType::Grass, TerrainType::Grass, TerrainType::Grass
+        TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
+        TerrainType::Castle, TerrainType::Castle, TerrainType::Castle
     };
 
     newTile.center = TerrainType::Castle;
     newTile.edgeConnections = new unsigned int[(newTile.numberSides * newTile.countPerSide)] {
-        0b000111000111,
-        0b000111000111,
-        0b000111000111,
-        0b000000111000,
-        0b000000111000,
-        0b000000111000,
-        0b000111000111,
-        0b000111000111,
-        0b000111000111,
-        0b111000000000,
-        0b111000000000,
-        0b111000000000
+        0b000000000111,
+        0b000000000111,
+        0b000000000111,
+        0b111000111000,
+        0b111000111000,
+        0b111000111000,
+        0b000111000000,
+        0b000111000000,
+        0b000111000000,
+        0b111000111000,
+        0b111000111000,
+        0b111000111000
     };
 
     Array<Tile> newTiles(tileCount);
@@ -366,26 +366,26 @@ Array<Tile> Tile::CreateTileH(unsigned int tileCount, unsigned int& startId, Pre
     newTile.prey = preyType;
     newTile.tileType = TileType::H;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
-        TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
         TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
         TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
-        TerrainType::Castle, TerrainType::Castle, TerrainType::Castle
+        TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
+        TerrainType::Grass, TerrainType::Grass, TerrainType::Grass
     };
 
     newTile.center = TerrainType::Grass;
     newTile.edgeConnections = new unsigned int[(newTile.numberSides * newTile.countPerSide)] {
-        0b000111000111,
-        0b000111000111,
-        0b000111000111,
-        0b000000111000,
-        0b000000111000,
-        0b000000111000,
-        0b000111000111,
-        0b000111000111,
-        0b000111000111,
-        0b111000000000,
-        0b111000000000,
-        0b111000000000
+        0b000000000111,
+        0b000000000111,
+        0b000000000111,
+        0b111000111000,
+        0b111000111000,
+        0b111000111000,
+        0b000111000000,
+        0b000111000000,
+        0b000111000000,
+        0b111000111000,
+        0b111000111000,
+        0b111000111000
     };
 
     Array<Tile> newTiles(tileCount);
@@ -440,26 +440,26 @@ Array<Tile> Tile::CreateTileJ(unsigned int tileCount, unsigned int& startId, Pre
     newTile.prey = preyType;
     newTile.tileType = TileType::J;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
+        TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
         TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
         TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
-        TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
-        TerrainType::Grass, TerrainType::Grass, TerrainType::Grass
+        TerrainType::Grass, TerrainType::Road, TerrainType::Grass
     };
 
     newTile.center = TerrainType::Road;
     newTile.edgeConnections = new unsigned int[(newTile.numberSides * newTile.countPerSide)] {
-        0b000000000111,
-        0b000000000111,
-        0b000000000111,
-        0b111100001000,
-        0b000010010000,
-        0b000001100000,
-        0b000001100000,
-        0b000010010000,
-        0b111100001000,
-        0b111100001000,
-        0b111100001000,
-        0b111100001000
+        0b100001000111,
+        0b100001000111,
+        0b100001000111,
+        0b000000111000,
+        0b000000111000,
+        0b000000111000,
+        0b100001000111,
+        0b010010000000,
+        0b001100000000,
+        0b001100000000,
+        0b010010000000,
+        0b100001000111,
     };
 
     Array<Tile> newTiles(tileCount);
@@ -588,26 +588,26 @@ Array<Tile> Tile::CreateTileP(unsigned int tileCount, unsigned int& startId, Pre
     newTile.prey = preyType;
     newTile.tileType = TileType::P;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
+        TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
         TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
-        TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
-        TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
-        TerrainType::Castle, TerrainType::Castle, TerrainType::Castle
+        TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
+        TerrainType::Grass, TerrainType::Road, TerrainType::Grass
     };
 
     newTile.center = TerrainType::Grass;
     newTile.edgeConnections = new unsigned int[(newTile.numberSides * newTile.countPerSide)] {
-        0b111000000111,
-        0b111000000111,
-        0b111000000111,
-        0b000100001000,
-        0b000010010000,
-        0b000001100000,
-        0b000001100000,
-        0b000010010000,
-        0b000100001000,
-        0b111000000111,
-        0b111000000111,
-        0b111000000111
+        0b100000000001,
+        0b010000000010,
+        0b001000000100,
+        0b000111111000,
+        0b000111111000,
+        0b000111111000,
+        0b000111111000,
+        0b000111111000,
+        0b000111111000,
+        0b001000000100,
+        0b010000000010,
+        0b100000000001
     };
 
     Array<Tile> newTiles(tileCount);
@@ -625,26 +625,26 @@ Array<Tile> Tile::CreateTileR(unsigned int tileCount, unsigned int& startId, Pre
     newTile.prey = preyType;
     newTile.tileType = TileType::R;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
-        TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
-        TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
         TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
+        TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
+        TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
         TerrainType::Castle, TerrainType::Castle, TerrainType::Castle
     };
 
     newTile.center = TerrainType::Castle;
     newTile.edgeConnections = new unsigned int[(newTile.numberSides * newTile.countPerSide)] {
-        0b111000111111,
-        0b111000111111,
-        0b111000111111,
-        0b111000111111,
-        0b111000111111,
-        0b111000111111,
-        0b000111000000,
-        0b000111000000,
-        0b000111000000,
-        0b111000111111,
-        0b111000111111,
-        0b111000111111
+        0b000000000111,
+        0b000000000111,
+        0b000000000111,
+        0b111111111000,
+        0b111111111000,
+        0b111111111000,
+        0b111111111000,
+        0b111111111000,
+        0b111111111000,
+        0b111111111000,
+        0b111111111000,
+        0b111111111000
     };
 
     Array<Tile> newTiles(tileCount);
@@ -662,26 +662,26 @@ Array<Tile> Tile::CreateTileT(unsigned int tileCount, unsigned int& startId, Pre
     newTile.prey = preyType;
     newTile.tileType = TileType::T;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
-        TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
-        TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
         TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
+        TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
+        TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
         TerrainType::Castle, TerrainType::Castle, TerrainType::Castle
     };
 
     newTile.center = TerrainType::Castle;
     newTile.edgeConnections = new unsigned int[(newTile.numberSides * newTile.countPerSide)] {
-        0b111000111111,
-        0b111000111111,
-        0b111000111111,
-        0b111000111111,
-        0b111000111111,
-        0b111000111111,
-        0b000001000000,
-        0b000010000000,
-        0b000100000000,
-        0b111000111111,
-        0b111000111111,
-        0b111000111111
+        0b000000000001,
+        0b000000000010,
+        0b000000000100,
+        0b111111111000,
+        0b111111111000,
+        0b111111111000,
+        0b111111111000,
+        0b111111111000,
+        0b111111111000,
+        0b111111111000,
+        0b111111111000,
+        0b111111111000
     };
 
     Array<Tile> newTiles(tileCount);

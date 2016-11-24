@@ -8,10 +8,7 @@ void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, u
     auto placedSearch = regionTracker.find(placedTileID);
     auto connectingSearch = regionTracker.find(connectingTileID);
 
-#ifdef testing
-    assert((placedSearch != regionTracker.end()));
-    assert((placedSearch != regionTracker.end()));
-#endif
+    if (placedSearch == regionTracker.end() || connectingSearch == regionTracker.end()) throw std::logic_error("The placed or connecting tile can't be found in the regions.");
 
     if(placedSearch != regionTracker.end() && connectingSearch != regionTracker.end())
     {
@@ -185,9 +182,7 @@ int Regions::checkOwner(unsigned int tileID, unsigned int edge)
 {
     auto search = regionTracker.find(tileID);
 
-#ifdef testing
-    assert((search != regionTracker.end()));
-#endif
+    if (search == regionTracker.end()) throw std::logic_error("The tile can't be found in the regions.");
 
     if(search != regionTracker.end())
     {
@@ -254,8 +249,8 @@ unsigned int Regions::checkRegionEdgesTillCompletion(unsigned int tileID, unsign
             return ((search->second)[edge]->edgesTillCompletion);
         }
     }
-    assert(false);
-    return 0;
+
+    throw std::logic_error("The tile, edge combination could not be found.");
 }
 
 void Regions::clearOwnerMeeples() {

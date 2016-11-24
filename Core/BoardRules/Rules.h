@@ -26,7 +26,7 @@ class GameRules
     private:
         static unsigned int scoreRoad(struct regionSet * currentSet, bool actuallyScore);
         static unsigned int scoreCastle(struct regionSet * currentSet, bool actuallyScore);
-        static unsigned int scoreGrass(unsigned int tileID, unsigned int edge);
+        static unsigned int scoreGrass(struct regionSet ** currentSets, unsigned int tileID, unsigned int edge);
         static unsigned int scoreChurch(bool isSurrounded);
 };
 
