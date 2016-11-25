@@ -1,7 +1,7 @@
 CC=g++
 CPPFLAGS=-isystem gtest/include
 CFLAGS=-g -Wall -Wextra -pthread -lpthread
-DEPS=Compiled/Tile-Test.o ../Compiled/Tile.o
+DEPS=Compiled/Tile-Test.o ../Compiled/Tile.o Compiled/Board-Test.o ../Compiled/Board.o
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S), Linux)
