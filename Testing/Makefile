@@ -15,6 +15,7 @@ endif
 default:
 	mkdir -p Compiled
 	$(MAKE) -C ./Core
+	$(MAKE) -C ./ExternalPlayers
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(DEPS) $(GTEST_DEPS) -o tests
 	./tests --gtest_output=xml:test_result.xml
 

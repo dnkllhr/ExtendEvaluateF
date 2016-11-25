@@ -13,8 +13,8 @@
 #define HURTING_NEUTRAL_IDX 1
 #define HURTING_BAD_IDX     2
 
-#define HURTING_GOOD_WHT    10
-#define HURTING_NEUTRAL_WHT -1
+#define HURTING_GOOD_WHT    -1
+#define HURTING_NEUTRAL_WHT -5
 #define HURTING_BAD_WHT     -10
 
 #define HELPING_GOOD_IDX    2
@@ -49,14 +49,14 @@ struct Graph
         rightEnd = 0;
     };
 
-    unsigned int leftStart;
-    unsigned int leftEnd;
-    unsigned int midStart;
-    unsigned int midPlatStart;
-    unsigned int midPlatEnd;
-    unsigned int midEnd;
-    unsigned int rightStart;
-    unsigned int rightEnd;
+    int leftStart;
+    int leftEnd;
+    int midStart;
+    int midPlatStart;
+    int midPlatEnd;
+    int midEnd;
+    int rightStart;
+    int rightEnd;
 };
 
 struct AIMove

@@ -1,12 +1,14 @@
 CC=g++
-CFLAGS=-Wall -std=c++11
+CFLAGS=-Wall -std=c++14
 DCFLAGS=-g -Dtesting
 DEPS=FuzzyLogic.h AI.h
 CLEAN=*.o
 
-default: AI.o
+default: 
+	AI.o FuzzyLogic.o
 
-tests: Fuzzy-Test.o AI-Test.o
+tests: 
+	Fuzzy-Test.o AI-Test.o
 
 AI.o: AI.cpp $(DEPS)
 	$(CC) $(CFLAGS) -c $< -o $@
