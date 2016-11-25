@@ -23,8 +23,8 @@ class Move {
         Move()=delete;
 
     private:
-        Tile& tile;
-        Coord& coord;
+        Tile* tile;
+        const Coord* coord;
         unsigned int rotation;
 };
 

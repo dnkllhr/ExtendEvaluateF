@@ -1,25 +1,32 @@
 #include "Board.h"
 
-std::unordered_map<unsigned int, Move&> Board::tileIDTracker = std::unordered_map<unsigned int, Move&>();
+std::unordered_map<unsigned int, const Move&> Board::tileIDTracker = std::unordered_map<unsigned int, const Move&>();
 std::unordered_set<unsigned int> Board::availableLocations = std::unordered_set<unsigned int>();
 TileStack tileStack(unsigned int NUMBER_OF_PLAYERS);
 
-Board::Board()
+const unsigned int Board::boardWidth = NUMBER_OF_PLAYABLE_TILES * 2 + 1;
+const unsigned int Board::boardHeight = NUMBER_OF_PLAYABLE_TILES * 2 + 1;
+Array<Array<Tile*>> Board::board = Array<Array<Tile*>>(boardWidth);
+int x = Board::init();
+
+
+int Board::init()
 {
-	boardWidth = NUMBER_OF_PLAYABLE_TILES * 2 + 1;
-    boardHeight = NUMBER_OF_PLAYABLE_TILES * 2 + 1;
-	
-	board = Array<Array<Tile*>>(boardWidth);
-    
-	for(unsigned int i = 0; i < boardWidth; i++)
-	{
-		board[i] = Array<Tile*>(boardHeight);
-	}
+    Board::availableLocations.clear();
+    for(unsigned int i = 0; i < Board::boardWidth; i++)
+    {
+        Board::board[i] = Array<Tile*>(boardHeight);
+        for(unsigned int j = 0; j < Board::boardHeight; j++)
+        {
+            Board::board[i][j] = nullptr;
+        }
+    }
+    return 1;
 }
 
 const Array<Array<Tile*>>& Board::getBoard()
 {
-	return board;
+	return Board::board;
 }
 
 const Tile& Board::get(const Coord& coord)
@@ -105,8 +112,8 @@ void Board::place(const Move& move)
 	board[coord.getX()][coord.getY()] = &tile;
 
 	//Used for accounting
-    Move moveCopy = move; // not const
-    tileIDTracker.insert( std::pair<unsigned int, Move&>(tile.getId(), moveCopy) );
+    //Move& moveCopy = move; // not const
+    tileIDTracker.insert( std::pair<unsigned int, const Move&>(tile.getId(), move) );
 }
 
 const std::unordered_set<unsigned int>& Board::getAvailableLocations()
