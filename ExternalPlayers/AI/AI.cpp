@@ -3,8 +3,8 @@
 
 AI::AI()
 {
-    this->fz = new FuzzyLogic;
-    this->move = new AIMove;
+    AI::fz = new FuzzyLogic;
+    AI::move = new AIMove;
 }
 
 AI::~AI()
@@ -14,24 +14,48 @@ AI::~AI()
 }
 
 
-int AI::chooseTurn(struct ValidMoves *v)
+int AI::chooseTurn(Tile *currentTile)
 {
-    int highestIndex = 0;
+    std::vector<Move> moveList = BoardManager::getValidMoves(*currentTile);
+
+    auto highestIndex = moveList.begin();
     float highestValue = 0;
 
-    std::vector<Move> moveList = BoardManager::getValidMoves();
-
     float currentValue;
-    for(int i = 0; i < v->numMoves; i++)
+    struct moveResult *currentResult;
+    for(auto i = moveList.begin(); i != moveList.end(); ++i)
     {
-        this->move = &(getValidMoves::tryMove(v->moveList[i]));
-        this->fz->enterData(this->move);
-        currentValue = this->fz->getResults();
+        *currentResult = Regions::tryMove(i->getTile(), Board::getBorderingTiles(*currentTile));
+
+        if(AI::myPlayerNumber == 1)
+        {
+            AI::move = new AIMove;
+            AI::move->edgesTillCompletion = currentResult->edgesTillCompletion;
+            AI::move->diffMyScore = currentResult->player1ScoreChange;
+            AI::move->diffEnemyScore = currentResult->player2ScoreChange;
+        }
+        else
+        {
+            AI::move = new AIMove;
+            AI::move->edgesTillCompletion = currentResult->edgesTillCompletion;
+            AI::move->diffEnemyScore = currentResult->player1ScoreChange;
+            AI::move->diffMyScore = currentResult->player2ScoreChange;
+        }
+
+        AI::fz->enterData(AI::move);
+        currentValue = AI::fz->getResults();
+
         if(currentValue > highestValue)
         {
             highestValue = currentValue;
             highestIndex = i;
         }
     }
-    return highestIndex;
+    return (highestIndex - moveList.begin());
+}
+
+
+void AI::setPlayerNumber(unsigned int playerNumber)
+{
+    AI::myPlayerNumber = playerNumber;
 }

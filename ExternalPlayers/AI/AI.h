@@ -4,16 +4,20 @@
 
 #include "FuzzyLogic.h"
 #include "../../Core/BoardManager/BoardManager.h"
+#include "../../Core/BoardRules/Regions.h"
+#include "../../Core/Board/Board.h"
 
 class AI
 {
 public:
-    static int chooseTurn(struct ValidMoves *v);
-    static AI();
-    static ~AI();
+    static int chooseTurn(Tile *currentTile);
+    static void setPlayerNumber(unsigned int playerNumber);
+    AI();
+    ~AI();
 private:
-    FuzzyLogic *fz;
-    AIMove *move;
+    static FuzzyLogic *fz;
+    static AIMove *move;
+    static unsigned int myPlayerNumber;
 };
 
 #endif

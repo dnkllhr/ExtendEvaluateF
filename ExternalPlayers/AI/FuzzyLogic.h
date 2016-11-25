@@ -68,8 +68,8 @@ struct AIMove
     };
 
     unsigned int edgesTillCompletion;
-    unsigned int diffMyScore;
-    unsigned int diffEnemyScore;
+    int diffMyScore;
+    int diffEnemyScore;
 
 };
 
@@ -87,9 +87,9 @@ private:
     std::string name;
     Graph *graphDescriptor;
     float percentMembership[3];
-    float scoreLeft(unsigned int diffScore);
-    float scoreMid(unsigned int diffScore);
-    float scoreRight(unsigned int diffScore);
+    float scoreLeft(int diffScore);
+    float scoreMid(int diffScore);
+    float scoreRight(int diffScore);
 };
 
 

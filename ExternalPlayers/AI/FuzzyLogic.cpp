@@ -79,7 +79,7 @@ void FuzzySet::enterData(unsigned int input)
     this->percentMembership[2] = this->scoreRight(input);
 }
 
-float FuzzySet::scoreLeft(unsigned int diffScore)
+float FuzzySet::scoreLeft(int diffScore)
 {
     //printf("Score Left input: %d, start %d end %d\n", diffScore, this->graphDescriptor->leftStart, this->graphDescriptor->leftEnd);
     if(diffScore <= this->graphDescriptor->leftStart)
@@ -104,7 +104,7 @@ float FuzzySet::scoreLeft(unsigned int diffScore)
     }
 }
 
-float FuzzySet::scoreMid(unsigned int diffScore)
+float FuzzySet::scoreMid(int diffScore)
 {
     //float midPoint = ((float)this->graphDescriptor->midEnd + (float)this->graphDescriptor->midStart)/2.f;
     //printf("Score Mid input: %d, start %d,  end %d\n", diffScore, this->graphDescriptor->midStart, this->graphDescriptor->midEnd);
@@ -144,7 +144,7 @@ float FuzzySet::scoreMid(unsigned int diffScore)
     }
 }
 
-float FuzzySet::scoreRight(unsigned int diffScore)
+float FuzzySet::scoreRight(int diffScore)
 {
     //printf("Score Right input: %d, start %d, end %d\n", diffScore, this->graphDescriptor->rightStart, this->graphDescriptor->rightEnd);
     if(diffScore <= this->graphDescriptor->rightStart)
