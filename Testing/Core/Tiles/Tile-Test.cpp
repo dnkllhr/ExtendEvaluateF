@@ -2,6 +2,7 @@
 #include "../Core/Tiles/TileType.h"
 #include "../Core/Tiles/PreyType.h"
 #include "gtest/gtest.h"
+#include <sstream>
 
 TEST(TileTests, CreateTiles) {
     Array<Array<Tile>> tiles = Tile::CreateTiles();
@@ -17,6 +18,30 @@ TEST(TileTests, CreateTiles) {
         EXPECT_LE(minInnerArray, innerSize);
         EXPECT_GE(maxInnerArray, innerSize);
     }
+}
+
+TEST(TileTests, getTileName) {
+    Array<Array<Tile>> tiles = Tile::CreateTiles();
+    Tile& tileD_noDeer = tiles[3][0];
+    Tile& tileD_deer = tiles[4][0];
+
+    EXPECT_EQ(tileD_noDeer.getTileName(), "TLTJ");
+    EXPECT_EQ(tileD_deer.getTileName(), "TLTJD");
+}
+
+TEST(TileTests, outputOperator) {
+    Array<Array<Tile>> tiles = Tile::CreateTiles();
+    Tile& tileD_noDeer = tiles[3][0];
+    Tile& tileD_deer = tiles[4][0];
+
+    std::stringstream deerOut;
+    std::stringstream noDeerOut;
+
+    noDeerOut << tileD_noDeer;
+    deerOut << tileD_deer;
+
+    EXPECT_EQ(noDeerOut.str(), "TLTJ");
+    EXPECT_EQ(deerOut.str(), "TLTJD");
 }
 
 TEST(TileTests, SetRotation) {
