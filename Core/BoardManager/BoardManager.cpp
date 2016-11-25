@@ -98,7 +98,7 @@ unsigned int BoardManager::isSurrounded(int tileID)
 {
 	unsigned int surrounded = 0;
 	const Coord& coord = Board::getCoordinatesFromTileId(tileID);
-    const Array<Array<Tile*>> boardGrid = Board::getBoard();
+    const Array<Array<Tile*>>& boardGrid = Board::getBoard();
     unsigned int xLocation = coord.getX();
     unsigned int yLocation = coord.getY();
 	

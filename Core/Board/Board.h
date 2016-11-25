@@ -28,6 +28,7 @@ class Board {
         static const Coord getCoordinatesFromGridId(unsigned int gridId);
         // Get the GridId for a given Coord
         static unsigned int getGridId(const Coord& coord);
+        static unsigned int getGridId(unsigned int x, unsigned int y);
         // For a given Move, place the specifed Tile at the specified Coord
         static void place(const Move& move);
         // Returns a set of gridID's of loactions adjacent to the border of already placed tiles

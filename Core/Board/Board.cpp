@@ -49,11 +49,15 @@ const Tile** Board::getBorderingTiles(const Tile& tile)
     int dx[numberOfBorderingTiles] = { -1, 0, 1, 1, 1, 0, -1, -1 };
     int dy[numberOfBorderingTiles] = { -1, -1, -1, 0, 1, 1, 1, 0 };
 
+    const Array<Array<Tile*>>& boardGrid = Board::getBoard();
+
     for(unsigned int i = 0; i < numberOfBorderingTiles; i++)
     {
-        Coord current(coord.getX() + dx[i], coord.getY() + dy[i]);
-        borderingTiles[i] = &Board::get(current);
+        unsigned int x = coord.getX() + dx[i];
+        unsigned int y = coord.getY() + dy[i];
+        borderingTiles[i] = boardGrid[x][y];
     }
+
     return borderingTiles;
 }
 
@@ -69,6 +73,12 @@ unsigned int Board::getGridId(const Coord& coord)
     return gridId;
 }
 
+unsigned int Board::getGridId(unsigned int x, unsigned int y)
+{
+    unsigned int gridId = y * boardWidth + x;
+    return gridId;
+}
+
 void Board::place(const Move& move)
 {
     const Coord& coord = move.getCoord();
@@ -79,20 +89,23 @@ void Board::place(const Move& move)
     int dx[4] = { -1, 1, 0, 0 };
     int dy[4] = { 0, 0, -1, 1 };
 
+    const Array<Array<Tile*>>& boardGrid = Board::getBoard();
+
     for(unsigned int i = 0; i < 4; i++)
     {
-        Coord temp(coord.getX() + dx[i], coord.getY() + dy[i]);
+        unsigned int x = coord.getX() + dx[i];
+        unsigned int y = coord.getY() + dy[i];
 
-        if(&Board::get(temp) == NULL)
+        if(boardGrid[x][y] == NULL)
         {
-            availableLocations.insert(Board::getGridId(temp));
+            availableLocations.insert(Board::getGridId(x, y));
         }
     }
 
 	board[coord.getX()][coord.getY()] = &tile;
 
 	//Used for accounting
-    Move moveCopy(move); // not const
+    Move moveCopy = move; // not const
     tileIDTracker.insert( std::pair<unsigned int, Move&>(tile.getId(), moveCopy) );
 }
 
