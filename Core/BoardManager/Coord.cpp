@@ -6,6 +6,12 @@ Coord::Coord(int x, int y)
 	this->y = y;
 }
 
+std::ostream &operator<<(std::ostream &out, Coord coord)
+{
+    out << this->x << " " << this->y;
+    return out;
+}
+
 void Coord::setX(int x) {
     this->x = x;
 }

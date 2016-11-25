@@ -1,6 +1,7 @@
 #ifndef __TILE_H
 #define __TILE_H
 
+#include <string>
 #include <algorithm>
 #include "PreyType.h"
 #include "TileType.h"
@@ -47,6 +48,8 @@ class Tile {
         /// The tile destructor which frees the edges and edge connections arrays.
         ~Tile();
 
+        friend std::ostream &operator<<(std::ostream &out, Tile tile);
+
         /// Sets the rotation of the current tile where each increment is a rotation of 90 degrees. So calling setRotation(2) will rotate the tile 180 degrees. After a tile is placed, a tile can no longer be rotated so the method returns true if the rotation was set and false otherwise.
         bool setRotation(unsigned int rotation);
 
@@ -70,6 +73,8 @@ class Tile {
         /// Gets the tile type for the current tile.
         TileType getTileType() const;
 
+        std::string getName() const;
+
         /// Takes two edge indices and outputs whether they are connected. Direction does not matter so isConnected(in, out) is equal to isConnected(out, int).
         bool isConnected(unsigned int inEdge, unsigned int outEdge) const;
 
@@ -82,9 +87,12 @@ class Tile {
         /// Gets the id of the current tile.
         unsigned int getId() const;
 
+        std::string getTileName() const;
+
     private:
         Tile();
 
+        std::string tileName;
         unsigned int tileId;
         // The number of sides this tile has
         unsigned int numberSides;

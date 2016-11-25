@@ -9,7 +9,7 @@ Move::Move(Tile& t, const Coord& c)
 
 Move::Move(Tile& t, unsigned int x, unsigned int y)
 {
-	thile->tile = t;
+	this->tile = t;
 	this->coord(x, y);
 	this->rotation = 0;
 }
@@ -23,9 +23,15 @@ Move::Move(Tile& t, const Coord& c, unsigned int r)
 
 Move::Move(Tile& t, unsigned int x, unsigned int y, unsigned int r)
 {
-	thile->tile = t;
+	this->tile = t;
 	this->coord(x, y);
 	this->rotation = r;
+}
+
+std::ostream &operator<<(std::ostream &out, Move move)
+{
+    out << "PLACE " << this->tile << " AT " << this->coord << " " << (this->rotation * 90);
+    return out;
 }
 
 const Tile& Move::getTile() const {

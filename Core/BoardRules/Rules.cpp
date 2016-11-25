@@ -144,7 +144,7 @@ unsigned int GameRules::scoreGrass(std::shared_ptr<struct regionSet> * passedSet
             //Get all of the regions for the current tileID (associated with the current node)
             currentSets = Regions::getRegions(currentNode->tileID);
             //We need the actual tile to be able to determine which regions are actually touching.
-            currentTile = Board::get(tileID);
+            currentTile = &Board::get(tileID);
         }
 
         //Init the starting values of left and right.

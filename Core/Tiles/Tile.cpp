@@ -77,6 +77,10 @@ TerrainType Tile::getTerrainType(unsigned int edge) const {
     return this->edges[edge];
 }
 
+std::string Tile::getTileName() const {
+    return this->tileName;
+}
+
 bool Tile::isConnected(unsigned int inEdge, unsigned int outEdge) const {
     unsigned int offsetIn = (inEdge + this->rotation) % (this->numberSides * this->countPerSide);
     unsigned int offsetOut = (outEdge + this->rotation) % (this->numberSides * this->countPerSide);
@@ -137,9 +141,21 @@ Tile& Tile::operator=(const Tile& other) {
     return *this;
 }
 
+std::ostream &operator<<(std::ostream &out, Tile tile) {
+    out << tile.tileName;
+
+    if (tile.prey == PreyType::Deer) out << std::string("D");
+    else if (tile.prey == PreyType::Buffalo) out << std::string("B");
+    else if (tile.prey == PreyType::Boar) out << std::string("P");
+    else if (tile.prey == PreyType::Croc) out << std::string("C");
+
+    return out;
+}
+
 Array<Tile> Tile::CreateTileA(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
 
+    newTile.tileName = "JJTJX";
     newTile.prey = preyType;
     newTile.tileType = TileType::A;
 
@@ -178,6 +194,7 @@ Array<Tile> Tile::CreateTileA(unsigned int tileCount, unsigned int& startId, Pre
 
 Array<Tile> Tile::CreateTileB(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
+    newTile.tileName = "JJJJX";
     newTile.prey = preyType;
     newTile.tileType = TileType::B;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
@@ -215,6 +232,7 @@ Array<Tile> Tile::CreateTileB(unsigned int tileCount, unsigned int& startId, Pre
 
 Array<Tile> Tile::CreateTileC(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
+    newTile.tileName = "LLLL";
     newTile.prey = preyType;
     newTile.tileType = TileType::C;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
@@ -252,6 +270,7 @@ Array<Tile> Tile::CreateTileC(unsigned int tileCount, unsigned int& startId, Pre
 
 Array<Tile> Tile::CreateTileD(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
+    newTile.tileName = "TLTJ";
     newTile.prey = preyType;
     newTile.tileType = TileType::D;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
@@ -289,6 +308,7 @@ Array<Tile> Tile::CreateTileD(unsigned int tileCount, unsigned int& startId, Pre
 
 Array<Tile> Tile::CreateTileE(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
+    newTile.tileName = "LJJJ";
     newTile.prey = preyType;
     newTile.tileType = TileType::E;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
@@ -326,6 +346,7 @@ Array<Tile> Tile::CreateTileE(unsigned int tileCount, unsigned int& startId, Pre
 
 Array<Tile> Tile::CreateTileG(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
+    newTile.tileName = "JLJL";
     newTile.prey = preyType;
     newTile.tileType = TileType::G;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
@@ -363,6 +384,7 @@ Array<Tile> Tile::CreateTileG(unsigned int tileCount, unsigned int& startId, Pre
 
 Array<Tile> Tile::CreateTileH(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
+    newTile.tileName = "LJLJ";
     newTile.prey = preyType;
     newTile.tileType = TileType::H;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
@@ -400,6 +422,7 @@ Array<Tile> Tile::CreateTileH(unsigned int tileCount, unsigned int& startId, Pre
 
 Array<Tile> Tile::CreateTileI(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
+    newTile.tileName = "JLLJ";
     newTile.prey = preyType;
     newTile.tileType = TileType::I;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
@@ -437,6 +460,7 @@ Array<Tile> Tile::CreateTileI(unsigned int tileCount, unsigned int& startId, Pre
 
 Array<Tile> Tile::CreateTileJ(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
+    newTile.tileName = "JLTT";
     newTile.prey = preyType;
     newTile.tileType = TileType::J;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
@@ -474,6 +498,7 @@ Array<Tile> Tile::CreateTileJ(unsigned int tileCount, unsigned int& startId, Pre
 
 Array<Tile> Tile::CreateTileK(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
+    newTile.tileName = "TLJT";
     newTile.prey = preyType;
     newTile.tileType = TileType::K;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
@@ -511,6 +536,7 @@ Array<Tile> Tile::CreateTileK(unsigned int tileCount, unsigned int& startId, Pre
 
 Array<Tile> Tile::CreateTileL(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
+    newTile.tileName = "TLTT";
     newTile.prey = preyType;
     newTile.tileType = TileType::L;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
@@ -548,6 +574,7 @@ Array<Tile> Tile::CreateTileL(unsigned int tileCount, unsigned int& startId, Pre
 
 Array<Tile> Tile::CreateTileN(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
+    newTile.tileName = "LLJJ";
     newTile.prey = preyType;
     newTile.tileType = TileType::N;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
@@ -585,6 +612,7 @@ Array<Tile> Tile::CreateTileN(unsigned int tileCount, unsigned int& startId, Pre
 
 Array<Tile> Tile::CreateTileP(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
+    newTile.tileName = "TLLT";
     newTile.prey = preyType;
     newTile.tileType = TileType::P;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
@@ -622,6 +650,7 @@ Array<Tile> Tile::CreateTileP(unsigned int tileCount, unsigned int& startId, Pre
 
 Array<Tile> Tile::CreateTileR(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
+    newTile.tileName = "JLLL";
     newTile.prey = preyType;
     newTile.tileType = TileType::R;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
@@ -659,6 +688,7 @@ Array<Tile> Tile::CreateTileR(unsigned int tileCount, unsigned int& startId, Pre
 
 Array<Tile> Tile::CreateTileT(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
+    newTile.tileName = "TLLL";
     newTile.prey = preyType;
     newTile.tileType = TileType::T;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
@@ -696,6 +726,7 @@ Array<Tile> Tile::CreateTileT(unsigned int tileCount, unsigned int& startId, Pre
 
 Array<Tile> Tile::CreateTileU(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
+    newTile.tileName = "TJTJ";
     newTile.prey = preyType;
     newTile.tileType = TileType::U;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
@@ -733,6 +764,7 @@ Array<Tile> Tile::CreateTileU(unsigned int tileCount, unsigned int& startId, Pre
 
 Array<Tile> Tile::CreateTileV(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
+    newTile.tileName = "TJJT";
     newTile.prey = preyType;
     newTile.tileType = TileType::V;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
@@ -770,6 +802,7 @@ Array<Tile> Tile::CreateTileV(unsigned int tileCount, unsigned int& startId, Pre
 
 Array<Tile> Tile::CreateTileW(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
+    newTile.tileName = "TJTT";
     newTile.prey = preyType;
     newTile.tileType = TileType::W;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
@@ -807,6 +840,7 @@ Array<Tile> Tile::CreateTileW(unsigned int tileCount, unsigned int& startId, Pre
 
 Array<Tile> Tile::CreateTileX(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
+    newTile.tileName = "TTTT";
     newTile.prey = preyType;
     newTile.tileType = TileType::X;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
@@ -844,6 +878,7 @@ Array<Tile> Tile::CreateTileX(unsigned int tileCount, unsigned int& startId, Pre
 
 Array<Tile> Tile::CreateTileY(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
+    newTile.tileName = "JJJJ";
     newTile.prey = preyType;
     newTile.tileType = TileType::Y;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
@@ -881,6 +916,7 @@ Array<Tile> Tile::CreateTileY(unsigned int tileCount, unsigned int& startId, Pre
 
 Array<Tile> Tile::CreateTileZ(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
     Tile newTile;
+    newTile.tileName = "WJTJ";
     newTile.prey = preyType;
     newTile.tileType = TileType::Z;
     newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {

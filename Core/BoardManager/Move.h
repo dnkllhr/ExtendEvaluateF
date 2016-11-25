@@ -10,6 +10,8 @@ class Move {
         const Coord& getCoord() const;
         const unsigned int getRotation() const;
 
+        friend std::ostream &operator<<(std::ostream &out, Move move);
+
         // default rotation = 0
         Move(Tile& t, const Coord& c);
         Move(Tile& t, unsigned int x, unsigned int y);

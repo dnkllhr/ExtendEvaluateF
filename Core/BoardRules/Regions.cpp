@@ -375,8 +375,7 @@ void Regions::clearOwnerMeeples() {
     for (int i = 0; i < TOTAL_MEEPLES; i++) {
         ownerMeeples[i].inUse = false;
         if (ownerMeeples[i].ownedRegion != NULL) {
-            delete ownerMeeples[i].ownedRegion;
-            ownerMeeples[i].ownedRegion = NULL;
+            ownerMeeples[i].ownedRegion = std::shared_ptr<struct regionSet>(NULL);
         }
     }
 }
