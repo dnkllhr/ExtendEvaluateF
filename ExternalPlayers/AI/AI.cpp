@@ -23,9 +23,9 @@ int AI::chooseTurn(Tile *currentTile)
 
     float currentValue;
     struct moveResult *currentResult;
-    for(auto i = moveList.begin(); i != moveList.end(); ++i)
+    for(auto currentMove = moveList.begin(); currentMove != moveList.end(); ++currentMove)
     {
-        *currentResult = Regions::tryMove(i->getTile(), Board::getBorderingTiles(*currentTile));
+        *currentResult = Regions::tryMove(currentMove->getTile(), Board::getBorderingTiles(*currentTile));
 
         if(AI::myPlayerNumber == 1)
         {
@@ -48,7 +48,7 @@ int AI::chooseTurn(Tile *currentTile)
         if(currentValue > highestValue)
         {
             highestValue = currentValue;
-            highestIndex = i;
+            highestIndex = currentMove;
         }
     }
     return (highestIndex - moveList.begin());
