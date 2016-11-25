@@ -8,7 +8,7 @@ class Move {
     public:
         Tile& getTile() const;
         const Coord& getCoord() const;
-        const unsigned int getRotation() const;
+        unsigned int getRotation() const;
 
         friend std::ostream &operator<<(std::ostream &out, Move move);
 
