@@ -12,8 +12,8 @@
 
 class Board {
     public:
-        // Creates a new Board as a grid of tiles of the maximum needed size
-        static int init();
+        // Initializes or resets the Board to a blank/empty grid
+        static int set();
         // Returns the Board as a 2D Array of Tiles
         static const Array<Array<Tile*>>& getBoard();
         // Gets the Tile at the given Coord

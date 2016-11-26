@@ -7,10 +7,9 @@ TileStack tileStack(unsigned int NUMBER_OF_PLAYERS);
 const unsigned int Board::boardWidth = NUMBER_OF_PLAYABLE_TILES * 2 + 1;
 const unsigned int Board::boardHeight = NUMBER_OF_PLAYABLE_TILES * 2 + 1;
 Array<Array<Tile*>> Board::board = Array<Array<Tile*>>(boardWidth);
-int x = Board::init();
+int throwaway = Board::set();
 
-
-int Board::init()
+int Board::set()
 {
     Board::availableLocations.clear();
     for(unsigned int i = 0; i < Board::boardWidth; i++)
@@ -62,6 +61,13 @@ const Tile** Board::getBorderingTiles(const Tile& tile)
     {
         unsigned int x = coord.getX() + dx[i];
         unsigned int y = coord.getY() + dy[i];
+
+        if(x < 0 || x >= boardWidth || y < 0 || y >= boardWidth) // out of range
+        {
+            borderingTiles[i] = nullptr;
+            continue;
+        }
+
         borderingTiles[i] = boardGrid[x][y];
     }
 
@@ -102,6 +108,11 @@ void Board::place(const Move& move)
     {
         unsigned int x = coord.getX() + dx[i];
         unsigned int y = coord.getY() + dy[i];
+
+        if(x < 0 || x >= boardWidth || y < 0 || y >= boardWidth) // out of range
+        {
+            continue;
+        }
 
         if(boardGrid[x][y] == NULL)
         {

@@ -6,7 +6,7 @@
 
 TEST(BoardTests, getBoard)
 {
-    Board::init();
+    Board::set();
 
     const Array<Array<Tile*>>& boardGrid = Board::getBoard();
 
@@ -25,18 +25,18 @@ TEST(BoardTests, getBoard)
 
 TEST(BoardTests, place)
 {
-    Board::init();
+    Board::set();
 
     const Array<Array<Tile*>>& boardGrid = Board::getBoard();
 
     unsigned int tileIDcounter = 0;
-    Tile& tile0 = Tile::CreateTileD(1, tileIDcounter, PreyType::None)[0];
-    Tile& tile1 = Tile::CreateTileJ(1, tileIDcounter, PreyType::Buffalo)[0];
-    Tile& tile2 = Tile::CreateTileV(1, tileIDcounter, PreyType::None)[0];
+    Tile& tile0 = Tile::CreateTileA(1, tileIDcounter, PreyType::None)[0];
+    Tile& tile1 = Tile::CreateTileB(1, tileIDcounter, PreyType::None)[0];
+    Tile& tile2 = Tile::CreateTileC(1, tileIDcounter, PreyType::None)[0];
 
-    const Move& move0 = Move(tile0, 76, 76);
-    const Move& move1 = Move(tile1, 76, 75, 2); // rotate 180 degrees
-    const Move& move2 = Move(tile2, 77, 75);
+    const Move& move0 = Move(tile0, 0, 0);
+    const Move& move1 = Move(tile1, 75, 76, 2);
+    const Move& move2 = Move(tile2, 152, 152);
 
     for(unsigned int m = 0; m <= 3; m++)
     {
@@ -44,15 +44,15 @@ TEST(BoardTests, place)
         {
             for(unsigned int j = 0; j < GRID_SIZE; j++)
             {
-                if(m > 0 && i == 76 && j == 76)
+                if(m > 0 && i == 0 && j == 0)
                 {
                     EXPECT_EQ(&tile0, boardGrid[i][j]);
                 }
-                else if(m > 1 && i == 76 && j == 75)
+                else if(m > 1 && i == 75 && j == 76)
                 {
                     EXPECT_EQ(&tile1, boardGrid[i][j]);
                 }
-                else if(m > 2 && i == 77 && j == 75)
+                else if(m > 2 && i == 152 && j == 152)
                 {
                     EXPECT_EQ(&tile2, boardGrid[i][j]);
                 }
@@ -73,7 +73,7 @@ TEST(BoardTests, place)
 
 TEST(BoardTests, getFromCoord)
 {
-    Board::init();
+    Board::set();
 
     unsigned int tileIdCounter = 0;
     Tile& tile = Tile::CreateTileD(1, tileIdCounter, PreyType::None)[0];
@@ -86,7 +86,7 @@ TEST(BoardTests, getFromCoord)
 
 TEST(BoardTests, getFromTileId)
 {
-    Board::init();
+    Board::set();
 
     unsigned int tileIdCounter = 5;
     Tile tile = Tile::CreateTileD(1, tileIdCounter, PreyType::None)[0];
@@ -94,12 +94,12 @@ TEST(BoardTests, getFromTileId)
     Board::place(move);
 
     Board::get((unsigned int) 5);
-    //EXPECT_EQ(&Board::get((unsigned int) 5), &tile);
+    EXPECT_EQ(&Board::get((unsigned int) 5), &tile);
 }
 
 TEST(BoardTests, getBorderingTiles)
 {
-    Board::init();
+    Board::set();
 
     unsigned int tileIDcounter = 0;
 
@@ -120,8 +120,6 @@ TEST(BoardTests, getBorderingTiles)
     const Move& move4 = Move(tile4, 2, 0); // lower right
     const Move& move5 = Move(tile5, 1, 0); // lower
     const Move& move6 = Move(tile6, 0, 0); // lower left
-    // left is empty 
-    /*
 
     Board::place(moveCenter);
     Board::place(move0);
@@ -141,13 +139,12 @@ TEST(BoardTests, getBorderingTiles)
     EXPECT_EQ(borderingTiles[4], &tile4);
     EXPECT_EQ(borderingTiles[5], &tile5);
     EXPECT_EQ(borderingTiles[6], &tile6);
-    //EXPECT_EQ(borderingTiles[7], nullptr); // left is empty
-    */
+    EXPECT_EQ(borderingTiles[7], nullptr); // left is empty
 }
 
 TEST(BoardTests, getCoordinatesFromTileId)
 {
-    Board::init();
+    Board::set();
 
     unsigned int tileIdCounter = 5;
     int x = 10;
@@ -166,7 +163,7 @@ TEST(BoardTests, getCoordinatesFromTileId)
 
 TEST(BoardTests, getCoordinatesFromGridId)
 {
-    Board::init();
+    Board::set();
 
     int x = 10;
     int y = 20;
@@ -180,7 +177,7 @@ TEST(BoardTests, getCoordinatesFromGridId)
 
 TEST(BoardTests, getGridId)
 {
-    Board::init();
+    Board::set();
 
     int x = 10;
     int y = 20;
@@ -194,7 +191,7 @@ TEST(BoardTests, getGridId)
 
 TEST(BoardTests, getAvailableLocations)
 {
-    Board::init();
+    Board::set();
 
     unsigned int tileIDcounter = 0;
     Tile& tile0 = Tile::CreateTileD(1, tileIDcounter, PreyType::None)[0];
