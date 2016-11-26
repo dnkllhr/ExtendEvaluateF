@@ -79,8 +79,7 @@ std::vector<Move> BoardManager::getValidMoves(Tile& tile)
 
 void BoardManager::makeMove(const Move& move)
 {
-    // if calling this method, it is assumed that this is a legal move
-    
+    // if calling this method, it is assumed that this is a legal move    
     Board::place(move);
     
     Tile& tile = move.getTile();
@@ -110,4 +109,10 @@ unsigned int BoardManager::isSurrounded(int tileID)
 		}
 	}
 	return surrounded;
+}
+
+//Entry points for AI
+struct moveResult BoardManager::tryMove(const Tile& tile)
+{
+    return Regions::tryMove(tile, Board::getBorderingTiles(tile));
 }

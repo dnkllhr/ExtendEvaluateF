@@ -26,6 +26,8 @@ class BoardManager {
         static void makeMove(const Move& move);
 		/// Returns whether the given tile is fully surrounded by other tiles
 		static unsigned int isSurrounded(int tileID);
+        //Entry points for functions needed by the AI
+        static struct moveResult tryMove(const Tile& tile);
     
 #ifndef testing
     private:

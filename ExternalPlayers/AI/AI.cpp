@@ -24,7 +24,7 @@ Move& AI::chooseTurn(Tile& currentTile)
     float currentValue;
     for(auto currentMove = moveList.begin(); currentMove != moveList.end(); ++currentMove)
     {
-        struct moveResult currentResult = Regions::tryMove(currentMove->getTile(), Board::getBorderingTiles(currentTile));
+        struct moveResult currentResult = BoardManager::tryMove(currentMove->getTile());
 
         if(AI::myPlayerNumber == 1)
         {
