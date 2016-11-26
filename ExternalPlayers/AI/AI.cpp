@@ -22,24 +22,23 @@ int AI::chooseTurn(Tile *currentTile)
     float highestValue = 0;
 
     float currentValue;
-    struct moveResult *currentResult;
     for(auto currentMove = moveList.begin(); currentMove != moveList.end(); ++currentMove)
     {
-        *currentResult = Regions::tryMove(currentMove->getTile(), Board::getBorderingTiles(*currentTile));
+        struct moveResult currentResult = Regions::tryMove(currentMove->getTile(), Board::getBorderingTiles(*currentTile));
 
         if(AI::myPlayerNumber == 1)
         {
             AI::move = new AIMove;
-            AI::move->edgesTillCompletion = currentResult->edgesTillCompletion;
-            AI::move->diffMyScore = currentResult->player1ScoreChange;
-            AI::move->diffEnemyScore = currentResult->player2ScoreChange;
+            AI::move->edgesTillCompletion = currentResult.edgesTillCompletion;
+            AI::move->diffMyScore = currentResult.player1ScoreChange;
+            AI::move->diffEnemyScore = currentResult.player2ScoreChange;
         }
         else
         {
             AI::move = new AIMove;
-            AI::move->edgesTillCompletion = currentResult->edgesTillCompletion;
-            AI::move->diffEnemyScore = currentResult->player1ScoreChange;
-            AI::move->diffMyScore = currentResult->player2ScoreChange;
+            AI::move->edgesTillCompletion = currentResult.edgesTillCompletion;
+            AI::move->diffEnemyScore = currentResult.player1ScoreChange;
+            AI::move->diffMyScore = currentResult.player2ScoreChange;
         }
 
         AI::fz->enterData(AI::move);
