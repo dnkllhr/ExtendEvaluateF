@@ -28,14 +28,12 @@ int AI::chooseTurn(Tile *currentTile)
 
         if(AI::myPlayerNumber == 1)
         {
-            AI::move = new AIMove;
             AI::move->edgesTillCompletion = currentResult.edgesTillCompletion;
             AI::move->diffMyScore = currentResult.player1ScoreChange;
             AI::move->diffEnemyScore = currentResult.player2ScoreChange;
         }
         else
         {
-            AI::move = new AIMove;
             AI::move->edgesTillCompletion = currentResult.edgesTillCompletion;
             AI::move->diffEnemyScore = currentResult.player1ScoreChange;
             AI::move->diffMyScore = currentResult.player2ScoreChange;

@@ -3,6 +3,9 @@
 
 TEST(FuzzyTests, getTurnScore)
 {
+    //I convert the expected and return values to ints to account for some loss in accuracy in ownership
+
+
     struct Graph *g;
     g = new Graph;
     g->leftStart = 0;
@@ -19,23 +22,24 @@ TEST(FuzzyTests, getTurnScore)
 
     fs->enterData(0);
     expectedScore = (100)*(HURTING_GOOD_WHT);
-    EXPECT_EQ(fs->getTurnScore(), expectedScore);
+    EXPECT_EQ((int)fs->getTurnScore(), (int) expectedScore);
 
     fs->enterData(3);
     expectedScore = (100)*(HURTING_NEUTRAL_WHT);
-    EXPECT_EQ(fs->getTurnScore(), expectedScore);
+    EXPECT_EQ((int)fs->getTurnScore(), (int) expectedScore);
 
     fs->enterData(10);
     expectedScore = (100)*(HURTING_BAD_WHT);
-    EXPECT_EQ(fs->getTurnScore(), expectedScore);
+    EXPECT_EQ((int)fs->getTurnScore(), (int) expectedScore);
 
     fs->enterData(2);
-    expectedScore = (100 * (2/3)) * HURTING_NEUTRAL_WHT + (100 * (1/3)) * HURTING_GOOD_WHT;
-    EXPECT_EQ(fs->getTurnScore(), expectedScore);
+    expectedScore = (200.f/3.f) * (float)HURTING_NEUTRAL_WHT + (100.f/3.f) * (float)HURTING_GOOD_WHT;
+    EXPECT_EQ((int)fs->getTurnScore(), (int) expectedScore);
 
     fs->enterData(5);
-    expectedScore = (500/6) * HURTING_NEUTRAL_WHT + (1 - (500/6)) * HURTING_BAD_WHT;
-    EXPECT_EQ(fs->getTurnScore(), expectedScore);
+    //printf("Mid ownership: %4.4f Right ownership: %4.4f\n", (100.f - (100.f/6.f)), (100.f/6.f));
+    expectedScore = (100.f - (100.f/6.f)) * (float)HURTING_NEUTRAL_WHT +  (100.f/6.f) * (float)HURTING_BAD_WHT;
+    EXPECT_EQ((int)fs->getTurnScore(), (int) expectedScore);
 
     delete fs;
 
@@ -52,23 +56,23 @@ TEST(FuzzyTests, getTurnScore)
 
     fs->enterData(0);
     expectedScore = (100)*(HELPING_BAD_WHT);
-    EXPECT_EQ(fs->getTurnScore(), expectedScore);
+    EXPECT_EQ((int)fs->getTurnScore(), (int) expectedScore);
 
     fs->enterData(3);
     expectedScore = (100)*(HELPING_NEUTRAL_WHT);
-    EXPECT_EQ(fs->getTurnScore(), expectedScore);
+    EXPECT_EQ((int)fs->getTurnScore(), (int) expectedScore);
 
     fs->enterData(10);
     expectedScore = (100)*(HELPING_GOOD_WHT);
-    EXPECT_EQ(fs->getTurnScore(), expectedScore);
+    EXPECT_EQ((int)fs->getTurnScore(), (int) expectedScore);
 
     fs->enterData(2);
-    expectedScore = (100 * (2/3)) * HELPING_NEUTRAL_WHT + (100 * (1/3)) * HELPING_BAD_WHT;
-    EXPECT_EQ(fs->getTurnScore(), expectedScore);
+    expectedScore = (200.f/3.f) * (float)HELPING_NEUTRAL_WHT + (100.f/3.f) * (float)HELPING_BAD_WHT;
+    EXPECT_EQ((int)fs->getTurnScore(), (int) expectedScore);
 
     fs->enterData(5);
-    expectedScore = (500/6) * HELPING_NEUTRAL_WHT + (1 - (500/6)) * HELPING_GOOD_WHT;
-    EXPECT_EQ(fs->getTurnScore(), expectedScore);
+    expectedScore = (100.f - (100.f/6.f)) * (float)HELPING_NEUTRAL_WHT + (100.f/6.f) * (float)HELPING_GOOD_WHT;
+    EXPECT_EQ((int)fs->getTurnScore(), (int) expectedScore);
 
     g = new Graph;
     g->leftStart = 0;
@@ -83,21 +87,86 @@ TEST(FuzzyTests, getTurnScore)
 
     fs->enterData(0);
     expectedScore = (100)*(TURNS_SHORT_WHT);
-    EXPECT_EQ(fs->getTurnScore(), expectedScore);
+    EXPECT_EQ((int)fs->getTurnScore(), (int) expectedScore);
 
     fs->enterData(3);
     expectedScore = (100)*(TURNS_MEDIUM_WHT);
-    EXPECT_EQ(fs->getTurnScore(), expectedScore);
+    EXPECT_EQ((int)fs->getTurnScore(), (int) expectedScore);
 
     fs->enterData(10);
     expectedScore = (100)*(TURNS_LONG_WHT);
-    EXPECT_EQ(fs->getTurnScore(), expectedScore);
+    EXPECT_EQ((int)fs->getTurnScore(), (int) expectedScore);
 
     fs->enterData(2);
-    expectedScore = (100 * (2/3)) * TURNS_MEDIUM_WHT + (100 * (1/3)) * TURNS_SHORT_WHT;
-    EXPECT_EQ(fs->getTurnScore(), expectedScore);
+    expectedScore = (200.f/3.f) * (float)TURNS_MEDIUM_WHT + (100.f/3.f) * (float)TURNS_SHORT_WHT;
+    EXPECT_EQ((int)fs->getTurnScore(), (int) expectedScore);
 
     fs->enterData(5);
-    expectedScore = (((1/2) * TURNS_MEDIUM_WHT) + (1/2)) * TURNS_LONG_WHT;
-    EXPECT_EQ(fs->getTurnScore(), expectedScore);
+    expectedScore = (50.f) * (float)TURNS_MEDIUM_WHT + (50.f) * (float)TURNS_LONG_WHT;
+    EXPECT_EQ((int)fs->getTurnScore(), (int) expectedScore);
+}
+
+TEST(FuzzyTests, getResults)
+{
+    FuzzyLogic *fz = new FuzzyLogic;
+    struct AIMove *mv = new AIMove;
+
+    float expectedScore;
+
+    //All LEFT
+    mv->edgesTillCompletion = 0;
+    mv->diffMyScore = 0;
+    mv->diffEnemyScore = 0;
+
+    fz->enterData(mv);    
+    expectedScore = (100) * TURNS_SHORT_WHT + (100) * HELPING_BAD_WHT + (100) * HURTING_GOOD_WHT;
+    EXPECT_EQ((int) fz->getResults(), (int) expectedScore);
+
+    //All MID
+    mv->edgesTillCompletion = 0;
+    mv->diffMyScore = 0;
+    mv->diffEnemyScore = 0;
+
+    fz->enterData(mv);    
+    expectedScore = (100) * TURNS_SHORT_WHT + (100) * HELPING_BAD_WHT + (100) * HURTING_GOOD_WHT;
+    EXPECT_EQ((int) fz->getResults(), (int) expectedScore);
+
+    //All RIGHT
+    mv->edgesTillCompletion = 20;
+    mv->diffMyScore = 20;
+    mv->diffEnemyScore = 20;
+
+    fz->enterData(mv);    
+    expectedScore = (100) * TURNS_LONG_WHT + (100) * HELPING_GOOD_WHT + (100) * HURTING_BAD_WHT;
+    EXPECT_EQ((int) fz->getResults(), (int) expectedScore);
+
+    //LEFT, MID, RIGHT
+    mv->edgesTillCompletion = 0;
+    mv->diffMyScore = 3;
+    mv->diffEnemyScore = 20;
+
+    fz->enterData(mv);    
+    expectedScore = (100) * TURNS_SHORT_WHT + (100) * HELPING_NEUTRAL_WHT + (100) * HURTING_BAD_WHT;
+    EXPECT_EQ((int) fz->getResults(), (int) expectedScore);
+
+    //RIGHT, LEFT, MID
+    mv->edgesTillCompletion = 20;
+    mv->diffMyScore = 0;
+    mv->diffEnemyScore = 20;
+
+    fz->enterData(mv);    
+    expectedScore = (100) * TURNS_LONG_WHT + (100) * HELPING_BAD_WHT + (100) * HURTING_BAD_WHT;
+    EXPECT_EQ((int) fz->getResults(), (int) expectedScore);
+
+
+    //All MIXED
+    mv->edgesTillCompletion = 2;
+    mv->diffMyScore = 5;
+    mv->diffEnemyScore = 2;
+
+    fz->enterData(mv);    
+    expectedScore = (200.f/3.f) * (float)TURNS_MEDIUM_WHT + (100.f/3.f) * (float)TURNS_SHORT_WHT + 
+                    (100.f - (100.f/6.f)) * (float)HELPING_NEUTRAL_WHT + (100.f/6.f) * (float)HELPING_GOOD_WHT + 
+                    (200.f/3.f) * (float)HURTING_NEUTRAL_WHT + (100.f/3.f) * (float)HURTING_GOOD_WHT;
+    EXPECT_EQ((int) fz->getResults(), (int) expectedScore);
 }

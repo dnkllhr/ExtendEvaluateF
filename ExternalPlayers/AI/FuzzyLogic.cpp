@@ -69,7 +69,7 @@ float FuzzySet::getTurnScore()
 
 void FuzzySet::enterData(unsigned int input)
 {
-    std::cout << std::endl << this->getName() << std::endl;
+    //std::cout << std::endl << this->getName() << std::endl;
 
     this->percentMembership[0] = this->scoreLeft(input);
     this->percentMembership[1] = this->scoreMid(input);
@@ -217,6 +217,7 @@ FuzzyLogic::~FuzzyLogic()
 
 void FuzzyLogic::enterData(struct AIMove *m)
 {
+    //printf("Entering... DiffEnemy %d, DiffMe %d, edgesTillCompletion %d\n", m->diffEnemyScore, m->diffMyScore, m->edgesTillCompletion);
     this->mySets[HURTING_ENEMY]->enterData(m->diffEnemyScore);
     this->mySets[HELPING_ME]->enterData(m->diffMyScore);
     this->mySets[TURNS_AWAY]->enterData(m->edgesTillCompletion);
@@ -225,8 +226,11 @@ void FuzzyLogic::enterData(struct AIMove *m)
 float FuzzyLogic::getResults()
 {
     float turnScore = 0;
+    //std::string name;
     for(int i = 0; i < NUM_SETS; i++)
     {
+        //std::cout << this->mySets[i]->getName() << std::endl;
+        //printf("Got score %4.4f\n", this->mySets[i]->getTurnScore());
         turnScore += this->mySets[i]->getTurnScore();
     }
     return turnScore;
