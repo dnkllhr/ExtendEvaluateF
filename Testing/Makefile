@@ -1,7 +1,7 @@
 CC=g++
 CPPFLAGS=-isystem gtest/include
 CFLAGS=-g -Wall -Wextra -pthread -lpthread
-DEPS=Compiled/Tile-Test.o ../Compiled/Tile.o Compiled/Board-Test.o ../Compiled/Board.o ../Compiled/Move.o ../Compiled/Coord.o ../Compiled/Fuzzy-Test.o ../Compiled/FuzzyLogic.o
+DEPS=Compiled/Tile-Test.o ../Compiled/Tile.o Compiled/Board-Test.o ../Compiled/Board.o ../Compiled/Move.o ../Compiled/Coord.o Compiled/Fuzzy-Test.o ../Compiled/FuzzyLogic.o
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S), Linux)
@@ -15,9 +15,11 @@ endif
 default:
 	mkdir -p Compiled
 	$(MAKE) -C ./Core
+	$(MAKE) -C ./ExternalPlayers
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(DEPS) $(GTEST_DEPS) -o tests
-	./tests --gtest_output=xml:test_result.xml
+	./tests --gtest_output=xml:test_result.xml || /bin/true
 
 clean:
 	$(MAKE) -C ./Core -f Makefile clean
+	$(MAKE) -C ./ExternalPlayers -f Makefile clean
 	rm -rf Compiled/*

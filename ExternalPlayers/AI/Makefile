@@ -4,7 +4,7 @@ DCFLAGS=-g -Dtesting
 DEPS=FuzzyLogic.h AI.h
 CLEAN=*.o
 
-default: AI.o
+default: FuzzyLogic.o AI.o
 
 tests: Fuzzy-Test.o AI-Test.o
 
@@ -20,7 +20,7 @@ AI-Test.o: AI.cpp $(DEPS)
 	$(CC) $(CFLAGS) $(DCFLAGS) -c $< -o $@
 	cp -f AI-Test.o ../../Compiled/AI.o
 
-Fuzzy-Test.o: Fuzzy-Test.cpp $(DEPS)
+Fuzzy-Test.o: FuzzyLogic.cpp $(DEPS)
 	$(CC) $(CFLAGS) $(DCFLAGS) -c $< -o $@
 	cp -f Fuzzy-Test.o ../../Compiled/FuzzyLogic.o
 

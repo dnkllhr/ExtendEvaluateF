@@ -1,7 +1,5 @@
 #include "FuzzyLogic.h"
 
-
-
 FuzzySet::FuzzySet(unsigned int identifier, std::string name, Graph *g)
 {
     this->graphDescriptor = g;
@@ -11,7 +9,6 @@ FuzzySet::FuzzySet(unsigned int identifier, std::string name, Graph *g)
 FuzzySet::~FuzzySet()
 {
     delete graphDescriptor;
-    delete &percentMembership;
 }
 
 std::string FuzzySet::getName()
