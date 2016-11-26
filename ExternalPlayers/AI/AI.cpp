@@ -14,9 +14,9 @@ AI::~AI()
 }
 
 
-int AI::chooseTurn(Tile *currentTile)
+Move& AI::chooseTurn(Tile& currentTile)
 {
-    std::vector<Move> moveList = BoardManager::getValidMoves(*currentTile);
+    std::vector<Move> moveList = BoardManager::getValidMoves(currentTile);
 
     auto highestIndex = moveList.begin();
     float highestValue = 0;
@@ -24,7 +24,7 @@ int AI::chooseTurn(Tile *currentTile)
     float currentValue;
     for(auto currentMove = moveList.begin(); currentMove != moveList.end(); ++currentMove)
     {
-        struct moveResult currentResult = Regions::tryMove(currentMove->getTile(), Board::getBorderingTiles(*currentTile));
+        struct moveResult currentResult = Regions::tryMove(currentMove->getTile(), Board::getBorderingTiles(currentTile));
 
         if(AI::myPlayerNumber == 1)
         {
@@ -48,7 +48,7 @@ int AI::chooseTurn(Tile *currentTile)
             highestIndex = currentMove;
         }
     }
-    return (highestIndex - moveList.begin());
+    return moveList.at(highestIndex - moveList.begin()) ;
 }
 
 

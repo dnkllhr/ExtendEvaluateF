@@ -1,4 +1,5 @@
 #include "../ExternalPlayers/AI/FuzzyLogic.h"
+#include "../ExternalPlayers/AI/AI.h"
 #include "gtest/gtest.h"
 
 TEST(FuzzyTests, getTurnScore)

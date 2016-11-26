@@ -10,7 +10,7 @@
 class AI
 {
 public:
-    static int chooseTurn(Tile *currentTile);
+    static Move& chooseTurn(Tile& currentTile);
     static void setPlayerNumber(unsigned int playerNumber);
     AI();
     ~AI();
