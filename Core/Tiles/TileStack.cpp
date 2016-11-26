@@ -135,6 +135,6 @@ unsigned int TileStack::getCount(TileType type, PreyType prey, unsigned int play
     return count;
 }
 
-std::queue<const Tile*> TileStack::getQueue(unsigned int playerNum) {
+std::queue<const Tile*> TileStack::getQueue(unsigned int playerNum) const {
     return queueArray[playerNum - 1];
 }

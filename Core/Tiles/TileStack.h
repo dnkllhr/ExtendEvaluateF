@@ -23,7 +23,7 @@ class TileStack {
         unsigned int getCount(TileType type, PreyType prey);
         unsigned int getCount(TileType type, unsigned int playerNum);
         unsigned int getCount(TileType type);
-        std::queue<const Tile*> getQueue(unsigned int playerNum);
+        std::queue<const Tile*> getQueue(unsigned int playerNum) const;
 
     private:
         std::queue<const Tile*> * queueArray;

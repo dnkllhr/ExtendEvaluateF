@@ -28,6 +28,7 @@ void BoardManager::gameInit()
 				Tile& startingTile = tiles[i][j];
 				Move startingMove(startingTile, center);
 				Board::place(startingMove);
+				startingTile.placeTile();
 			}
 			else
 			{
