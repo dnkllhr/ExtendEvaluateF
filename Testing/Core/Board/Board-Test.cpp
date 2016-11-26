@@ -81,7 +81,7 @@ TEST(BoardTests, getFromCoord)
     const Move& move = Move(tile, coord);
     Board::place(move);
 
-    EXPECT_EQ(&Board::get(coord), &tile);
+    EXPECT_EQ(Board::get(coord), &tile);
 }
 
 TEST(BoardTests, getFromTileId)
@@ -94,7 +94,7 @@ TEST(BoardTests, getFromTileId)
     Board::place(move);
 
     Board::get((unsigned int) 5);
-    EXPECT_EQ(&Board::get((unsigned int) 5), &tile);
+    EXPECT_EQ(Board::get((unsigned int) 5), &tile);
 }
 
 TEST(BoardTests, getBorderingTiles)

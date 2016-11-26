@@ -1,21 +1,16 @@
 #include "BoardManager.h"
 
-BoardManager::BoardManager()
-{
-	tileStack = new TileStack(NUMBER_OF_PLAYERS);
-}
+TileStack* BoardManager::tileStack = new TileStack(NUMBER_OF_PLAYERS);
 
-const Board& BoardManager::getBoard()
+const Array<Array<Tile*>>& BoardManager::getBoard()
 {
-    return board;
+    return Board::getBoard();
 }
     
 void BoardManager::gameInit()
 {
-	// Create new Board
-	Board board;
-	
-	// Initalize TileStack
+	Board::set(); // Set/reset the Board
+	tileStack = new TileStack(NUMBER_OF_PLAYERS); // Initialize Tile stack
 	
     // Build the Tile list   
     Array<Array<Tile>> tiles = Tile::CreateTiles();
@@ -32,7 +27,7 @@ void BoardManager::gameInit()
 				Coord center(NUMBER_OF_PLAYABLE_TILES, NUMBER_OF_PLAYABLE_TILES);
 				Tile& startingTile = tiles[i][j];
 				Move startingMove(startingTile, center);
-				board.place(startingMove);
+				Board::place(startingMove);
 			}
 			else
 			{
@@ -60,12 +55,12 @@ const TileStack* BoardManager::getTileStack()
 std::vector<Move> BoardManager::getValidMoves(Tile& tile)
 {
     std::vector<Move> validMoves;
-    std::unordered_set<unsigned int> availableLocations = board.getAvailableLocations();
+    std::unordered_set<unsigned int> availableLocations = Board::getAvailableLocations();
     
     for(const int gridId : availableLocations)
     {
     	Coord location = Board::getCoordinatesFromGridId(gridId);
-    	const Tile ** borderingTiles = Board::getBorderingTiles(Board::get(location));
+    	const Tile ** borderingTiles = Board::getBorderingTiles(*Board::get(location));
     	Tile tileCopy = tile;
 
     	for(int r = 0; r < NUM_TILE_SIDES; r++)
@@ -85,7 +80,7 @@ void BoardManager::makeMove(const Move& move)
 {
     // if calling this method, it is assumed that this is a legal move
     
-    board.place(move);
+    Board::place(move);
     
     Tile& tile = move.getTile();
     const Tile ** borderingTiles = Board::getBorderingTiles(tile);

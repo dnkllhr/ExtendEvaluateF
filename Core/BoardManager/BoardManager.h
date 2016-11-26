@@ -14,11 +14,9 @@ class BoardManager {
     
     public:
     
-        /// Creates a new BoardManager
-        BoardManager();
         /// Returns the current Board
-        static const Board& getBoard();
-        /// Sets up a new Board with starting Tile for a new game
+        static const Array<Array<Tile*>>& getBoard();
+        /// Sets up a fresh Board with starting Tile for a new game
         static void gameInit();
         /// Returns all following Tiles to be played
         static const TileStack* getTileStack();
@@ -29,10 +27,10 @@ class BoardManager {
 		/// Returns whether the given tile is fully surrounded by other tiles
 		static unsigned int isSurrounded(int tileID);
     
+#ifndef testing
     private:
-    
-        // current Board
-        static Board board;
+#endif
+
         // remaining Tiles to be played
         static TileStack* tileStack;
     

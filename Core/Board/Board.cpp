@@ -28,12 +28,12 @@ const Array<Array<Tile*>>& Board::getBoard()
 	return Board::board;
 }
 
-const Tile& Board::get(const Coord& coord)
+const Tile* Board::get(const Coord& coord)
 {
-	return *board[coord.getX()][coord.getY()];
+	return board[coord.getX()][coord.getY()];
 }
 
-const Tile& Board::get(unsigned int tileID)
+const Tile* Board::get(unsigned int tileID)
 {
     auto tileSearch = tileIDTracker.find(tileID);
     if(tileSearch != tileIDTracker.end())
@@ -42,7 +42,7 @@ const Tile& Board::get(unsigned int tileID)
     }
     else
     {
-        throw std::invalid_argument("Invalid Tile ID");
+        return nullptr;
     }
 }
 

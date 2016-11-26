@@ -1,7 +1,13 @@
 #include "Regions.h"
 
-struct meeple Regions::ownerMeeples[] = {};
 std::unordered_map<unsigned int, std::shared_ptr<struct regionSet> *> Regions::regionTracker = std::unordered_map<unsigned int, std::shared_ptr<struct regionSet> *>();
+
+struct meeple Regions::ownerMeeples[] = {};
+unsigned int Regions::availableMeeples[2] = { MEEPLES_PER_PLAYER, MEEPLES_PER_PLAYER };
+
+struct croc Regions::ownerCrocs[] = {};
+unsigned int Regions::availableCrocs[2] = { CROCS_PER_PLAYER, CROCS_PER_PLAYER };
+
 
 void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, unsigned int connectingTileID, unsigned int connectingEdge)
 {
