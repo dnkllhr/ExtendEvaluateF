@@ -167,9 +167,13 @@ TEST(RulesTest, ScoreChurch) {
 	board.place(churchMove);
 
 	unsigned int tileID = churchTile.getID();
-	bool surrounded = isSurrounded(tileID);
-	actualScore = scoreChurch(surrounded);
+	unsigned int tilesSurrounded = isSurrounded(tileID);
+
+	// how should actuallyScore change the values returned?
+	actualScore = scoreChurch(tilesSurrounded, true);
 	ASSERT(actualScore == 1);
+	actualScore = scoreChurch(tilesSurrounded, false);
+	ASSERT(actualScore == 0);
 
 	//place other tiles around churchTile
 	for (int i = -1; i <= 1; i++)
@@ -188,9 +192,12 @@ TEST(RulesTest, ScoreChurch) {
 				board.place(boarderMove);
 
 				expectedScore++;
-				surrounded = isSurrounded(tileID);
-				actualScore = scoreChurch(surrounded);
+				tilesSurrounded = isSurrounded(tileID);
 
+				// how should actuallyScore change values returned?
+				actualScore = scoreChurch(tilesSurrounded, true);
+				ASSERT(actualScore == expectedScore);
+				actualScore = scoreChurch(tilesSurrounded, false);
 				ASSERT(actualScore == expectedScore);
 			}
 		}
@@ -200,8 +207,6 @@ TEST(RulesTest, ScoreChurch) {
 TEST(RulesTest, ScoreCastle) {
 	Array<Array<Tile>> tiles = Tile::CreateTiles();
 	Board board;
-	struct regionSet ** newRegion;
-
 	unsigned int actualScore;
 
 	Tile& castleTile1 = tiles[4][0];
@@ -209,12 +214,12 @@ TEST(RulesTest, ScoreCastle) {
 	Coord position1(76, 76);
 	Move castleMove1(castleTile1, position1);
 	board.place(castleMove1);
-	newRegion = Regions::getRegions(tileID1);
+	std::shared_ptr<struct regionSet> newRegion(Regions::getRegions(tileID1));
 
 	// How should actuallyScore change the return value?
-	actualScore = scoreCastle(newRegion*, true);
-	ASSERT(actualScore == 2);
-	actualScore = scoreCastle(newRegion*, false);
+	actualScore = scoreCastle(newRegion, true);
+	ASSERT(actualScore == 0);
+	actualScore = scoreCastle(newRegion, false);
 	ASSERT(actualScore == 2);
 
 	// add another tile to extend the lake region
@@ -224,11 +229,11 @@ TEST(RulesTest, ScoreCastle) {
 	Coord position2(77, 77);
 	Move castleMove2(castleTile2, position2);
 	board.place(castleMove2);
-	newRegion = Regions::getRegions(tileID2);
+	newRegion.reset(Regions::getRegions(tileID2));
 
 	// How should actuallyScore change the return value?
-	actualScore = scoreCastle(newRegion*, true);
+	actualScore = scoreCastle(newRegion, true);
 	ASSERT(actualScore == 12);
-	actualScore = scoreCastle(newRegion*, false);
+	actualScore = scoreCastle(newRegion, false);
 	ASSERT(actualScore == 12);
 }
