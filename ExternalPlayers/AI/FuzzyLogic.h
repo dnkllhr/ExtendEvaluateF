@@ -77,12 +77,12 @@ public:
     unsigned int getIdentifier();
     float getTurnScore();
     void enterData(unsigned int input);
-    ~FuzzySet();
-    FuzzySet(unsigned int identifier, std::string name, Graph *g);
+    FuzzySet();
+    FuzzySet(unsigned int identifier, std::string name, Graph& g);
 private:
     unsigned int identifier;
     std::string name;
-    Graph *graphDescriptor;
+    Graph graphDescriptor;
     float percentMembership[3];
     float scoreLeft(int diffScore);
     float scoreMid(int diffScore);
@@ -93,12 +93,12 @@ private:
 class FuzzyLogic
 {
 public:
-    void enterData(struct AIMove *m);
+    void enterData(struct AIMove& m);
     float getResults();
     ~FuzzyLogic();
     FuzzyLogic();
 private:
-    FuzzySet **mySets;
+    FuzzySet * mySets;
 };
 
 #endif

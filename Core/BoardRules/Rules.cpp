@@ -33,9 +33,9 @@ bool GameRules::validMeeplePlacement(const Tile& placed, unsigned int edgeIndex)
 
 bool GameRules::validMeeplePlacement(const Coord& location, unsigned int edgeIndex)
 {
-    unsigned int side = edge / countPerSide;
-    unsigned int correspondingSide = (side + (numOfSides / 2)) % numOfSides;
-    unsigned int correspondingEdge = (countPerSide - (edge % countPerSide) - 1) + (countPerSide * correspondingSide);
+    unsigned int side = edgeIndex / NUM_TILE_EDGES_PER_SIDE;
+    unsigned int correspondingSide = (side + (NUM_TILE_SIDES / 2)) % NUM_TILE_SIDES;
+    unsigned int correspondingEdge = (NUM_TILE_EDGES_PER_SIDE - (edgeIndex % NUM_TILE_EDGES_PER_SIDE) - 1) + (NUM_TILE_EDGES_PER_SIDE * correspondingSide);
     unsigned int newX = location.getX();
     unsigned int newY = location.getY();
 
@@ -49,7 +49,7 @@ bool GameRules::validMeeplePlacement(const Coord& location, unsigned int edgeInd
     const Tile* neighborTile = Board::get(neighbor);
     if (neighborTile == NULL) return true;
 
-    std::shared_ptr<struct regionSet> * regions = Regions::getRegions(id);
+    std::shared_ptr<struct regionSet> * regions = Regions::getRegions(neighborTile->getId());
     if (regions == NULL) return true;
 
     bool hasPlayer1 = regions[correspondingEdge]->player1Meeples > 0;
@@ -260,7 +260,7 @@ unsigned int GameRules::scoreChurch(unsigned int tilesSurrounded, bool actuallyS
     }
     else if (!actuallyScore)
     {
-		score = 1;
+        score = 1;
         score += tilesSurrounded;
     }
 

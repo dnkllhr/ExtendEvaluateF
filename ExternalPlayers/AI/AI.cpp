@@ -12,21 +12,21 @@ Move& AI::chooseTurn(Tile& currentTile)
     {
         struct moveResult currentResult = BoardManager::tryMove(currentMove->getTile());
 
-        if(AI::myPlayerNumber == 1)
+        if (AI::myPlayerNumber == 1)
         {
-            AI::move->edgesTillCompletion = currentResult.edgesTillCompletion;
-            AI::move->diffMyScore = currentResult.player1ScoreChange;
-            AI::move->diffEnemyScore = currentResult.player2ScoreChange;
+            AI::move.edgesTillCompletion = currentResult.edgesTillCompletion;
+            AI::move.diffMyScore = currentResult.player1ScoreChange;
+            AI::move.diffEnemyScore = currentResult.player2ScoreChange;
         }
         else
         {
-            AI::move->edgesTillCompletion = currentResult.edgesTillCompletion;
-            AI::move->diffEnemyScore = currentResult.player1ScoreChange;
-            AI::move->diffMyScore = currentResult.player2ScoreChange;
+            AI::move.edgesTillCompletion = currentResult.edgesTillCompletion;
+            AI::move.diffEnemyScore = currentResult.player1ScoreChange;
+            AI::move.diffMyScore = currentResult.player2ScoreChange;
         }
 
-        AI::fz->enterData(AI::move);
-        currentValue = AI::fz->getResults();
+        AI::fz.enterData(AI::move);
+        currentValue = AI::fz.getResults();
 
         if(currentValue > highestValue)
         {
