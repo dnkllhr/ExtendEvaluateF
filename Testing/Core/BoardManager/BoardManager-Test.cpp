@@ -46,7 +46,7 @@ TEST(BoardManagerTests, getTileStack)
 {
     BoardManager::gameInit();
     int actualTileCounts[NUM_TILES]   = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
-    int expectedTileCounts[NUM_TILES] = { 2,4,1,3,2,5,3,3,2,1,1,1,2,1,2,5,3,2,4,1,2,8,9,4,1,1,1,2 };
+    int expectedTileCounts[NUM_TILES] = { 2,4,1,3,2,5,3,3,2,1,2,1,2,1,2,5,3,2,4,1,2,8,9,4,1,1,1,2 };
     expectedTileCounts[3]--; // starting Tile
 
     TileStack* tileStack = BoardManager::getTileStack();
