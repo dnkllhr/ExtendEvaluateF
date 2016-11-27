@@ -327,7 +327,7 @@ TEST(RulesTest, getCurrentScore) {
 	Move *firstMove = new Move(firstTile, position1);
 	Board::place(firstMove);
 
-	unsigned int tileID1 = firstTile.getId();
+	unsigned int tileID1 = firstTile->getId();
 	std::shared_ptr<struct regionSet> newRegion(Regions::getRegions(tileID1)); // create new region for the first tile placed
 	tilesSurrounded = isSurrounded(tileID1);
 
@@ -343,12 +343,12 @@ TEST(RulesTest, getCurrentScore) {
 
 	// create and place a second tile
 	const Tile *secondTile = tiles[4][0];
-	secondTile.setRotation(2);
+	secondTile->setRotation(2);
 	Coord *position2 = new Coord(73, 72);
 	Move *secondMove = new Move(secondTile, position2);
 	Board::place(secondMove);
 
-	unsigned int tileID2 = secondTile.getID();
+	unsigned int tileID2 = secondTile->getID();
 	Tile** surroundingTiles = Board::getBorderingTiles(secondTile);
 	Regions::addConnection(secondTile, surroundingTiles);
 	tilesSurrounded = isSurrounded(tileID2);
