@@ -161,10 +161,12 @@ TEST(RulesTest, ScoreChurch) {
 	unsigned int actualScore;
 
 	// Place church tile in center
-	Coord center(76, 76);
 	Tile& churchTile = tiles[0][0];
-	Move churchMove(churchTile, center);
-	board.place(churchMove);
+	Coord *center = new Coord(76, 76);
+	Move *churchMove = new Move(churchTile, center);
+	Board::place(churchMove);
+	Tile **surroundingTiles = Board::getBorderingTiles(churchTile);
+	Regions::addConnection(churchTile, surroundingTiles);
 
 	unsigned int tileID = churchTile.getID();
 	unsigned int tilesSurrounded = isSurrounded(tileID);
@@ -186,10 +188,12 @@ TEST(RulesTest, ScoreChurch) {
 			}
 			else
 			{
-				Coord churchBoarder((center.getX() + i), (center.getY() + j));
-				Tile& boarderingTile = tiles[24][0]; // chose to surround with field tiles
-				Move boarderMove(boarderingTile, churchBoarder);
-				board.place(boarderMove);
+				Tile& borderingTile = tiles[24][0];
+				Coord *churchBorder = new Coord((center.getX() + i), (center.getY() + j));
+				Move *borderMove = new Move(borderingTile, churchBorder);
+				Board::place(borderMove);
+				surroundingTiles = Board::getBorderingTiles(churchBorder);
+				Regions::addConnection(churchBorder, surroundingTiles);
 
 				expectedScore++;
 				tilesSurrounded = isSurrounded(tileID);
@@ -215,16 +219,16 @@ TEST(RulesTest, ScoreChurch) {
 	}
 }
 
-TEST(RulesTest, ScoreCastle) {
+TEST(RulesTest, ScoreCastle1) {
 	Array<Array<Tile>> tiles = Tile::CreateTiles();
 	Board board;
 	unsigned int actualScore;
 
 	Tile& castleTile1 = tiles[4][0];
 	unsigned int tileID1 = castleTile1.getId();
-	Coord position1(76, 76);
-	Move castleMove1(castleTile1, position1);
-	board.place(castleMove1);
+	Coord *position1 = new Coord(76, 76);
+	Move *castleMove1 = new Move(castleTile1, position1);
+	Board::place(castleMove1);
 	std::shared_ptr<struct regionSet> newRegion(Regions::getRegions(tileID1));
 
 	// How should actuallyScore change the return value?
@@ -235,12 +239,13 @@ TEST(RulesTest, ScoreCastle) {
 
 	// add another tile to extend the lake region
 	Tile& castleTile2 = tiles[12][0];
-	bool rotate = setRotation(2);
+	castleTile2.setRotation(2);
 	unsigned int tileID2 = castleTile2.getId();
-	Coord position2(77, 77);
-	Move castleMove2(castleTile2, position2);
-	board.place(castleMove2);
-	newRegion.reset(Regions::getRegions(tileID2));
+	Coord *position2 = new Coord(77, 77);
+	Move *castleMove2(castleTile2, position2);
+	Board::place(castleMove2);
+	Tile** surroundingTiles = Board::getBorderingTiles(castleTile2);
+	Regions::addConnection(castleTile2, surroundingTiles);
 
 	// How should actuallyScore change the return value?
 	actualScore = scoreCastle(newRegion, true);
