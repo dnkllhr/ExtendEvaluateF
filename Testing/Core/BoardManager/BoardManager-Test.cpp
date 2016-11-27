@@ -45,9 +45,9 @@ TEST(BoardManagerTests, getTileStack)
     int expectedTileCounts[NUM_TILES] = { 2,4,1,3,2,5,3,3,2,1,1,1,2,1,2,5,3,2,4,1,2,8,9,4,1,1,1,2 };
     expectedTileCounts[3]--; // starting Tile
 
-    const TileStack* tileStack = BoardManager::getTileStack();
-    std::queue<const Tile*> tileQueue1 = tileStack->getQueue((unsigned int) 1);
-    std::queue<const Tile*> tileQueue2 = tileStack->getQueue((unsigned int) 2);
+    TileStack* tileStack = BoardManager::getTileStack();
+    std::queue<Tile*> tileQueue1 = tileStack->getQueue((unsigned int) 1);
+    std::queue<Tile*> tileQueue2 = tileStack->getQueue((unsigned int) 2);
 
     EXPECT_EQ(tileQueue1.size(), (unsigned int)(NUMBER_OF_PLAYABLE_TILES / 2));
     EXPECT_EQ(tileQueue2.size(), (unsigned int)(NUMBER_OF_PLAYABLE_TILES / 2));
@@ -174,8 +174,8 @@ TEST(BoardManagerTests, makeMove)
     unsigned int tileIdCounter = 1;
 
     TileStack* tileStack = BoardManager::getTileStack();
-    Tile* front = tileStack->front(1);
-    Tile* next = tileStack->front(2);
+    Tile * front = &tileStack->front(1);
+    Tile * next = &tileStack->front(2);
 
     Tile tile1 = Tile::CreateTileJ(1, tileIdCounter, PreyType::None)[0];
     Coord coord1 = Coord(76, 75);
@@ -190,39 +190,39 @@ TEST(BoardManagerTests, makeMove)
     Move move3 = Move(tile3, coord3, 2);
 
     EXPECT_EQ(nullptr, Board::get(coord1));
-    EXPECT_EQ(tileStack->front(), front);
+    EXPECT_EQ(tileStack->front(), *front);
     EXPECT_FALSE(tile1.isPlaced());
 
     BoardManager::makeMove(move1, 1);
 
     EXPECT_EQ(&tile1, Board::get(coord1));
-    EXPECT_EQ(tileStack->front(), next);
+    EXPECT_EQ(tileStack->front(), *next);
     EXPECT_TRUE(tile1.isPlaced());
 
-    Tile* front = tileStack->front(2);
-    Tile* next = tileStack->front(1);
+    front = &tileStack->front(2);
+    next = &tileStack->front(1);
 
     EXPECT_EQ(nullptr, Board::get(coord2));
-    EXPECT_EQ(tileStack->front(), front);
+    EXPECT_EQ(tileStack->front(), *front);
     EXPECT_FALSE(tile2.isPlaced());
 
     BoardManager::makeMove(move2, 2);
 
     EXPECT_EQ(&tile2, Board::get(coord2));
-    EXPECT_EQ(tileStack->front(), next);
+    EXPECT_EQ(tileStack->front(), *next);
     EXPECT_TRUE(tile2.isPlaced());
 
-    Tile* front = tileStack->front(1);
-    Tile* next = tileStack->front(2);
+    front = &tileStack->front(1);
+    next = &tileStack->front(2);
 
     EXPECT_EQ(nullptr, Board::get(coord3));
-    EXPECT_EQ(tileStack->front(), front);
+    EXPECT_EQ(tileStack->front(), *front);
     EXPECT_FALSE(tile3.isPlaced());
 
     BoardManager::makeMove(move3, 1);
 
     EXPECT_EQ(&tile3, Board::get(coord3));
-    EXPECT_EQ(tileStack->front(), next);
+    EXPECT_EQ(tileStack->front(), *next);
     EXPECT_TRUE(tile3.isPlaced());
 }
 

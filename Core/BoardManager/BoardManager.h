@@ -19,7 +19,7 @@ class BoardManager {
         /// Sets up a fresh Board with starting Tile for a new game
         static void gameInit();
         /// Returns all following Tiles to be played
-        static const TileStack* getTileStack();
+        static TileStack* getTileStack();
         /// Gets all possible legal moves with the given Tile and current Board
         static std::vector<Move> getValidMoves(Tile& tile);
         /// Makes the given Move for the given playerNumber

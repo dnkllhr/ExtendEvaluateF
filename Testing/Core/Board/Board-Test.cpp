@@ -30,9 +30,9 @@ TEST(BoardTests, place)
     const Array<Array<Tile*>>& boardGrid = Board::getBoard();
 
     unsigned int tileIDcounter = 0;
-    Tile& tile0 = Tile::CreateTileA(1, tileIDcounter, PreyType::None)[0];
-    Tile& tile1 = Tile::CreateTileB(1, tileIDcounter, PreyType::None)[0];
-    Tile& tile2 = Tile::CreateTileC(1, tileIDcounter, PreyType::None)[0];
+    Tile tile0 = Tile::CreateTileA(1, tileIDcounter, PreyType::None)[0];
+    Tile tile1 = Tile::CreateTileB(1, tileIDcounter, PreyType::None)[0];
+    Tile tile2 = Tile::CreateTileC(1, tileIDcounter, PreyType::None)[0];
 
     const Move& move0 = Move(tile0, 0, 0);
     const Move& move1 = Move(tile1, 75, 76, 2);
@@ -76,7 +76,7 @@ TEST(BoardTests, getFromCoord)
     Board::set();
 
     unsigned int tileIdCounter = 0;
-    Tile& tile = Tile::CreateTileD(1, tileIdCounter, PreyType::None)[0];
+    Tile tile = Tile::CreateTileD(1, tileIdCounter, PreyType::None)[0];
     const Coord& coord = Coord(10, 20);
     const Move& move = Move(tile, coord);
     Board::place(move);
@@ -93,7 +93,6 @@ TEST(BoardTests, getFromTileId)
     const Move& move = Move(tile, 76, 76);
     Board::place(move);
 
-    Board::get((unsigned int) 5);
     EXPECT_EQ(Board::get((unsigned int) 5), &tile);
 }
 
@@ -103,15 +102,15 @@ TEST(BoardTests, getBorderingTiles)
 
     unsigned int tileIDcounter = 0;
 
-    Tile& tileCenter = Tile::CreateTileI(1, tileIDcounter, PreyType::None)[0];
-    Tile& tile0 = Tile::CreateTileA(1, tileIDcounter, PreyType::None)[0];
-    Tile& tile1 = Tile::CreateTileB(1, tileIDcounter, PreyType::None)[0];
-    Tile& tile2 = Tile::CreateTileC(1, tileIDcounter, PreyType::None)[0];
-    Tile& tile3 = Tile::CreateTileD(1, tileIDcounter, PreyType::None)[0];
-    Tile& tile4 = Tile::CreateTileE(1, tileIDcounter, PreyType::None)[0];
-    Tile& tile5 = Tile::CreateTileG(1, tileIDcounter, PreyType::None)[0];
-    Tile& tile6 = Tile::CreateTileH(1, tileIDcounter, PreyType::None)[0];
-    
+    Tile tileCenter = Tile::CreateTileI(1, tileIDcounter, PreyType::None)[0];
+    Tile tile0 = Tile::CreateTileA(1, tileIDcounter, PreyType::None)[0];
+    Tile tile1 = Tile::CreateTileB(1, tileIDcounter, PreyType::None)[0];
+    Tile tile2 = Tile::CreateTileC(1, tileIDcounter, PreyType::None)[0];
+    Tile tile3 = Tile::CreateTileD(1, tileIDcounter, PreyType::None)[0];
+    Tile tile4 = Tile::CreateTileE(1, tileIDcounter, PreyType::None)[0];
+    Tile tile5 = Tile::CreateTileG(1, tileIDcounter, PreyType::None)[0];
+    Tile tile6 = Tile::CreateTileH(1, tileIDcounter, PreyType::None)[0];
+
     const Move& moveCenter = Move(tileCenter, 1, 1);
     const Move& move0 = Move(tile0, 0, 2); // upper left
     const Move& move1 = Move(tile1, 1, 2); // upper
@@ -194,9 +193,9 @@ TEST(BoardTests, getAvailableLocations)
     Board::set();
 
     unsigned int tileIDcounter = 0;
-    Tile& tile0 = Tile::CreateTileD(1, tileIDcounter, PreyType::None)[0];
-    Tile& tile1 = Tile::CreateTileJ(1, tileIDcounter, PreyType::Buffalo)[0];
-    Tile& tile2 = Tile::CreateTileV(1, tileIDcounter, PreyType::None)[0];
+    Tile tile0 = Tile::CreateTileD(1, tileIDcounter, PreyType::None)[0];
+    Tile tile1 = Tile::CreateTileJ(1, tileIDcounter, PreyType::Buffalo)[0];
+    Tile tile2 = Tile::CreateTileV(1, tileIDcounter, PreyType::None)[0];
 
     const Move& move0 = Move(tile0, 76, 76);
     const Move& move1 = Move(tile1, 76, 75, 2); // rotate 180 degrees

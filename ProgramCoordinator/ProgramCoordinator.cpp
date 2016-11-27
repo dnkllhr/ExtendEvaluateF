@@ -1,6 +1,5 @@
 #include "ProgramCoordinator.h"
 
-
 void setupServerAddr (struct sockaddr_in *serverAddr, int portNumber)
 {
     //Zero out the structure
@@ -9,8 +8,6 @@ void setupServerAddr (struct sockaddr_in *serverAddr, int portNumber)
     serverAddr->sin_addr.s_addr = INADDR_ANY; //Allow any addr to connect
     serverAddr->sin_port = htons(portNumber); //Convert port number
 }
-
-
 
 int main( int argc, char *argv[] ) {
     int masterSocket, connectionSocket;
@@ -88,19 +85,19 @@ void handleGame (int gameSocket, int gamePort)
     char messageBuffer[2048];
 
     char *gameArgs = new char[10]; //Way more than enough digits
-    itoa(gamePort, gameArgs, 10); //Convert gamePort into a char* so that it can be passed as an arg
+    int stringLength = sprintf(gameArgs, "%d", gamePort); //Convert gamePort into a char* so that it can be passed as an arg
 
 
     forkedPID = fork();
     if(forkedPID < 0)
     {
-        printf("Failed to fork.\n")
+        printf("Failed to fork.\n");
         exit(1);
     }
     if (forkedPID == 0)
     {
         //Create a game process
-        execl(PATH_TO_GAME, gamePort);
+        execl(PATH_TO_GAME, gameArgs);
         exit(0);
     }
 
@@ -108,10 +105,10 @@ void handleGame (int gameSocket, int gamePort)
     int gameSendSocket;
     struct sockaddr_in gameAddr;
 
-    setupServerAddr(&gameAddr, portNumber);
+    setupServerAddr(&gameAddr, gamePort);
 
     /* First call to socket() function */
-    masterSocket = socket(AF_INET, SOCK_STREAM, 0);
+    int masterSocket = socket(AF_INET, SOCK_STREAM, 0);
 
     while(true)
     {

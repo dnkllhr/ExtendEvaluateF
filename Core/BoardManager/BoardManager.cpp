@@ -7,6 +7,7 @@ const Array<Array<Tile*>>& BoardManager::getBoard()
     return Board::getBoard();
 }
 
+#include <iostream>
 void BoardManager::gameInit()
 {
     Board::set(); // Set/reset the Board
@@ -28,6 +29,8 @@ void BoardManager::gameInit()
                 Tile& startingTile = tiles[i][j];
                 Move startingMove(startingTile, center);
                 Board::place(startingMove);
+                const Tile ** borderingTiles = Board::getBorderingTiles(startingTile);
+                Regions::addConnection(startingTile, borderingTiles);
                 startingTile.placeTile();
             }
             else
@@ -47,7 +50,7 @@ void BoardManager::gameInit()
     }
 }
 
-const TileStack* BoardManager::getTileStack()
+TileStack* BoardManager::getTileStack()
 {
     return tileStack;
 }
@@ -56,36 +59,36 @@ std::vector<Move> BoardManager::getValidMoves(Tile& tile)
 {
     std::vector<Move> validMoves;
     std::unordered_set<unsigned int> availableLocations = Board::getAvailableLocations();
-    
+
     for(const int gridId : availableLocations)
     {
-    	const Coord location = Board::getCoordinatesFromGridId(gridId);
-    	const Tile ** borderingTiles = Board::getBorderingTiles(*Board::get(location));
-    	Tile tileCopy = tile;
+        Coord location = Board::getCoordinatesFromGridId(gridId);
+        const Tile ** borderingTiles = Board::getBorderingTiles(*Board::get(location));
+        Tile tileCopy = tile;
 
-    	for(unsigned int rotation = 0; rotation < (unsigned int) NUM_TILE_SIDES; rotation++)
-    	{
-    		tileCopy.setRotation(rotation);
-    		unsigned int numberOfEdges = NUM_TILE_SIDES * NUM_TILE_EDGES_PER_SIDE;
+        for(unsigned int rotation = 0; rotation < (unsigned int) NUM_TILE_SIDES; rotation++)
+        {
+            tileCopy.setRotation(rotation);
+            unsigned int numberOfEdges = NUM_TILE_SIDES * NUM_TILE_EDGES_PER_SIDE;
 
-    		if(GameRules::validTilePlacement(tileCopy, borderingTiles))
-	        {
-	        	validMoves.push_back(Move(tile, location, rotation)); // no meeple or croc
+            if(GameRules::validTilePlacement(tileCopy, borderingTiles))
+            {
+                validMoves.push_back(Move(tile, location, rotation)); // no meeple or croc
 
-	        	for(unsigned int edgeIndex = 0; edgeIndex < numberOfEdges; edgeIndex++)
-    			{
-    				if(GameRules::validMeeplePlacement(location, edgeIndex))
-        			{
-	    				validMoves.push_back(Move(tile, location, rotation, edgeIndex));
-	    			}
-    			}
+                for(unsigned int edgeIndex = 0; edgeIndex < numberOfEdges; edgeIndex++)
+                {
+                    if(GameRules::validMeeplePlacement(location, edgeIndex))
+                    {
+                        validMoves.push_back(Move(tile, location, rotation, edgeIndex));
+                    }
+                }
 
-    			if(GameRules::validCrocPlacement(tileCopy, location))
-    			{
-    				validMoves.push_back(Move(tile, location, rotation, true));
-    			}
-	        }   
-    	}
+                if(GameRules::validCrocPlacement(tileCopy, location))
+                {
+                    validMoves.push_back(Move(tile, location, rotation, true));
+                }
+            }
+        }
     }
 
     return validMoves;
@@ -102,11 +105,11 @@ void BoardManager::makeMove(const Move& move, unsigned int playerNumber)
 
     if(move.getMeepleLocation() != -1) // if Move includes Meeple
     {
-    	Regions::addMeeple(playerNumber, tile.getId(), move.getMeepleLocation());
+        Regions::addMeeple(playerNumber, tile.getId(), move.getMeepleLocation());
     }
     else if(move.getHasCrocodile())
     {
-    	Regions::addCroc(playerNumber, tile.getId());
+        Regions::addCroc(playerNumber, tile.getId());
     }
 
     tile.placeTile(); // mark Tile as placed so it can no longer be rotated

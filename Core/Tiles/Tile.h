@@ -43,6 +43,7 @@ class Tile {
 
         /// The copy assignment operator which will create a new tile which is an exact copy of the provided tile.
         Tile& operator=(const Tile& other);
+        friend bool operator==(const Tile& curr, const Tile& other);
         // The copy constructor which creates a new Tile which is an exact copy of the provided tile.
         Tile(const Tile& other);
         /// The tile destructor which frees the edges and edge connections arrays.

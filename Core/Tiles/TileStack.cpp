@@ -3,11 +3,11 @@
 TileStack::TileStack(unsigned int numOfPlayers) {
     this->numOfPlayers = numOfPlayers;
     this->lastQueueUsed = numOfPlayers - 1;
-    this->queueArray = new std::queue<const Tile*>[numOfPlayers];
+    this->queueArray = new std::queue<Tile*>[numOfPlayers];
     this->tileCounts = new std::unordered_multimap<int, PreyType>[numOfPlayers];
 
     for (unsigned int player = 0; player < numOfPlayers; player++) {
-        queueArray[player] = std::queue<const Tile*>();
+        queueArray[player] = std::queue<Tile*>();
         tileCounts[player] = std::unordered_multimap<int, PreyType>();
     }
 }
@@ -17,18 +17,18 @@ TileStack::~TileStack() {
     delete[] tileCounts;
 }
 
-const Tile& TileStack::front() {
+Tile& TileStack::front() {
     unsigned int toUse = (lastQueueUsed + 1) % numOfPlayers;
     return *queueArray[toUse].front();
 }
 
-const Tile& TileStack::front(unsigned int playerNum) {
+Tile& TileStack::front(unsigned int playerNum) {
     return *queueArray[playerNum - 1].front();
 }
 
-const Tile& TileStack::pop() {
+Tile& TileStack::pop() {
     lastQueueUsed = (lastQueueUsed + 1) % numOfPlayers;
-    const Tile& popped = *queueArray[lastQueueUsed].front();
+    Tile& popped = *queueArray[lastQueueUsed].front();
     queueArray[lastQueueUsed].pop();
 
     TileType tileType = popped.getTileType();
@@ -43,9 +43,9 @@ const Tile& TileStack::pop() {
     return popped;
 }
 
-const Tile& TileStack::pop(unsigned int playerNum) {
+Tile& TileStack::pop(unsigned int playerNum) {
     lastQueueUsed = playerNum - 1;
-    const Tile& popped = *queueArray[lastQueueUsed].front();
+    Tile& popped = *queueArray[lastQueueUsed].front();
     queueArray[lastQueueUsed].pop();
 
     TileType tileType = popped.getTileType();
@@ -60,7 +60,7 @@ const Tile& TileStack::pop(unsigned int playerNum) {
     return popped;
 }
 
-const Tile& TileStack::back() {
+Tile& TileStack::back() {
     unsigned int toUse = 0;
 
     for (unsigned int player = toUse + 1; player < numOfPlayers; player++)
@@ -70,11 +70,11 @@ const Tile& TileStack::back() {
     return *queueArray[toUse].back();
 }
 
-const Tile& TileStack::back(unsigned int playerNum) {
+Tile& TileStack::back(unsigned int playerNum) {
     return *queueArray[playerNum - 1].back();
 }
 
-void TileStack::push(const Tile& tile) {
+void TileStack::push(Tile& tile) {
     lastQueueUsed = (lastQueueUsed + 1) % numOfPlayers;
     queueArray[lastQueueUsed].push(&tile);
 
@@ -82,7 +82,7 @@ void TileStack::push(const Tile& tile) {
     tileCounts[lastQueueUsed].insert(toInsert);
 }
 
-void TileStack::push(const Tile& tile, unsigned int playerNum) {
+void TileStack::push(Tile& tile, unsigned int playerNum) {
     lastQueueUsed = playerNum - 1;
     queueArray[playerNum - 1].push(&tile);
 
@@ -135,6 +135,6 @@ unsigned int TileStack::getCount(TileType type, PreyType prey, unsigned int play
     return count;
 }
 
-std::queue<const Tile*> TileStack::getQueue(unsigned int playerNum) const {
+std::queue<Tile*> TileStack::getQueue(unsigned int playerNum) {
     return queueArray[playerNum - 1];
 }
