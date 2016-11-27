@@ -52,6 +52,11 @@ const TileStack* BoardManager::getTileStack()
     return tileStack;
 }
 
+const Tile& BoardManager::getTopTileStack()
+{
+    return tileStack.front();
+}
+
 std::vector<Move> BoardManager::getValidMoves(Tile& tile)
 {
     std::vector<Move> validMoves;
