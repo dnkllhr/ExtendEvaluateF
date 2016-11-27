@@ -12,6 +12,8 @@ int throwaway = Board::set();
 int Board::set()
 {
     Board::availableLocations.clear();
+    Board::tileIDTracker.clear();
+
     for(unsigned int i = 0; i < Board::boardWidth; i++)
     {
         Board::board[i] = Array<Tile*>(boardHeight);
@@ -20,6 +22,7 @@ int Board::set()
             Board::board[i][j] = nullptr;
         }
     }
+
     return 1;
 }
 

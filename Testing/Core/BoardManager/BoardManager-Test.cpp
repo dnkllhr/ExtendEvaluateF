@@ -242,7 +242,7 @@ TEST(BoardManagerTests, getValidMoves)
 
 // Should this also test the calls of Regions::addConection,addMeeple,addCroc, as applicable?
 TEST(BoardManagerTests, makeMove)
-{
+{ 
     BoardManager::gameInit();
 
     unsigned int tileIdCounter = 0;
@@ -308,9 +308,10 @@ TEST(BoardManagerTests, makeMove)
 TEST(BoardManagerTests, isSurrounded)
 {
     BoardManager::gameInit();
-    unsigned int centerTileId = Board::get(Coord(76, 76))->getId();
+    Coord center = Coord(76, 76);
+    unsigned int centerTileId = Board::get(center)->getId();
 
-    unsigned int tileIdCounter = 0;
+    unsigned int tileIdCounter = 100;
 
     Array<Tile> tiles(8);
 
@@ -326,13 +327,13 @@ TEST(BoardManagerTests, isSurrounded)
     int dx[8] = { -1, 0, 1, 1, 1, 0, -1, -1 };
     int dy[8] = { 1, 1, 1, 0, -1, -1, -1, 0 };
 
-    std::cout << Board::getCoordinatesFromTileId(centerTileId) << std::endl;
     EXPECT_EQ(BoardManager::isSurrounded(centerTileId), 0);
 
     for(unsigned int i = 0; i < 8; i++)
     {
         Move move = Move(tiles[i], 76 + dx[i], 76 + dy[i]);
         Board::place(move);
+        EXPECT_TRUE(BoardManager::getBoard()[76 + dx[i]][76 + dy[i]] == &tiles[i]);
         EXPECT_EQ(BoardManager::isSurrounded(centerTileId), i+1);
     }
 }
