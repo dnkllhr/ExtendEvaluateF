@@ -1,4 +1,6 @@
-#include "../AI.h"
+#include "../AI/AI.h"
+#include "../../../ProgramCoordinator/ProgramCoordinator.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -23,12 +25,13 @@ public:
     void startCoordinator();  //Infinite loop for receiving messages from external client
 private:
     void receiveMessage();
-    void handleMessage();
+    void handleMessage(gameMessage *msg);
     void doOpponentMove();
-    void callAI();
+    Move& callAI();
     void setupAI();
     void setupSocket(int portNumber);
     void buildResponse();
+    static 
     static unsigned int AIPlayerNumber;
     static bool AISetup;
     static int socket;
