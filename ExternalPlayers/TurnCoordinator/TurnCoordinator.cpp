@@ -71,11 +71,23 @@ void TurnCoordinator::doOpponentMove()
     BoardManager::makeMove(mv);
 }
 
-void TurnCoordinator::handleMessage()
+void TurnCoordinator::handleMessage(gameMessage *msg)
 {
     //Take in the current message.
 
     //Determine if we need to pick a move
+    switch(msg->whoAmIMessage.messageType)
+    {
+        case 0:
+            BoardManager::inputStack(msg->tileStackMessage.tileStack)
+            break;
+        case 1:
+            break;
+        case 2:
+            break;
+        default:
+            break;
+    }
 
     if(AIMove)
     {
@@ -112,7 +124,8 @@ void TurnCoordinator::receiveMessage()
 {
     int n;
 
-    char buffer[256]; //Change to message struct.
+    char buffer[sizeof(gameMessage)]; //Change to message struct.
+    gameMessage *msg = (gameMessage *)(&buffer);
 
     while(true)
     {
@@ -122,8 +135,8 @@ void TurnCoordinator::receiveMessage()
         }
 
         //Clear out any previous data
-        bzero(buffer,256);
-        n = read(TurnCoordinator::clientSocket, buffer, 255);
+        bzero(buffer, sizeof(gameMessage));
+        n = read(TurnCoordinator::clientSocket, buffer, sizeof(gameMessage) - 1);
 
         if (n < 0) 
         {
@@ -131,7 +144,7 @@ void TurnCoordinator::receiveMessage()
         }
 
         //Handle message here
-        TurnCoordinator::handleMessage();
+        TurnCoordinator::handleMessage(msg);
 
 
         //Build response here
