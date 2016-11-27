@@ -69,7 +69,7 @@ const Tile** Board::getBorderingTiles(const Coord& coord)
         borderingTiles[i] = boardGrid[x][y];
     }
 
-    return borderingTiles;    
+    return borderingTiles;
 }
 
 const Tile** Board::getBorderingTiles(const Tile& tile)

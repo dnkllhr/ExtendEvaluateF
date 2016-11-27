@@ -76,7 +76,7 @@ Tile& TileStack::back(unsigned int playerNum) {
 
 void TileStack::push(Tile& tile) {
     lastQueueUsed = (lastQueueUsed + 1) % numOfPlayers;
-    queueArray[lastQueueUsed].push(&tile);
+    queueArray[lastQueueUsed].push(new Tile(tile));
 
     std::pair<int, PreyType> toInsert(static_cast<int>(tile.getTileType()), tile.getPrey());
     tileCounts[lastQueueUsed].insert(toInsert);
@@ -84,7 +84,7 @@ void TileStack::push(Tile& tile) {
 
 void TileStack::push(Tile& tile, unsigned int playerNum) {
     lastQueueUsed = playerNum - 1;
-    queueArray[playerNum - 1].push(&tile);
+    queueArray[playerNum - 1].push(new Tile(tile));
 
     std::pair<int, PreyType> toInsert(static_cast<int>(tile.getTileType()), tile.getPrey());
     tileCounts[lastQueueUsed].insert(toInsert);

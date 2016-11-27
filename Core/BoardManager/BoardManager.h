@@ -14,6 +14,7 @@
 class BoardManager {
     
     public:
+        ~BoardManager();
     
         /// Returns the current Board
         static const Array<Array<Tile*>>& getBoard();
@@ -21,8 +22,7 @@ class BoardManager {
         static void gameInit();
         /// Returns all following Tiles to be played
         static TileStack* getTileStack();
-        static const TileStack* getTileStack();
-        static const Tile& getTopTileStack();
+        static Tile& getTopTileStack();
         /// Gets all possible legal moves with the given Tile and current Board
         static std::vector<Move> getValidMoves(Tile& tile);
         /// Makes the given Move for the given playerNumber
@@ -36,6 +36,7 @@ class BoardManager {
     private:
 #endif
 
+        static Tile * startingTile;
         // remaining Tiles to be played
         static TileStack* tileStack;
     
