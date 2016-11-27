@@ -26,7 +26,7 @@ class GameRules
         static bool validCrocPlacement(unsigned int tileID);
         static bool hasCroc(unsigned int tileID);
         static bool checkSideForCroc(unsigned int x, unsigned int y);
-        static bool validCrocPlacement(const Coord& location);
+        static bool validCrocPlacement(const Tile& toPlace, const Coord& location);
         static unsigned int getCurrentScore(unsigned int tileID, unsigned int edge);
         static unsigned int getCurrentScore(std::shared_ptr<struct regionSet> * currentRegions, unsigned int edge, const Tile * tile, unsigned int tilesSurrounded);
         static unsigned int scoreEdge(unsigned int tileID, unsigned int edge, bool endOfGame = false);

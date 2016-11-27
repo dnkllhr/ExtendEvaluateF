@@ -80,7 +80,7 @@ std::vector<Move> BoardManager::getValidMoves(Tile& tile)
 	    			}
     			}
 
-    			if(GameRules::validCrocPlacement(location)) // also need to check TileType?
+    			if(GameRules::validCrocPlacement(tileCopy, location))
     			{
     				validMoves.push_back(Move(tile, location, rotation, true));
     			}
