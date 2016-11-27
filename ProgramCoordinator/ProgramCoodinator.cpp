@@ -19,53 +19,53 @@ int main( int argc, char *argv[] ) {
 
 
     std::cout << "Enter portNumber: ";
-    std::cin >> portNumber;   
+    std::cin >> portNumber;
 
     setupServerAddr(&serverAddr, portNumber);
-   
+
     /* First call to socket() function */
     masterSocket = socket(AF_INET, SOCK_STREAM, 0);
 
 
 /*  SERVER CODE
-    if (masterSocket < 0) 
+    if (masterSocket < 0)
     {
         printf("Can't open master socket.\n");
         exit(1);
-    }    
-   
-    if (bind(masterSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr)) < 0) 
+    }
+
+    if (bind(masterSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr)) < 0)
     {
         printf("Can't bind master socket.\n");
         exit(1);
     }
-   
+
     //Block and wait for a connection, limit 5.
     listen(masterSocket,5);
     clientAddrLength = sizeof(clientAddr);
-   
-    while (true) 
+
+    while (true)
     {
 
         connectionSocket = accept(masterSocket, (struct sockaddr *) &clientAddr, &clientAddrLength);
-        
-        if (connectionSocket < 0) 
+
+        if (connectionSocket < 0)
         {
             printf("Failed to accept connection.\n");
             exit(1);
         }
-      
+
         //Fork the server to handle the request
         portNumber++;
         forkedPID = fork();
-        
-        if (forkedPID < 0) 
+
+        if (forkedPID < 0)
         {
             printf("Failed to fork.\n")
             exit(1);
         }
-      
-        if (forkedPID == 0) 
+
+        if (forkedPID == 0)
         {
             //Handle the game connection
             close(masterSocket);
@@ -73,16 +73,16 @@ int main( int argc, char *argv[] ) {
             exit(0);
         }
 
-        else 
+        else
         {
             close(connectionSocket);
         }
-        
+
     }
 */
 }
 
-void handleGame (int gameSocket, int gamePort) 
+void handleGame (int gameSocket, int gamePort)
 {
     int bytes, forkedPID;
     char messageBuffer[2048];
@@ -97,7 +97,7 @@ void handleGame (int gameSocket, int gamePort)
         printf("Failed to fork.\n")
         exit(1);
     }
-    if (forkedPID == 0) 
+    if (forkedPID == 0)
     {
         //Create a game process
         execl(PATH_TO_GAME, gamePort);
@@ -109,7 +109,7 @@ void handleGame (int gameSocket, int gamePort)
     struct sockaddr_in gameAddr;
 
     setupServerAddr(&gameAddr, portNumber);
-   
+
     /* First call to socket() function */
     masterSocket = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -118,17 +118,17 @@ void handleGame (int gameSocket, int gamePort)
         //Zero out data.
         bzero(messageBuffer,256);
         bytes = read(gameSocket,messageBuffer,255);
-       
-        if (bytes < 0) 
+
+        if (bytes < 0)
         {
             printf("Error on handleGame read.\n");
             exit(1);
         }
-       
+
         printf("Received message: %s\n",messageBuffer);
         bytes = write(gameSocket,"I got your message",18);
-       
-        if (bytes < 0) 
+
+        if (bytes < 0)
         {
             printf("Error on handleGame write.\n");
             exit(1);

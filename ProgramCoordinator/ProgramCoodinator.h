@@ -27,7 +27,7 @@ struct tileStackMessage
         {
             tileStack[i] = new char[5];
         }
-    }
+    };
     int messageType;
     int lengthOfStack;
     char **tileStack;
@@ -38,7 +38,7 @@ struct moveMessage
     moveMessage()
     {
         messageType = 1;
-    }
+    };
     int messageType;    //Used to differentiate messages
     bool p1;            //Player flag
     char tile[6];       //Tile Identifier
@@ -48,6 +48,7 @@ struct moveMessage
     int orientation;    //Orientation using network protocol offsets
     int meepleType;     //0: NONE    1: TIGER    2: CROC
     int zone;           //Zone for meeple if TIGER
+    std::string gid;    //Game ID
 };
 
 struct whoAmIMessage
@@ -55,7 +56,7 @@ struct whoAmIMessage
     whoAmIMessage()
     {
         messageType = 2;
-    }
+    };
     int messageType;
     bool p1;            //Tells the system if they start
 };

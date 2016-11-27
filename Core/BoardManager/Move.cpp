@@ -92,3 +92,11 @@ const Coord& Move::getCoord() const {
 unsigned int Move::getRotation() const {
 	return this->rotation;
 }
+
+int Move::getMeepleLocation() const {
+	return this->meepleLocation;
+}
+
+bool Move::getHasCrocodile() const {
+	return this->hasCrocodile;
+}

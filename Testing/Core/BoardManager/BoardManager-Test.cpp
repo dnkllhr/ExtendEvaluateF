@@ -48,8 +48,8 @@ TEST(BoardManagerTests, getTileStack)
     std::queue<const Tile*> tileQueue1 = tileStack->getQueue((unsigned int) 1);
     std::queue<const Tile*> tileQueue2 = tileStack->getQueue((unsigned int) 2);
 
-    EXPECT_EQ(tileQueue1.size(), NUMBER_OF_PLAYABLE_TILES / 2 - 1);
-    EXPECT_EQ(tileQueue2.size(), NUMBER_OF_PLAYABLE_TILES / 2 - 1);
+    EXPECT_EQ(tileQueue1.size(), (unsigned int)(NUMBER_OF_PLAYABLE_TILES / 2 - 1));
+    EXPECT_EQ(tileQueue2.size(), (unsigned int)(NUMBER_OF_PLAYABLE_TILES / 2 - 1));
 
     while(!tileQueue1.empty() || !tileQueue2.empty())
     {
