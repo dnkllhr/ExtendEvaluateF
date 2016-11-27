@@ -17,12 +17,12 @@ TileStack::~TileStack() {
     delete[] tileCounts;
 }
 
-const Tile& TileStack::front() {
+const Tile& TileStack::front() const {
     unsigned int toUse = (lastQueueUsed + 1) % numOfPlayers;
     return *queueArray[toUse].front();
 }
 
-const Tile& TileStack::front(unsigned int playerNum) {
+const Tile& TileStack::front(unsigned int playerNum) const {
     return *queueArray[playerNum - 1].front();
 }
 
