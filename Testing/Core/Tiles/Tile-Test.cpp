@@ -56,6 +56,7 @@ TEST(TileTests, SetRotation) {
 TEST(TileTests, SetRotationAfterPlacement) {
     Array<Array<Tile>> tiles = Tile::CreateTiles();
     Tile& tile = tiles[0][0];
+    Tile& otherTile = tiles[1][0];
 
     bool result = tile.setRotation(1);
     EXPECT_TRUE(result);
@@ -64,6 +65,7 @@ TEST(TileTests, SetRotationAfterPlacement) {
 
     result = tile.setRotation(2);
     EXPECT_FALSE(result);
+    EXPECT_TRUE(otherTile.setRotation(2));
 }
 
 TEST(TileTests, GetPreyType) {
