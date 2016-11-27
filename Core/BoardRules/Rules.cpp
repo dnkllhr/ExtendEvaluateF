@@ -106,6 +106,22 @@ bool GameRules::validCrocPlacement(const Coord& location)
     int currentX = location.getX();
     int currentY = location.getY();
 
+    const Tile *currentTile = Board::get(location);
+    bool valid;
+    for(int i = 0; i < NUM_TILE_EDGES + 1; i++)
+    {
+        if(currentTile->getTerrainType(i) == TerrainType::Road || currentTile->getTerrainType(i) == TerrainType::Castle)
+        {
+            valid = true;
+            break;
+        }
+    }
+
+    if(!valid)
+    {
+        return false;
+    }
+
     if(checkSideForCroc(currentX - 1, currentY)) //Croc exists
     {
         return false;

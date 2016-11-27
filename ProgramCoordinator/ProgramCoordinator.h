@@ -62,3 +62,11 @@ struct whoAmIMessage
     int messageType;
     bool p1;            //Tells the system if they start
 };
+
+
+union gameMessage
+{
+    struct tileStackMessage;
+    struct moveMessage;
+    struct whoAmIMessage;
+};
