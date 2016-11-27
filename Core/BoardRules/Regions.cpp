@@ -231,6 +231,7 @@ int Regions::addMeepleSpecial(unsigned int playerNumber, unsigned int tileID)
             return 0; // success
         }
     }
+    throw std::logic_error("No meeple of player exist on the requested tileID");
     return -1;  //Nooo existing meeple on tile
 }
 
