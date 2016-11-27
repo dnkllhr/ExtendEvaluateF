@@ -22,15 +22,41 @@ bool GameRules::validTilePlacement(const Tile& placed, const Tile ** boarderingT
 bool GameRules::validMeeplePlacement(const Tile& placed, unsigned int edgeIndex)
 {
     unsigned int id = placed.getId();
-    bool hasRegion = Regions::getRegions(id) != NULL;
-    if (!hasRegion) return true;
+    std::shared_ptr<struct regionSet> * regions = Regions::getRegions(id);
+    if (regions == NULL) return true;
 
-    bool hasPlayer1 = Regions::getRegions(id)[edgeIndex]->player1Meeples > 0;
-    bool hasPlayer2 = Regions::getRegions(id)[edgeIndex]->player2Meeples > 0;
+    bool hasPlayer1 = regions[edgeIndex]->player1Meeples > 0;
+    bool hasPlayer2 = regions[edgeIndex]->player2Meeples > 0;
 
     return ((!hasPlayer1) && (!hasPlayer2));
 }
 
+bool GameRules::validMeeplePlacement(const Coord& location, unsigned int edgeIndex)
+{
+    unsigned int side = edge / countPerSide;
+    unsigned int correspondingSide = (side + (numOfSides / 2)) % numOfSides;
+    unsigned int correspondingEdge = (countPerSide - (edge % countPerSide) - 1) + (countPerSide * correspondingSide);
+    unsigned int newX = location.getX();
+    unsigned int newY = location.getY();
+
+    if (side == 0) newY += 1;
+    else if (side == 1) newX += 1;
+    else if (side == 2) newY += -1;
+    else if (side == 3) newX += -1;
+
+    Coord neighbor = Coord(newX, newY);
+
+    const Tile* neighborTile = Board::get(neighbor);
+    if (neighborTile == NULL) return true;
+
+    std::shared_ptr<struct regionSet> * regions = Regions::getRegions(id);
+    if (regions == NULL) return true;
+
+    bool hasPlayer1 = regions[correspondingEdge]->player1Meeples > 0;
+    bool hasPlayer2 = regions[correspondingEdge]->player2Meeples > 0;
+
+    return ((!hasPlayer1) && (!hasPlayer2));
+}
 
 unsigned int GameRules::scoreRoad(std::shared_ptr<struct regionSet> currentSet, bool actuallyScore)
 {
