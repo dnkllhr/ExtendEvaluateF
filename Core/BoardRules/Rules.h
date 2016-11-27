@@ -24,15 +24,16 @@ class GameRules
         static bool validMeeplePlacement(const Tile& placed, unsigned int edgeIndex);
         static bool validMeeplePlacement(const Coord& location, unsigned int edgeIndex);
         static bool validCrocPlacement(unsigned int tileID);
+        static bool hasCroc(unsigned int tileID);
         static bool checkSideForCroc(unsigned int x, unsigned int y);
         static bool validCrocPlacement(const Coord& location);
         static unsigned int getCurrentScore(unsigned int tileID, unsigned int edge);
         static unsigned int getCurrentScore(std::shared_ptr<struct regionSet> * currentRegions, unsigned int edge, const Tile * tile, unsigned int tilesSurrounded);
-        static unsigned int scoreEdge(unsigned int tileID, unsigned int edge);
+        static unsigned int scoreEdge(unsigned int tileID, unsigned int edge, bool endOfGame = false);
         static unsigned int getPlayerScore(unsigned int player);
     private:
         static unsigned int scoreRoad(std::shared_ptr<struct regionSet> currentSet, bool actuallyScore);
-        static unsigned int scoreCastle(std::shared_ptr<struct regionSet> currentSet, bool actuallyScore);
+        static unsigned int scoreCastle(std::shared_ptr<struct regionSet> currentSet, bool actuallyScore, bool endOfGame = false);
         static unsigned int scoreGrass(std::shared_ptr<struct regionSet> * currentSets, unsigned int tileID, unsigned int edge, const Tile * passedTile = NULL);
         static unsigned int scoreChurch(unsigned int isSurrounded, bool actuallyScore);
         static unsigned int player1Score;
