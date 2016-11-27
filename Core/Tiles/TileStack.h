@@ -11,8 +11,8 @@ class TileStack {
         TileStack(unsigned int numOfPlayers);
         ~TileStack();
 
-        const Tile& front(unsigned int playerNum);
-        const Tile& front();
+        const Tile& front(unsigned int playerNum) const;
+        const Tile& front() const;
         const Tile& pop(unsigned int playerNum);
         const Tile& pop();
         const Tile& back(unsigned int playerNum);
