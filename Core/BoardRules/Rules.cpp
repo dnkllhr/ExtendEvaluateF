@@ -260,6 +260,7 @@ unsigned int GameRules::scoreChurch(unsigned int tilesSurrounded, bool actuallyS
     }
     else if (!actuallyScore)
     {
+		score = 1;
         score += tilesSurrounded;
     }
 
