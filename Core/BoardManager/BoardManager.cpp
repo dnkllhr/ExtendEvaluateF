@@ -91,7 +91,7 @@ std::vector<Move> BoardManager::getValidMoves(Tile& tile)
     return validMoves;
 }
 
-void BoardManager::makeMove(const Move& move)
+void BoardManager::makeMove(const Move& move, unsigned int playerNumber)
 {
     // if calling this method, it is assumed that this is a legal move
     Board::place(move);
@@ -99,6 +99,15 @@ void BoardManager::makeMove(const Move& move)
     Tile& tile = move.getTile();
     const Tile ** borderingTiles = Board::getBorderingTiles(tile);
     Regions::addConnection(tile, borderingTiles);
+
+    if(move.getMeepleLocation() != -1) // if Move includes Meeple
+    {
+    	Regions::addMeeple(playerNumber, tile.getId(), move.getMeepleLocation());
+    }
+    else if(move.getHasCrocodile())
+    {
+    	Regions::addCroc(playerNumber, tile.getId());
+    }
 
     tile.placeTile(); // mark Tile as placed so it can no longer be rotated
     tileStack->pop(); // remove top Tile from list

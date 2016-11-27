@@ -22,8 +22,8 @@ class BoardManager {
         static const TileStack* getTileStack();
         /// Gets all possible legal moves with the given Tile and current Board
         static std::vector<Move> getValidMoves(Tile& tile);
-        /// Makes the given Move
-        static void makeMove(const Move& move);
+        /// Makes the given Move for the given playerNumber
+        static void makeMove(const Move& move, unsigned int playerNumber);
 		/// Returns whether the given tile is fully surrounded by other tiles
 		static unsigned int isSurrounded(int tileID);
         //Entry points for functions needed by the AI
