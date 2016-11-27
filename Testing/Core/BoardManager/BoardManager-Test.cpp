@@ -26,6 +26,7 @@ TEST(BoardManagerTests, gameInit)
                 Tile* tile = boardGrid[i][j];
                 EXPECT_EQ(tile->getTileType(), TileType::D);
                 //EXPECT_EQ(tile->getRotation(), 0); floating point exception???
+                EXPECT_EQ(tile->getPrey(), PreyType::None);
                 EXPECT_EQ(tile->isPlaced(), true);
 
             }
@@ -48,8 +49,8 @@ TEST(BoardManagerTests, getTileStack)
     std::queue<const Tile*> tileQueue1 = tileStack->getQueue((unsigned int) 1);
     std::queue<const Tile*> tileQueue2 = tileStack->getQueue((unsigned int) 2);
 
-    EXPECT_EQ(tileQueue1.size(), (unsigned int)(NUMBER_OF_PLAYABLE_TILES / 2 - 1));
-    EXPECT_EQ(tileQueue2.size(), (unsigned int)(NUMBER_OF_PLAYABLE_TILES / 2 - 1));
+    EXPECT_EQ(tileQueue1.size(), NUMBER_OF_PLAYABLE_TILES / 2);
+    EXPECT_EQ(tileQueue2.size(), NUMBER_OF_PLAYABLE_TILES / 2);
 
     while(!tileQueue1.empty() || !tileQueue2.empty())
     {
@@ -165,9 +166,64 @@ TEST(BoardManagerTests, getValidMoves)
     throw std::logic_error("\n----------------------------------------------------\nTest writing incomplete, will finish later. -Michael\n----------------------------------------------------\n");
 }
 
+// Should this also test the calls of Regions::addConection,addMeeple,addCroc, as applicable?
 TEST(BoardManagerTests, makeMove)
 {
-    throw std::logic_error("\n----------------------------------------------------\nTest writing incomplete, will finish later. -Michael\n----------------------------------------------------\n");
+    BoardManager::gameInit();
+
+    unsigned int tileIdCounter = 1;
+
+    TileStack* tileStack = BoardManager::getTileStack();
+    Tile* front = tileStack->front(1);
+    Tile* next = tileStack->front(2);
+
+    Tile tile1 = Tile::CreateTileJ(1, tileIdCounter, PreyType::None)[0];
+    Coord coord1 = Coord(76, 75);
+    Move move1 = Move(tile1, coord1, 2);
+
+    Tile tile2 = Tile::CreateTileV(1, tileIdCounter, PreyType::None)[0];
+    Coord coord2 = Coord(77, 75);
+    Move move2 = Move(tile2, coord2);
+
+    Tile tile3 = Tile::CreateTileK(1, tileIdCounter, PreyType::None)[0];
+    Coord coord3 = Coord(77, 76);
+    Move move3 = Move(tile3, coord3, 2);
+
+    EXPECT_EQ(nullptr, Board::get(coord1));
+    EXPECT_EQ(tileStack->front(), front);
+    EXPECT_FALSE(tile1.isPlaced());
+    
+    BoardManager::makeMove(move1, 1);
+
+    EXPECT_EQ(&tile1, Board::get(coord1));
+    EXPECT_EQ(tileStack->front(), next);
+    EXPECT_TRUE(tile1.isPlaced());
+
+    Tile* front = tileStack->front(2);
+    Tile* next = tileStack->front(1);
+
+    EXPECT_EQ(nullptr, Board::get(coord2));
+    EXPECT_EQ(tileStack->front(), front);
+    EXPECT_FALSE(tile2.isPlaced());
+
+    BoardManager::makeMove(move2, 2);
+
+    EXPECT_EQ(&tile2, Board::get(coord2));
+    EXPECT_EQ(tileStack->front(), next);
+    EXPECT_TRUE(tile2.isPlaced());
+
+    Tile* front = tileStack->front(1);
+    Tile* next = tileStack->front(2);
+
+    EXPECT_EQ(nullptr, Board::get(coord3));
+    EXPECT_EQ(tileStack->front(), front);
+    EXPECT_FALSE(tile3.isPlaced());
+
+    BoardManager::makeMove(move3, 1);
+
+    EXPECT_EQ(&tile3, Board::get(coord3));
+    EXPECT_EQ(tileStack->front(), next);
+    EXPECT_TRUE(tile3.isPlaced());
 }
 
 TEST(BoardManagerTests, isSurrounded)

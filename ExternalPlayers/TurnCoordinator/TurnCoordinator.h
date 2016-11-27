@@ -1,5 +1,5 @@
 #include "../AI/AI.h"
-#include "../../../ProgramCoordinator/ProgramCoordinator.h"
+#include "../../ProgramCoordinator/ProgramCoordinator.h"
 
 #include <stdio.h>
 #include <stdlib.h>
