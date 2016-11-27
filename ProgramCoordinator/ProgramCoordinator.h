@@ -28,12 +28,12 @@ struct tileStackMessage
 
 struct moveMessage
 {
-    bool p1;            //Player flag
+    unsigned int p1;            //Player flag
     char tile[6];       //Tile Identifier
     bool placeable;     //Can you use tile?
-    int x;              //X coordinate
-    int y;              //Y coordinate
-    int orientation;    //Orientation using network protocol offsets
+    unsigned int x;              //X coordinate
+    unsigned int y;              //Y coordinate
+    unsigned int orientation;    //Orientation using network protocol offsets
     int meepleType;     //0: NONE    1: TIGER    2: CROC
     int zone;           //Zone for meeple if TIGER
     std::string gid;    //Game ID
@@ -41,7 +41,7 @@ struct moveMessage
 
 struct whoAmIMessage
 {
-    bool p1;            //Tells the system if they start
+    unsigned int p1;            //Which player your are
 };
 
 
@@ -50,8 +50,8 @@ struct gameMessage
     int messageType;
     union 
     {
-        struct tileStackMessage;
-        struct moveMessage;
-        struct whoAmIMessage;
+        struct tileStackMessage tileStackMessage;
+        struct moveMessage moveMessage;
+        struct whoAmIMessage whoAmIMessage;
     }u;
 };

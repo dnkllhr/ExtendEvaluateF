@@ -1,6 +1,7 @@
 #include "BoardManager.h"
 
 TileStack* BoardManager::tileStack = new TileStack(NUMBER_OF_PLAYERS);
+unsigned int BoardManager::tileIDCounter = 0;
 
 const Array<Array<Tile*>>& BoardManager::getBoard()
 {
@@ -54,7 +55,7 @@ const TileStack* BoardManager::getTileStack()
 
 const Tile& BoardManager::getTopTileStack()
 {
-    return tileStack.front();
+    return tileStack->front();
 }
 
 std::vector<Move> BoardManager::getValidMoves(Tile& tile)
@@ -151,4 +152,62 @@ unsigned int BoardManager::isSurrounded(int tileID)
 struct moveResult BoardManager::tryMove(const Tile& tile)
 {
     return Regions::tryMove(tile, Board::getBorderingTiles(tile));
+}
+
+
+
+
+
+void BoardManager::cannotPlaceTile()
+{
+    //Code special cases.
+}
+
+void BoardManager::addTileToStack(std::string tileName)
+{
+    auto iter = getTileFunctionFromName.find(tileName);
+    if (iter != getTileFunctionFromName.end())
+    {
+        int pseudoPreyType;
+        switch(tileName.at(4)) //Prey identifier
+        {
+            case 'D':
+                pseudoPreyType = 0;
+                break;
+            case 'B':
+                pseudoPreyType = 1;
+                break;
+            case 'P':
+                pseudoPreyType = 2;
+                break;
+            case 'C':
+                pseudoPreyType = 3;
+                break;
+            default:
+                pseudoPreyType = 4;
+                break;
+        }
+        (*iter->second)(1, BoardManager::tileIDCounter, (PreyType)pseudoPreyType);
+    }
+    else
+    {
+        throw std::logic_error("Could not find the function pointer for tile.");
+    }
+}
+
+
+void BoardManager::inputTileStack(char stack[], int length)
+{
+    if(sizeof(stack) != (length * 5 + 1))
+    {
+        throw std::logic_error("sizeof stack and anticipated stack size differ");
+    }
+
+    std::string currentTile;
+    for(int i = length - 6; i > 0; i -= 5)          //Skip over the null char and the first set of chars.
+    {
+        currentTile.assign(stack + i, stack + i + 5);
+        //std::cout << "Current tile being added to stack is :" << currentTile << std::endl;
+        BoardManager::addTileToStack(currentTile);
+    }
 }

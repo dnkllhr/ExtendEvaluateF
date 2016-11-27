@@ -2,7 +2,7 @@
 
 Move& AI::chooseTurn(const Tile& currentTile)
 {
-    std::vector<Move> moveList = BoardManager::getValidMoves(currentTile);
+    std::vector<Move> moveList = BoardManager::getValidMoves((Tile&)currentTile);
 
     auto highestIndex = moveList.begin();
     float highestValue = 0;
