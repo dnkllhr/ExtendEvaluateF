@@ -171,9 +171,9 @@ TEST(RulesTest, ScoreChurch) {
 
 	// how should actuallyScore change the values returned?
 	actualScore = scoreChurch(tilesSurrounded, true);
-	ASSERT(actualScore == 1);
-	actualScore = scoreChurch(tilesSurrounded, false);
 	ASSERT(actualScore == 0);
+	actualScore = scoreChurch(tilesSurrounded, false);
+	ASSERT(actualScore == 1);
 
 	//place other tiles around churchTile
 	for (int i = -1; i <= 1; i++)
