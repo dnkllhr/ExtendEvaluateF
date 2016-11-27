@@ -196,7 +196,18 @@ TEST(RulesTest, ScoreChurch) {
 
 				// how should actuallyScore change values returned?
 				actualScore = scoreChurch(tilesSurrounded, true);
-				ASSERT(actualScore == expectedScore);
+
+				// just placed final boardering tile, actuallyScore set to true should return full value
+				if (i == 1 && j == 1)
+				{
+					ASSERT(actualScore == expectedScore)
+				}
+
+				// church isn't completely surrounded, actuallyScore set to true should return 0
+				else
+				{
+					ASSERT(actualScore == 0);
+				}
 				actualScore = scoreChurch(tilesSurrounded, false);
 				ASSERT(actualScore == expectedScore);
 			}
