@@ -31,7 +31,7 @@ private:
     void callAI();
     void setUpAI();
     void setupSocket(int portNumber);
-    void buildResponse();
+    gameMessage& buildResponse(Move& move);
     Move& convertInMove(gameMessage *msg);
     static unsigned int ourPlayerNumber;
     static unsigned int otherPlayerNumber;

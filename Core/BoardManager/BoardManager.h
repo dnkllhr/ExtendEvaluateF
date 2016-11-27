@@ -36,6 +36,8 @@ class BoardManager {
         //Handle special cases.
         static void cannotPlaceTile();
         static void inputTileStack(char stack[], int length);
+        static int setupHashMap();
+        static std::unordered_map<std::string, TileFunction> getTileFunctionFromName;
 
 
     
@@ -47,7 +49,6 @@ class BoardManager {
         static Tile * startingTile;
         // remaining Tiles to be played
         static TileStack* tileStack;
-        static std::unordered_map<std::string, TileFunction> getTileFunctionFromName;
         static unsigned int tileIDCounter;
 };
 

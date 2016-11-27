@@ -16,17 +16,14 @@ void handleGame (int gameSocket, int gamePort);
 
 void setupServerAddr (struct sockaddr_in *serverAddr);
 
-struct tileStackMessage
-{
-    tileStackMessage()
-    {
-        lengthOfStack = 80;
-    };
-    int lengthOfStack;
-    char tileStack[80*5+1];
-};
 
-struct moveMessage
+typedef struct 
+{
+    int lengthOfStack;
+    char tileStack[401];
+}tileStackMessage;
+
+typedef struct 
 {
     unsigned int p1;            //Player flag
     char tile[6];       //Tile Identifier
@@ -37,21 +34,22 @@ struct moveMessage
     int meepleType;     //0: NONE    1: TIGER    2: CROC
     int zone;           //Zone for meeple if TIGER
     std::string gid;    //Game ID
-};
+}moveMessage;
 
-struct whoAmIMessage
+typedef struct 
 {
     unsigned int p1;            //Which player your are
-};
+}whoAmIMessage;
 
+typedef union
+{
+    tileStackMessage tile;
+    moveMessage move;
+    whoAmIMessage who;
+}messageData;
 
-struct gameMessage
+typedef struct
 {
     int messageType;
-    union 
-    {
-        struct tileStackMessage tileStackMessage;
-        struct moveMessage moveMessage;
-        struct whoAmIMessage whoAmIMessage;
-    }u;
-};
+    messageData data;
+}gameMessage;
