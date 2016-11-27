@@ -9,6 +9,8 @@ class Move {
         Tile& getTile() const;
         const Coord& getCoord() const;
         unsigned int getRotation() const;
+        int getMeepleLocation() const;
+        bool hasCrocodile() const;
 
         friend std::ostream &operator<<(std::ostream &out, Move move);
         
