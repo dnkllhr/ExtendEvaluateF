@@ -245,7 +245,7 @@ TEST(BoardManagerTests, makeMove)
 { 
     BoardManager::gameInit();
 
-    unsigned int tileIdCounter = 0;
+    unsigned int tileIdCounter = 100;
 
     TileStack* tileStack = BoardManager::getTileStack();
     Tile * front = &tileStack->front(1);
@@ -280,11 +280,6 @@ TEST(BoardManagerTests, makeMove)
     EXPECT_TRUE(tileStack->front() == *front);
     EXPECT_FALSE(tile2.isPlaced());
 
-    /*********************************************************************
-     * SOMEWHERE AFTER THIS, AN ENDLESS LOOP OR SOMETHING IS ENCOUNTERED *
-     * "make tests" THEN JUST HANGS :/                                   *
-     *********************************************************************/
-
     BoardManager::makeMove(move2, 2);
 
     EXPECT_EQ(&tile2, Board::get(coord2));
@@ -295,7 +290,7 @@ TEST(BoardManagerTests, makeMove)
     next = &tileStack->front(2);
 
     EXPECT_EQ(nullptr, Board::get(coord3));
-    //EXPECT_EQ(tileStack->front(), *front);
+    EXPECT_TRUE(tileStack->front() == *front);
     EXPECT_FALSE(tile3.isPlaced());
 
     BoardManager::makeMove(move3, 1);
