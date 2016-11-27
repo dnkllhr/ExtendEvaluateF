@@ -58,6 +58,20 @@ bool GameRules::validMeeplePlacement(const Coord& location, unsigned int edgeInd
     return ((!hasPlayer1) && (!hasPlayer2));
 }
 
+
+bool GameRules::hasCroc(unsigned int tileID)
+{
+    std::shared_ptr<struct regionSet> * regions = Regions::getRegions(tileID);
+    for(int i = 0; i < NUM_TILE_EDGES + 1; i++)
+    {
+        if(regions[i]->hasCroc)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool GameRules::validCrocPlacement(unsigned int tileID)
 {
     const Tile *currentTile = Board::get(tileID);
@@ -76,15 +90,7 @@ bool GameRules::validCrocPlacement(unsigned int tileID)
         return false;
     }
 
-    std::shared_ptr<struct regionSet> * regions = Regions::getRegions(tileID);
-    for(int i = 0; i < NUM_TILE_EDGES + 1; i++)
-    {
-        if(regions[i]->hasCroc)
-        {
-            return false;
-        }
-    }
-    return true;
+    return !(GameRules::hasCroc(tileID));
 }
 
 
@@ -92,7 +98,7 @@ bool GameRules::checkSideForCroc(unsigned int x, unsigned int y)
 {
     Coord side = Coord(x,y);
     unsigned int tileID = Board::getGridId(side);
-    return !(validCrocPlacement(tileID));  //If the adjacent tile regions return valid move, no croc.
+    return !(hasCroc(tileID));  //If the adjacent tile regions return valid move, no croc.
 }
 
 bool GameRules::validCrocPlacement(const Coord& location)
@@ -166,7 +172,7 @@ unsigned int GameRules::scoreRoad(std::shared_ptr<struct regionSet> currentSet, 
     return score;
 }
 
-unsigned int GameRules::scoreCastle(std::shared_ptr<struct regionSet> currentSet, bool actuallyScore)
+unsigned int GameRules::scoreCastle(std::shared_ptr<struct regionSet> currentSet, bool actuallyScore, bool endOfGame)
 {
     std::unordered_map<unsigned int, bool> edgeTracker;
     //Init starting values
@@ -175,7 +181,7 @@ unsigned int GameRules::scoreCastle(std::shared_ptr<struct regionSet> currentSet
     unsigned int score = 0;
     unsigned int preyCount = 0;
 
-    if(actuallyScore && currentSet->edgesTillCompletion != 0)
+    if(actuallyScore && currentSet->edgesTillCompletion != 0 && !endOfGame)
     {
         return 0;
     }
@@ -205,7 +211,8 @@ unsigned int GameRules::scoreCastle(std::shared_ptr<struct regionSet> currentSet
                 }
             }
             //Scoring for castle-animal interaction
-            score += CASTLE_VALUE * (1 + preyCount);
+            if(!endOfGame) {score += CASTLE_VALUE * (1 + preyCount);}
+            if(endOfGame) {score += 1 * (1 + preyCount);}
         }
         //Get the next node in the list
         currentNode = currentNode->next;
@@ -387,7 +394,7 @@ unsigned int GameRules::getCurrentScore(unsigned int tileID, unsigned int edge)
 }
 
 
-unsigned int GameRules::scoreEdge(unsigned int tileID, unsigned int edge)
+unsigned int GameRules::scoreEdge(unsigned int tileID, unsigned int edge, bool endOfGame)
 {
     unsigned int tilesSurrounded = BoardManager::isSurrounded(tileID);
 
@@ -403,7 +410,7 @@ unsigned int GameRules::scoreEdge(unsigned int tileID, unsigned int edge)
             returnValue = scoreRoad(currentRegion[edge], true);
             break;
         case TerrainType::Castle:
-            returnValue = scoreCastle(currentRegion[edge], true);
+            returnValue = scoreCastle(currentRegion[edge], true, endOfGame);
             break;
         case TerrainType::Church:
             returnValue = scoreChurch(tilesSurrounded, true);
