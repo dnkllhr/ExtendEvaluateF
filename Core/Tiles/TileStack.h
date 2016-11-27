@@ -19,6 +19,8 @@ class TileStack {
         Tile& back();
         void push(Tile& tile, unsigned int playerNum);
         void push(Tile& tile);
+        unsigned int getSize();
+        unsigned int getSize(unsigned int playerNum);
         unsigned int getCount(TileType type, PreyType prey, unsigned int playerNum);
         unsigned int getCount(TileType type, PreyType prey);
         unsigned int getCount(TileType type, unsigned int playerNum);

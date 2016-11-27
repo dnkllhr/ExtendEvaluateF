@@ -90,6 +90,19 @@ void TileStack::push(Tile& tile, unsigned int playerNum) {
     tileCounts[lastQueueUsed].insert(toInsert);
 }
 
+unsigned int TileStack::getSize() {
+    unsigned int count = 0;
+
+    for (unsigned int player = 0; player < numOfPlayers; player++)
+        count += queueArray[player].size();
+
+    return count;
+}
+
+unsigned int TileStack::getSize(unsigned int playerNum) {
+    return queueArray[playerNum].size();
+}
+
 unsigned int TileStack::getCount(TileType type) {
     unsigned int count = 0;
 

@@ -175,7 +175,6 @@ void BoardManager::makeMove(const Move& move, unsigned int playerNumber)
     tileStack->pop(); // remove top Tile from list
 }
 
-#include <iostream>
 unsigned int BoardManager::isSurrounded(int tileID)
 {
     unsigned int surrounded = 0;
@@ -188,7 +187,10 @@ unsigned int BoardManager::isSurrounded(int tileID)
     {
         for(int j = -1; j <= 1; j++)
         {
-            if (boardGrid[xLocation + i][yLocation + j] != NULL && (i != 0 && j != 0))
+            int thisX = xLocation + i;
+            int thisY = yLocation + j;
+            if (thisX >= 0 && thisY >= 0 && thisX < boardGrid.getSize() && thisY < boardGrid[0].getSize() &&
+                boardGrid[xLocation + i][yLocation + j] != NULL && !(i == 0 && j == 0))
             {
                 surrounded++;
             }
@@ -214,7 +216,7 @@ void BoardManager::cannotPlaceTile()
 
 void BoardManager::addTileToStack(std::string tileName)
 {
-    auto iter = getTileFunctionFromName.find(tileName);
+    /*auto iter = getTileFunctionFromName.find(tileName);
     if (iter != getTileFunctionFromName.end())
     {
         int pseudoPreyType;
@@ -242,7 +244,7 @@ void BoardManager::addTileToStack(std::string tileName)
     else
     {
         throw std::logic_error("Could not find the function pointer for tile.");
-    }
+    }*/
 }
 
 

@@ -242,10 +242,10 @@ TEST(BoardManagerTests, getValidMoves)
 
 // Should this also test the calls of Regions::addConection,addMeeple,addCroc, as applicable?
 TEST(BoardManagerTests, makeMove)
-{
+{ 
     BoardManager::gameInit();
 
-    unsigned int tileIdCounter = 0;
+    unsigned int tileIdCounter = 100;
 
     TileStack* tileStack = BoardManager::getTileStack();
     Tile * front = &tileStack->front(1);
@@ -280,11 +280,6 @@ TEST(BoardManagerTests, makeMove)
     EXPECT_TRUE(tileStack->front() == *front);
     EXPECT_FALSE(tile2.isPlaced());
 
-    /*********************************************************************
-     * SOMEWHERE AFTER THIS, AN ENDLESS LOOP OR SOMETHING IS ENCOUNTERED *
-     * "make tests" THEN JUST HANGS :/                                   *
-     *********************************************************************/
-
     BoardManager::makeMove(move2, 2);
 
     EXPECT_EQ(&tile2, Board::get(coord2));
@@ -295,7 +290,7 @@ TEST(BoardManagerTests, makeMove)
     next = &tileStack->front(2);
 
     EXPECT_EQ(nullptr, Board::get(coord3));
-    //EXPECT_EQ(tileStack->front(), *front);
+    EXPECT_TRUE(tileStack->front() == *front);
     EXPECT_FALSE(tile3.isPlaced());
 
     BoardManager::makeMove(move3, 1);
@@ -308,9 +303,10 @@ TEST(BoardManagerTests, makeMove)
 TEST(BoardManagerTests, isSurrounded)
 {
     BoardManager::gameInit();
-    unsigned int centerTileId = Board::get(Coord(76, 76))->getId();
+    Coord center = Coord(76, 76);
+    unsigned int centerTileId = Board::get(center)->getId();
 
-    unsigned int tileIdCounter = 0;
+    unsigned int tileIdCounter = 100;
 
     Array<Tile> tiles(8);
 
@@ -326,13 +322,13 @@ TEST(BoardManagerTests, isSurrounded)
     int dx[8] = { -1, 0, 1, 1, 1, 0, -1, -1 };
     int dy[8] = { 1, 1, 1, 0, -1, -1, -1, 0 };
 
-    std::cout << Board::getCoordinatesFromTileId(centerTileId) << std::endl;
     EXPECT_EQ(BoardManager::isSurrounded(centerTileId), 0);
 
     for(unsigned int i = 0; i < 8; i++)
     {
         Move move = Move(tiles[i], 76 + dx[i], 76 + dy[i]);
         Board::place(move);
+        EXPECT_TRUE(BoardManager::getBoard()[76 + dx[i]][76 + dy[i]] == &tiles[i]);
         EXPECT_EQ(BoardManager::isSurrounded(centerTileId), i+1);
     }
 }
