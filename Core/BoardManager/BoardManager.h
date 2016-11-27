@@ -14,16 +14,17 @@
 class BoardManager {
     
     public:
+        ~BoardManager();
     
         /// Returns the current Board
         static const Array<Array<Tile*>>& getBoard();
         /// Sets up a fresh Board with starting Tile for a new game
         static void gameInit();
         /// Returns all following Tiles to be played
-        static const TileStack* getTileStack();
-        static const Tile& getTopTileStack();
+        static TileStack* getTileStack();
+        static Tile& getTopTileStack();
         /// Gets all possible legal moves with the given Tile and current Board
-        static std::vector<Move> getValidMoves(Tile& tile);
+        static std::vector<Move> getValidMoves(const Tile& tile);
         /// Makes the given Move for the given playerNumber
         static void makeMove(const Move& move, unsigned int playerNumber);
 		/// Returns whether the given tile is fully surrounded by other tiles
@@ -40,6 +41,7 @@ class BoardManager {
     private:
 #endif
 
+        static Tile * startingTile;
         // remaining Tiles to be played
         static TileStack* tileStack;
     

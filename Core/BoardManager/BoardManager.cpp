@@ -1,6 +1,13 @@
 #include "BoardManager.h"
 
 TileStack* BoardManager::tileStack = new TileStack(NUMBER_OF_PLAYERS);
+Tile * BoardManager::startingTile = NULL;
+
+BoardManager::~BoardManager()
+{
+    if (startingTile != NULL) delete startingTile;
+    if (tileStack != NULL) delete tileStack;
+}
 
 const Array<Array<Tile*>>& BoardManager::getBoard()
 {
@@ -25,10 +32,13 @@ void BoardManager::gameInit()
             {
                 // Place starting tile in center
                 Coord center(NUMBER_OF_PLAYABLE_TILES, NUMBER_OF_PLAYABLE_TILES);
-                Tile& startingTile = tiles[i][j];
-                Move startingMove(startingTile, center);
+                if (startingTile != NULL) delete startingTile;
+                startingTile = new Tile(tiles[i][j]);
+                Move startingMove(*startingTile, center);
                 Board::place(startingMove);
-                startingTile.placeTile();
+                const Tile ** borderingTiles = Board::getBorderingTiles(*startingTile);
+                Regions::addConnection(*startingTile, borderingTiles);
+                startingTile->placeTile();
             }
             else
             {
@@ -47,58 +57,55 @@ void BoardManager::gameInit()
     }
 }
 
-const TileStack* BoardManager::getTileStack()
+TileStack* BoardManager::getTileStack()
 {
     return tileStack;
 }
 
-const Tile& BoardManager::getTopTileStack()
+Tile& BoardManager::getTopTileStack()
 {
-    return tileStack.front();
+    return tileStack->front();
 }
 
-std::vector<Move> BoardManager::getValidMoves(Tile& tile)
+std::vector<Move> BoardManager::getValidMoves(const Tile& tile)
 {
     std::vector<Move> validMoves;
     std::unordered_set<unsigned int> availableLocations = Board::getAvailableLocations();
-    
+
     for(const int gridId : availableLocations)
     {
-    	const Coord location = Board::getCoordinatesFromGridId(gridId);
-    	const Tile ** borderingTiles = Board::getBorderingTiles(location);
-    	//Tile tileCopy = tile;
+        const Coord location = Board::getCoordinatesFromGridId(gridId);
+        const Tile ** borderingTiles = Board::getBorderingTiles(location);
+        Tile tileCopy = tile;
         // ^^ was orginally going to use a copy of the Tile to rotate intermediately, but the copy constructor exceptioned on copying the Tile Name
 
-    	for(unsigned int rotation = 0; rotation < (unsigned int) NUM_TILE_SIDES; rotation++)
-    	{
+        for(unsigned int rotation = 0; rotation < (unsigned int) NUM_TILE_SIDES; rotation++)
+        {
 ////////////// FLOATING POINT EXCEPTION vvvvv
-    		tile.setRotation(rotation);
+            tileCopy.setRotation(rotation);
 ////////////// FLOATING POINT EXCEPTION ^^^^^
 
-    		unsigned int numberOfEdges = NUM_TILE_SIDES * NUM_TILE_EDGES_PER_SIDE;
+            unsigned int numberOfEdges = NUM_TILE_SIDES * NUM_TILE_EDGES_PER_SIDE;
 
-    		if(GameRules::validTilePlacement(tile, borderingTiles))
-	        {
-	        	validMoves.push_back(Move(tile, location, rotation)); // no meeple or croc
+            if(GameRules::validTilePlacement(tileCopy, borderingTiles))
+            {
+                validMoves.push_back(Move(tileCopy, Coord(location), rotation)); // no meeple or croc
 
-	        	for(unsigned int edgeIndex = 0; edgeIndex < numberOfEdges; edgeIndex++)
-    			{
-    				if(GameRules::validMeeplePlacement(location, edgeIndex))
-        			{
-	    				validMoves.push_back(Move(tile, location, rotation, edgeIndex));
-	    			}
-    			}
+                for(unsigned int edgeIndex = 0; edgeIndex < numberOfEdges; edgeIndex++)
+                {
+                    if(GameRules::validMeeplePlacement(location, edgeIndex))
+                    {
+                        validMoves.push_back(Move(tileCopy, Coord(location), rotation, edgeIndex));
+                    }
+                }
 ////////////////// SEG FAULT vvvvv
-    			if(true)//GameRules::validCrocPlacement(tile, location))
+                if(true)//GameRules::validCrocPlacement(tile, location))
 ////////////////// SEG FAULT ^^^^^
-    			{
-    				validMoves.push_back(Move(tile, location, rotation, true));
-    			}
-	        }   
-    	}
-////////////// FLOATING POINT EXCEPTION vvvvv
-        tile.setRotation(0); // reset tile
-////////////// FLOATING POINT EXCEPTION ^^^^^
+                {
+                    validMoves.push_back(Move(tileCopy, Coord(location), rotation, true));
+                }
+            }   
+        }
     }
 
     return validMoves;
@@ -115,17 +122,18 @@ void BoardManager::makeMove(const Move& move, unsigned int playerNumber)
 
     if(move.getMeepleLocation() != -1) // if Move includes Meeple
     {
-    	Regions::addMeeple(playerNumber, tile.getId(), move.getMeepleLocation());
+        Regions::addMeeple(playerNumber, tile.getId(), move.getMeepleLocation());
     }
     else if(move.getHasCrocodile())
     {
-    	Regions::addCroc(playerNumber, tile.getId());
+        Regions::addCroc(playerNumber, tile.getId());
     }
 
     tile.placeTile(); // mark Tile as placed so it can no longer be rotated
     tileStack->pop(); // remove top Tile from list
 }
 
+#include <iostream>
 unsigned int BoardManager::isSurrounded(int tileID)
 {
     unsigned int surrounded = 0;

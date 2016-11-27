@@ -11,22 +11,22 @@ class TileStack {
         TileStack(unsigned int numOfPlayers);
         ~TileStack();
 
-        const Tile& front(unsigned int playerNum) const;
-        const Tile& front() const;
-        const Tile& pop(unsigned int playerNum);
-        const Tile& pop();
-        const Tile& back(unsigned int playerNum);
-        const Tile& back();
-        void push(const Tile& tile, unsigned int playerNum);
-        void push(const Tile& tile);
+        Tile& front(unsigned int playerNum);
+        Tile& front();
+        Tile& pop(unsigned int playerNum);
+        Tile& pop();
+        Tile& back(unsigned int playerNum);
+        Tile& back();
+        void push(Tile& tile, unsigned int playerNum);
+        void push(Tile& tile);
         unsigned int getCount(TileType type, PreyType prey, unsigned int playerNum);
         unsigned int getCount(TileType type, PreyType prey);
         unsigned int getCount(TileType type, unsigned int playerNum);
         unsigned int getCount(TileType type);
-        std::queue<const Tile*> getQueue(unsigned int playerNum) const;
+        std::queue<Tile*> getQueue(unsigned int playerNum);
 
     private:
-        std::queue<const Tile*> * queueArray;
+        std::queue<Tile*> * queueArray;
         std::unordered_multimap<int, PreyType> * tileCounts;
         unsigned int lastQueueUsed;
         unsigned int numOfPlayers;
