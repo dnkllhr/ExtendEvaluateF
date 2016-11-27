@@ -70,19 +70,19 @@ std::vector<Move> BoardManager::getValidMoves(Tile& tile)
 
     		if(GameRules::validTilePlacement(tileCopy, borderingTiles))
 	        {
-	        	validMoves.push_back(Move(tile, location, -1, false, rotation)); // no meeple or croc
+	        	validMoves.push_back(Move(tile, location, rotation)); // no meeple or croc
 
 	        	for(unsigned int edgeIndex = 0; edgeIndex < numberOfEdges; edgeIndex++)
     			{
     				if(GameRules::validMeeplePlacement(location, edgeIndex))
         			{
-	    				validMoves.push_back(Move(tile, location, edgeIndex, false, rotation));
+	    				validMoves.push_back(Move(tile, location, rotation, edgeIndex));
 	    			}
     			}
 
-    			if(GameRules::validCrocodilePlacement(tileCopy, location))
+    			if(Regions::validCrocPlacement(tileCopy.getId()))// will not currently work as intended
     			{
-    				validMoves.push_back(Move(tile, location, -1, true, rotation));
+    				validMoves.push_back(Move(tile, location, rotation, true));
     			}
 	        }   
     	}

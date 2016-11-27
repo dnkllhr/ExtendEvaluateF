@@ -11,15 +11,18 @@ class Move {
         unsigned int getRotation() const;
 
         friend std::ostream &operator<<(std::ostream &out, Move move);
+        
+        // Coord object
+        Move(Tile& tile, const Coord& coord); // No rotation, meeple, or crocodile
+        Move(Tile& tile, const Coord& coord, unsigned int rotation); // No meeple or crocodile
+        Move(Tile& tile, const Coord& coord, unsigned int rotation, unsigned int meepleLocation); // Meeple
+        Move(Tile& tile, const Coord& coord, unsigned int rotation, bool hasCrocodile); // Crocodile
 
-        // No rotation, meeple, or crocodile
-        Move(Tile& tile, const Coord& coord);
-        Move(Tile& tile, unsigned int x, unsigned int y);
-
-        // If you need to specify one, you must specify all (-1 = no meeple)
-        // Figured this was better than having a lot more constructors
-        Move(Tile& tile, const Coord& coord, unsigned int rotation, int meepleLocation, bool hasCrocodile);
-        Move(Tile& tile, unsigned int x, unsigned int y, unsigned int rotation, int meepleLocation, bool hasCrocodile);
+        // No Coord object
+        Move(Tile& tile, unsigned int x, unsigned int y); // No rotation, meeple, or crocodile
+        Move(Tile& tile, unsigned int x, unsigned int y, unsigned int rotation); // No meeple or crocodile
+        Move(Tile& tile, unsigned int x, unsigned int y, unsigned int rotation, unsigned int meepleLocation); // Meeple
+        Move(Tile& tile, unsigned int x, unsigned int y, unsigned int rotation, bool hasCrocodile); // Crocodile
 
         Move()=delete;
 

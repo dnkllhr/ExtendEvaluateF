@@ -1,6 +1,7 @@
 #include "Move.h"
 
-Move::Move(Tile& tile, const Coord& coord)
+// With Coord Object
+Move::Move(Tile& tile, const Coord& coord)  // No rotation, meeple, or crocodile
 {
 	this->tile = &tile;
 	this->coord = &coord;
@@ -9,30 +10,67 @@ Move::Move(Tile& tile, const Coord& coord)
 	this->hasCrocodile = false;
 }
 
-Move::Move(Tile& tile, unsigned int x, unsigned int y)
+Move::Move(Tile& tile, const Coord& coord, unsigned int rotation) // No meeple or crocodile
 {
 	this->tile = &tile;
-	this->coord = new Coord(x, y);
-	this->rotation = 0;
+	this->coord = &coord;
+	this->rotation = rotation;
 	this->meepleLocation = -1;
 	this->hasCrocodile = false;
 }
 
-Move::Move(Tile& tile, const Coord& coord, unsigned int rotation, int meepleLocation, bool hasCrocodile)
+Move::Move(Tile& tile, const Coord& coord, unsigned int rotation, unsigned int meepleLocation) // Meeple
 {
 	this->tile = &tile;
 	this->coord = &coord;
 	this->rotation = rotation;
 	this->meepleLocation = meepleLocation;
+	this->hasCrocodile = false;
+}
+
+Move::Move(Tile& tile, const Coord& coord, unsigned int rotation, bool hasCrocodile) // Crocodile
+{
+	this->tile = &tile;
+	this->coord = &coord;
+	this->rotation = rotation;
+	this->meepleLocation = -1;
 	this->hasCrocodile = hasCrocodile;
 }
 
-Move::Move(Tile& tile, unsigned int x, unsigned int y, unsigned int rotation, int meepleLocation, bool hasCrocodile)
+// No Coord Object
+Move::Move(Tile& tile, unsigned int x, unsigned int y) // No rotation, meeple, or crocodile
+{
+	this->tile = &tile;
+	this->coord = new Coord(x, y);
+	this->rotation = 0;
+	this->meepleLocation = -1;
+	this->hasCrocodile = false;
+}
+
+Move::Move(Tile& tile, unsigned int x, unsigned int y, unsigned int rotation) // No meeple or crocodile
+{
+	this->tile = &tile;
+	this->coord = new Coord(x, y);
+	this->rotation = rotation;
+	this->meepleLocation = -1;
+	this->hasCrocodile = false;
+}
+
+Move::Move(Tile& tile, unsigned int x, unsigned int y, unsigned int rotation, unsigned int meepleLocation) // Meeple
 {
 	this->tile = &tile;
 	this->coord = new Coord(x, y);
 	this->rotation = rotation;
 	this->meepleLocation = meepleLocation;
+	this->hasCrocodile = false;
+}
+
+Move::Move(Tile& tile, unsigned int x, unsigned int y, unsigned int rotation, bool hasCrocodile) // Crocodile
+{
+	this->tile = &tile;
+	this->coord = new Coord(x, y);
+	this->rotation = rotation;
+	this->meepleLocation = -1;
 	this->hasCrocodile = hasCrocodile;
 }
 
