@@ -52,26 +52,40 @@ const TileStack* BoardManager::getTileStack()
     return tileStack;
 }
 
-
 std::vector<Move> BoardManager::getValidMoves(Tile& tile)
 {
     std::vector<Move> validMoves;
     std::unordered_set<unsigned int> availableLocations = Board::getAvailableLocations();
-
+    
     for(const int gridId : availableLocations)
     {
-        Coord location = Board::getCoordinatesFromGridId(gridId);
-        const Tile ** borderingTiles = Board::getBorderingTiles(*Board::get(location));
-        Tile tileCopy = tile;
+    	const Coord location = Board::getCoordinatesFromGridId(gridId);
+    	const Tile ** borderingTiles = Board::getBorderingTiles(*Board::get(location));
+    	Tile tileCopy = tile;
 
-        for(int r = 0; r < NUM_TILE_SIDES; r++)
-        {
-            tileCopy.setRotation(r);
-            if(GameRules::validTilePlacement(tileCopy, borderingTiles))
-            {
-                validMoves.push_back(Move(tile, location, r));
-            }
-        }
+    	for(unsigned int rotation = 0; rotation < (unsigned int) NUM_TILE_SIDES; rotation++)
+    	{
+    		tileCopy.setRotation(rotation);
+    		unsigned int numberOfEdges = NUM_TILE_SIDES * NUM_TILE_EDGES_PER_SIDE;
+
+    		if(GameRules::validTilePlacement(tileCopy, borderingTiles))
+	        {
+	        	validMoves.push_back(Move(tile, location, rotation)); // no meeple or croc
+
+	        	for(unsigned int edgeIndex = 0; edgeIndex < numberOfEdges; edgeIndex++)
+    			{
+    				if(GameRules::validMeeplePlacement(location, edgeIndex))
+        			{
+	    				validMoves.push_back(Move(tile, location, rotation, edgeIndex));
+	    			}
+    			}
+
+    			if(Regions::validCrocPlacement(tileCopy.getId()))// will not currently work as intended
+    			{
+    				validMoves.push_back(Move(tile, location, rotation, true));
+    			}
+	        }   
+    	}
     }
 
     return validMoves;

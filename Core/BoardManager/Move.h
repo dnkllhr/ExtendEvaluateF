@@ -11,14 +11,18 @@ class Move {
         unsigned int getRotation() const;
 
         friend std::ostream &operator<<(std::ostream &out, Move move);
+        
+        // Coord object
+        Move(Tile& tile, const Coord& coord); // No rotation, meeple, or crocodile
+        Move(Tile& tile, const Coord& coord, unsigned int rotation); // No meeple or crocodile
+        Move(Tile& tile, const Coord& coord, unsigned int rotation, unsigned int meepleLocation); // Meeple
+        Move(Tile& tile, const Coord& coord, unsigned int rotation, bool hasCrocodile); // Crocodile
 
-        // default rotation = 0
-        Move(Tile& t, const Coord& c);
-        Move(Tile& t, unsigned int x, unsigned int y);
-
-        // can specify rotation ( 90 * r degrees CCW )
-        Move(Tile& t, const Coord& c, unsigned int r);
-        Move(Tile& t, unsigned int x, unsigned int y, unsigned int r);
+        // No Coord object
+        Move(Tile& tile, unsigned int x, unsigned int y); // No rotation, meeple, or crocodile
+        Move(Tile& tile, unsigned int x, unsigned int y, unsigned int rotation); // No meeple or crocodile
+        Move(Tile& tile, unsigned int x, unsigned int y, unsigned int rotation, unsigned int meepleLocation); // Meeple
+        Move(Tile& tile, unsigned int x, unsigned int y, unsigned int rotation, bool hasCrocodile); // Crocodile
 
         Move()=delete;
 
@@ -26,6 +30,8 @@ class Move {
         Tile* tile;
         const Coord* coord;
         unsigned int rotation;
+        int meepleLocation; // -1 = no meeple/tiger
+        bool hasCrocodile;
 };
 
 #endif
