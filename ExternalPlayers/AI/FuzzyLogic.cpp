@@ -30,7 +30,7 @@ float FuzzySet::getTurnScore()
         turnScore = (this->percentMembership[HURTING_GOOD_IDX]) * HURTING_GOOD_WHT + (this->percentMembership[HURTING_NEUTRAL_IDX]) * HURTING_NEUTRAL_WHT
                   + (this->percentMembership[HURTING_BAD_IDX]) * HURTING_BAD_WHT;
         //printf("Hurting Enemy return %4.4f\n", turnScore);
-    }  
+    }
     else if(this->identifier == HELPING_ME)
     {
         //printf("\nHelping Me memberships %4.4f, %4.4f, %4.4f\n", this->percentMembership[0],this->percentMembership[1],this->percentMembership[2]);
