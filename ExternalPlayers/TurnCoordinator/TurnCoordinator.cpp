@@ -79,7 +79,7 @@ void TurnCoordinator::handleMessage(gameMessage *msg)
     switch(msg->whoAmIMessage.messageType)
     {
         case 0:
-            //This is a message to identify how long the incoming tileStack will be.  Block for the next read.
+            BoardManager::inputStack(msg->tileStackMessage.tileStack)
             break;
         case 1:
             break;

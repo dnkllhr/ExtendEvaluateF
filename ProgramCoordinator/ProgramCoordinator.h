@@ -22,15 +22,10 @@ struct tileStackMessage
     {
         messageType = 0;
         lengthOfStack = 80;
-        char **tileStack = new char*[80];
-        for(int i = 0; i < lengthOfStack; i++)
-        {
-            tileStack[i] = new char[5];
-        }
     };
     int messageType;
     int lengthOfStack;
-    char **tileStack;
+    char tileStack[80*5+1];
 };
 
 struct moveMessage
