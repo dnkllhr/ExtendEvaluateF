@@ -101,16 +101,15 @@ bool GameRules::checkSideForCroc(unsigned int x, unsigned int y)
     return !(hasCroc(tileID));  //If the adjacent tile regions return valid move, no croc.
 }
 
-bool GameRules::validCrocPlacement(const Coord& location)
+bool GameRules::validCrocPlacement(const Tile& toPlace, const Coord& location)
 {
     int currentX = location.getX();
     int currentY = location.getY();
 
-    const Tile *currentTile = Board::get(location);
     bool valid;
     for(int i = 0; i < NUM_TILE_EDGES + 1; i++)
     {
-        if(currentTile->getTerrainType(i) == TerrainType::Road || currentTile->getTerrainType(i) == TerrainType::Castle)
+        if(toPlace.getTerrainType(i) == TerrainType::Road || toPlace.getTerrainType(i) == TerrainType::Castle)
         {
             valid = true;
             break;
