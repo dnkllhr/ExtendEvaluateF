@@ -12,13 +12,14 @@ class Move {
 
         friend std::ostream &operator<<(std::ostream &out, Move move);
 
-        // default rotation = 0
-        Move(Tile& t, const Coord& c);
-        Move(Tile& t, unsigned int x, unsigned int y);
+        // No rotation, meeple, or crocodile
+        Move(Tile& tile, const Coord& coord);
+        Move(Tile& tile, unsigned int x, unsigned int y);
 
-        // can specify rotation ( 90 * r degrees CCW )
-        Move(Tile& t, const Coord& c, unsigned int r);
-        Move(Tile& t, unsigned int x, unsigned int y, unsigned int r);
+        // If you need to specify one, you must specify all (-1 = no meeple)
+        // Figured this was better than having a lot more constructors
+        Move(Tile& tile, const Coord& coord, unsigned int rotation, int meepleLocation, bool hasCrocodile);
+        Move(Tile& tile, unsigned int x, unsigned int y, unsigned int rotation, int meepleLocation, bool hasCrocodile);
 
         Move()=delete;
 
@@ -26,6 +27,8 @@ class Move {
         Tile* tile;
         const Coord* coord;
         unsigned int rotation;
+        int meepleLocation; // -1 = no meeple/tiger
+        bool hasCrocodile;
 };
 
 #endif
