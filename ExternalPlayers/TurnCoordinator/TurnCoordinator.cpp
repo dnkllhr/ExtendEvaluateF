@@ -76,6 +76,18 @@ void TurnCoordinator::handleMessage(gameMessage *msg)
     //Take in the current message.
 
     //Determine if we need to pick a move
+    switch(msg->whoAmIMessage.messageType)
+    {
+        case 0:
+            //This is a message to identify how long the incoming tileStack will be.  Block for the next read.
+            break;
+        case 1:
+            break;
+        case 2:
+            break;
+        default:
+            break;
+    }
 
     if(AIMove)
     {
