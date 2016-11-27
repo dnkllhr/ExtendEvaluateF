@@ -1,6 +1,6 @@
 #include "AI.h"
 
-Move& AI::chooseTurn(Tile& currentTile)
+Move& AI::chooseTurn(const Tile& currentTile)
 {
     std::vector<Move> moveList = BoardManager::getValidMoves(currentTile);
 

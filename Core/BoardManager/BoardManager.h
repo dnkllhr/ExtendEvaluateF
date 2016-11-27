@@ -31,6 +31,11 @@ class BoardManager {
 		static unsigned int isSurrounded(int tileID);
         //Entry points for functions needed by the AI
         static struct moveResult tryMove(const Tile& tile);
+
+        //Handle special cases.
+        static void cannotPlaceTile();
+
+
     
 #ifndef testing
     private:

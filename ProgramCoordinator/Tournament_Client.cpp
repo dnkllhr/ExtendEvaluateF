@@ -195,12 +195,11 @@ void moveProtocol(int sockfd)
     int timeMove, gid, moveNum;
     int gamesActive = 2;
 
-    const char* tile = 0;
-    char* garbage = new char[5];
+    const char* tile = new char[6];
 
     bzero(buffer,256);
     read(sockfd,buffer,255);  //Server: MAKE YOUR MOVE IN GAME <gid> WITHIN <timemove> SECOND: MOVE <#> PLACE <tile>
-    sscanf(buffer,"MAKE YOUR MOVE IN GAME %d WITHIN %d %[SECOND]: MOVE %d PLACE %s", &gid, &timeMove, garbage, &moveNum, (char *)tile);
+    sscanf(buffer,"MAKE YOUR MOVE IN GAME %d WITHIN %d %[SECOND]: MOVE %d PLACE %s", &gid, &timeMove, __null, &moveNum, (char *)tile);
     printf("%s\n",buffer);
 
     /*Decide Move with given Tile and Time
@@ -212,10 +211,10 @@ void moveProtocol(int sockfd)
     r.gid = gid;
 
     //Pass r to the game server
-
+    r.placeable = 0;
     //Wait for response from game server
 
-    delete[] tile;
+    //delete[] tile;
     if(!r.placeable) // missing retrieve and add tiger for nonplacable tiger
     {
       bzero(buffer,256);
@@ -286,8 +285,8 @@ void moveProtocol(int sockfd)
           tile = strings[7].c_str();
           if(strings[9]!="PASSED") // TILE <tile> UNPLACEABLE RETRIEVED TIGER AT <x> <y>
           {
-            x = std::stoi(strings[strings.size()-1]);
-            y = std::stoi(strings[strings.size()]);
+            x = stoi(strings[strings.size()-2]);
+            y = stoi(strings[strings.size()-1]);
             printf("%s\n",buffer);
           }
           else //TILE <tile> UNPLACEABLE PASSED
