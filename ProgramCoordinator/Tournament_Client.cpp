@@ -2,21 +2,25 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <cstring>
+#include <sstream>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <iostream>
+#include "ProgramCoordinator.h"
+#include <vector>
 
-#define TOURNAMENT_PASSWD 1234
-#define USERNAME "LAMPSHADE"
-#define PASSWD "ILOVECAKE123"
+char* TOURNAMENT_PASSWD;
+char* USERNAME;
+char* PASSWD;
 
 void authenticationProtocol(int);
 void challengeProtocol(int);
 void roundProtocol(int);
 void matchProtocol(int);
-//void moveProtocol(int);
+void moveProtocol(int);
 
 
 void error(const char *msg)
@@ -27,6 +31,10 @@ void error(const char *msg)
 
 int main(int argc, char *argv[])
 {
+    TOURNAMENT_PASSWD = argv[3];
+    USERNAME = argv[4];
+    PASSWD = argv[5];
+
     int sockfd, portno, n;
     struct sockaddr_in serv_addr;
     struct hostent *server;
@@ -82,7 +90,7 @@ void authenticationProtocol(int sockfd)
     printf("%s\n",buffer);
 
     bzero(buffer,256);
-    sprintf(buffer,"JOIN %d",TOURNAMENT_PASSWD);
+    sprintf(buffer,"JOIN %s",TOURNAMENT_PASSWD);
     printf("%s\n",buffer);
     write(sockfd,buffer,strlen(buffer)); //Client: JOIN <tournament password>
 
@@ -118,6 +126,11 @@ for(int i = 0; i < rounds; i++)
   {
     roundProtocol(sockfd);
   }
+
+  bzero(buffer,256);
+  read(sockfd,buffer,255);  //Server: END OF CHALLENGES or PLEASE WAIT
+  printf("%s\n",buffer);
+
 }
 
 //ROUND PROTOCOL
@@ -141,6 +154,7 @@ void roundProtocol(int sockfd)
 
 void matchProtocol(int sockfd) {
     int oppPid, tile, x, y, orientation, number_tiles, time_plan;
+
     char buffer[256];
 
     bzero(buffer,256);
@@ -163,6 +177,130 @@ void matchProtocol(int sockfd) {
     sscanf(buffer,"MATCH BEGINS IN %d SECONDS", &time_plan);
     printf("%s\n",buffer);
 
-    //moveProtocol(int sockfd);
+    //Pre Match AI Grind
+
+    for(int i = 0; i < number_tiles; i++)
+    moveProtocol(sockfd);
+
+    bzero(buffer,256);
+    read(sockfd,buffer,255);  //Server: GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
+    printf("%s\n",buffer);
+
+    bzero(buffer,256);
+    read(sockfd,buffer,255);  //Server: GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
+    printf("%s\n",buffer);
+}
+
+void moveProtocol(int sockfd)
+{
+    char buffer[256];
+    int timeMove, gid, moveNum;
+    int gamesActive = 2;
+
+    const char* tile = 0;
+    char* garbage = new char[5];
+
+    bzero(buffer,256);
+    read(sockfd,buffer,255);  //Server: MAKE YOUR MOVE IN GAME <gid> WITHIN <timemove> SECOND: MOVE <#> PLACE <tile>
+    sscanf(buffer,"MAKE YOUR MOVE IN GAME %d WITHIN %d %[SECOND]: MOVE %d PLACE %s", &gid, &timeMove, garbage, &moveNum, (char *)tile);
+    printf("%s\n",buffer);
+
+    /*Decide Move with given Tile and Time
+
+    >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
+
+    moveMessage r;
+    strcpy(r.tile, tile);
+    r.gid = gid;
+
+    //Pass r to the game server
+
+    //Wait for response from game server
+
+    delete[] tile;
+    if(!r.placeable) // missing retrieve and add tiger for nonplacable tiger
+    {
+      bzero(buffer,256);
+      sprintf(buffer,"GAME %d TILE %s UNPLACEABLE PASS", gid, tile);
+      printf("%s\n",buffer);
+      write(sockfd,buffer,strlen(buffer));  //Client: "GAME %d TILE %s UNPLACEABLE PASS"
+    }
+    else // Tile is place able
+    {
+      switch (r.meepleType)
+      {
+        case 0: //NONE
+          bzero(buffer,256);
+          sprintf(buffer,"GAME %d PLACE %s AT %d %d %d NONE", gid, tile, r.x, r.y, r.orientation);
+          printf("%s\n",buffer);
+          write(sockfd,buffer,strlen(buffer));  //Client: GAME <gid> PLACE <tile> AT <x> <y> <orientation> NONE
+          break;
+        case 1: //TIGER
+          bzero(buffer,256);
+          sprintf(buffer,"GAME %d PLACE %s AT %d %d %d TIGER %d", gid, tile, r.x, r.y, r.orientation, r.zone);
+          printf("%s\n",buffer);
+          write(sockfd,buffer,strlen(buffer));  //Client: GAME <gid> PLACE <tile> AT <x> <y> <orientation> TIGER <zone>
+          break;
+        case 2://CROC
+          bzero(buffer,256);
+          sprintf(buffer,"GAME %d PLACE %s AT %d %d %d CROCODILE", gid, tile, r.x, r.y, r.orientation);
+          printf("%s\n",buffer);
+          write(sockfd,buffer,strlen(buffer));  //Client: GAME <gid> PLACE <tile> AT <x> <y> <orientation> CROCODILE
+          break;
+
+      }
+    }
+
+    //Server Now returns result of moves
+
+    int currentlyActive = gamesActive;
+    for(int i = 0; i < currentlyActive; i++){
+      int movePid, x, y, orientation, zone;
+      bzero(buffer,256);
+      read(sockfd,buffer,255);  //Server: GAME <gid> MOVE <#> PLAYER <pid> <move>
+      char* forfeit;
+      forfeit = strstr(buffer,"FORFEITED");
+      // CHECKED MESSAGE FOR FORFEIT
+      if(!forfeit)
+      {
+        std::istringstream brett (buffer);
+        std::vector<std::string> strings;
+        std::string s;
+        while(getline(brett, s, ' ')){
+          strings.push_back(s);
+        }
+
+        if(strings[6]=="PLACED")
+        {
+          if(strings[12]=="TIGER")
+          {
+            sscanf(buffer,"GAME %d MOVE %d PLAYER %d PLACED %s AT %d %d %d TIGER %d", &gid, &moveNum, &movePid, (char *)tile, &x, &y, &orientation, &zone );
+            printf("%s\n",buffer);
+          }
+          else
+          {
+            sscanf(buffer,"GAME %d MOVE %d PLAYER %d PLACED %s AT %d %d %d", &gid, &moveNum, &movePid, (char *)tile, &x, &y, &orientation);
+            printf("%s\n",buffer);
+          }
+        }
+        else
+        {
+          tile = strings[7].c_str();
+          if(strings[9]!="PASSED") // TILE <tile> UNPLACEABLE RETRIEVED TIGER AT <x> <y>
+          {
+            x = std::stoi(strings[strings.size()-1]);
+            y = std::stoi(strings[strings.size()]);
+            printf("%s\n",buffer);
+          }
+          else //TILE <tile> UNPLACEABLE PASSED
+          {
+
+          }
+
+        }
+
+      }
+
+    }
 
 }

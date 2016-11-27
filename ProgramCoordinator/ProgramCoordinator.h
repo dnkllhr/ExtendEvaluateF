@@ -9,8 +9,8 @@
 
 #include <unistd.h>
 
-#include "../ExternalPlayers/TurnCoordinator/TurnCoordinator.h"
-
+//#include "../ExternalPlayers/TurnCoordinator/TurnCoordinator.h"
+//Not Required 
 #define PATH_TO_GAME "/path/to/game/"
 
 
