@@ -24,7 +24,7 @@ int Regions::addCroc(unsigned int playerNumber, unsigned int tileID)
         return -1;
     }
 
-    if(GameRules::validCrocPlacement(tileID)) 
+    if(GameRules::validCrocPlacement(tileID))
     {
         ownerCrocs[i].inUse = true;
         ownerCrocs[i].ownedRegions = (regionTracker.find(tileID))->second;
@@ -192,12 +192,46 @@ int Regions::addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned 
 
     if(Regions::checkOwner(tileID, edge) == -2) //No owner
     {
+        ownerMeeples[i].tileID = tileID;
         ownerMeeples[i].inUse = true;
         ownerMeeples[i].ownedRegion = regionTracker.find(tileID)->second[edge];
         Regions::availableMeeples[playerNumber - 1]--;
         return 0;
     }
     return -1;
+}
+
+int Regions::addMeepleSpecial(unsigned int playerNumber, unsigned int tileID)
+{
+    unsigned int i,freeMeeple;
+    bool valid = false;
+
+    for(i = (playerNumber -  1)*(MEEPLES_PER_PLAYER); i < ((playerNumber - 1)*(MEEPLES_PER_PLAYER) + (MEEPLES_PER_PLAYER)); i++)
+    {
+        if(!(ownerMeeples[i].inUse))    // available Meeple
+        {
+            valid = true;
+            freeMeeple = i;
+            break;
+        }
+    }
+    if(!valid)
+    {
+        return -1;  // Nooooo Meeple available
+    }
+
+    for(i = (playerNumber -  1)*(MEEPLES_PER_PLAYER); i < ((playerNumber - 1)*(MEEPLES_PER_PLAYER) + (MEEPLES_PER_PLAYER)); i++)
+    {
+        if((ownerMeeples[i].inUse) && (ownerMeeples[i].tileID == tileID))    // Meeple on tileID
+        {
+            ownerMeeples[freeMeeple].tileID = tileID;
+            ownerMeeples[freeMeeple].inUse = true;
+            ownerMeeples[freeMeeple].ownedRegion = ownerMeeples[i].ownedRegion;
+            Regions::availableMeeples[playerNumber - 1]--;
+            return 0; // success
+        }
+    }
+    return -1;  //Nooo existing meeple on tile
 }
 
 int Regions::removeMeeple(unsigned int tileID, unsigned int edge)
@@ -207,6 +241,7 @@ int Regions::removeMeeple(unsigned int tileID, unsigned int edge)
     {
         if(ownerMeeples[i].inUse && (ownerMeeples[i].ownedRegion == wantedRegion))
         {
+            ownerMeeples[i].tileID = 0;
             ownerMeeples[i].inUse = false;
             ownerMeeples[i].ownedRegion = NULL;
 
