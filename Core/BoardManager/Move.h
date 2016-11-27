@@ -10,7 +10,7 @@ class Move {
         const Coord& getCoord() const;
         unsigned int getRotation() const;
         int getMeepleLocation() const;
-        bool hasCrocodile() const;
+        bool getHasCrocodile() const;
 
         friend std::ostream &operator<<(std::ostream &out, Move move);
         

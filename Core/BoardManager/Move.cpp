@@ -93,10 +93,10 @@ unsigned int Move::getRotation() const {
 	return this->rotation;
 }
 
-int getMeepleLocation() const {
+int Move::getMeepleLocation() const {
 	return this->meepleLocation;
 }
 
-bool hasCrocodile() const {
+bool Move::getHasCrocodile() const {
 	return this->hasCrocodile;
 }
