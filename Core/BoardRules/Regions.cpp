@@ -8,6 +8,53 @@ unsigned int Regions::availableMeeples[2] = { MEEPLES_PER_PLAYER, MEEPLES_PER_PL
 struct croc Regions::ownerCrocs[] = {};
 unsigned int Regions::availableCrocs[2] = { CROCS_PER_PLAYER, CROCS_PER_PLAYER };
 
+int Regions::addCroc(unsigned int playerNumber, unsigned int tileID)
+{
+    unsigned int i;
+    bool valid = false;
+    for(i = (playerNumber -  1)*(CROCS_PER_PLAYER); i < ((playerNumber - 1)*(CROCS_PER_PLAYER) + (CROCS_PER_PLAYER)); i++)
+    {
+        if(!(ownerCrocs[i].inUse))
+        {
+            valid = true;
+        }
+    }
+    if(!valid)
+    {
+        return -1;
+    }
+
+    if(Regions::validCrocPlacement(tileID)) 
+    {
+        ownerCrocs[i].inUse = true;
+        ownerCrocs[i].ownedRegions = (regionTracker.find(tileID))->second;
+        for(int i = 0; i < NUM_TILE_EDGES + 1; i++)
+        {
+            ownerCrocs[i].ownedRegions[i]->hasCroc = true;
+        }
+        Regions::availableCrocs[playerNumber - 1]--;
+        return 0;
+    }
+    return -1;
+}
+
+bool Regions::validCrocPlacement(unsigned int tileID)
+{
+    auto regionSearch = regionTracker.find(tileID);
+    if(regionSearch == regionTracker.end())
+    {
+        throw std::logic_error("Trying to place a croc on a region that doesn't exist.");
+    }
+    for(int i = 0; i < NUM_TILE_EDGES + 1; i++)
+    {
+        if(regionSearch->second[i]->hasCroc)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 
 void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, unsigned int connectingTileID, unsigned int connectingEdge)
 {
@@ -301,31 +348,7 @@ struct moveResult Regions::tryMove(const Tile& tile, const Tile ** boarderingTil
     return result;
 }
 
-int Regions::addCroc(unsigned int playerNumber, unsigned int tileID, unsigned int edge)
-{
-    unsigned int i;
-    bool valid = false;
-    for(i = (playerNumber -  1)*(CROCS_PER_PLAYER); i < ((playerNumber - 1)*(CROCS_PER_PLAYER) + (CROCS_PER_PLAYER)); i++)
-    {
-        if(!(ownerCrocs[i].inUse))
-        {
-            valid = true;
-        }
-    }
-    if(!valid)
-    {
-        return -1;
-    }
 
-    if(Regions::checkOwner(tileID, edge) == -2) //No owner
-    {
-        ownerCrocs[i].inUse = true;
-        ownerCrocs[i].ownedRegion = regionTracker.find(tileID)->second[edge];
-        Regions::availableCrocs[playerNumber - 1]--;
-        return 0;
-    }
-    return -1;
-}
 
 unsigned int Regions::meeplesAvailable(unsigned int playerNumber)
 {

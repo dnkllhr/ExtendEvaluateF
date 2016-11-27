@@ -9,7 +9,12 @@ TurnCoordinator::TurnCoordinator(int port)
     TurnCoordinator::AIPlayerNumber = 0;
     TurnCoordinator::myAddr = new struct sockaddr_in;
     setupSocket(port);
+}
 
+TurnCoordinator::~TurnCoordinator()
+{
+    close(TurnCoordinator::clientSocket);
+    close(TurnCoordinator::socket);
 }
 
 void TurnCoordinator::setupSocket(int portNumber)
