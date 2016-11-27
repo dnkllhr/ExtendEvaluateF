@@ -1,3 +1,5 @@
+#ifndef __TURN_COORDINATOR_H
+#define __TURN_COORDINATOR_H
 #include "../AI/AI.h"
 #include "../../ProgramCoordinator/ProgramCoordinator.h"
 
@@ -26,18 +28,20 @@ public:
 private:
     void receiveMessage();
     void handleMessage(gameMessage *msg);
-    void doOpponentMove();
-    Move& callAI();
-    void setupAI();
+    void callAI();
+    void setUpAI();
     void setupSocket(int portNumber);
     void buildResponse();
     Move& convertInMove(gameMessage *msg);
-    static 
-    static unsigned int AIPlayerNumber;
+    static unsigned int ourPlayerNumber;
+    static unsigned int otherPlayerNumber;
     static bool AISetup;
-    static int socket;
+    static int mySocket;
     static int clientSocket;
     static struct sockaddr_in *myAddr;
     static struct sockaddr_in *clientAddr;
     static Move currentMove;
 };
+
+
+#endif

@@ -20,7 +20,6 @@ struct tileStackMessage
 {
     tileStackMessage()
     {
-        messageType = 0;
         lengthOfStack = 80;
     };
     int messageType;
@@ -30,10 +29,6 @@ struct tileStackMessage
 
 struct moveMessage
 {
-    moveMessage()
-    {
-        messageType = 1;
-    };
     int messageType;    //Used to differentiate messages
     bool p1;            //Player flag
     char tile[6];       //Tile Identifier
@@ -48,18 +43,17 @@ struct moveMessage
 
 struct whoAmIMessage
 {
-    whoAmIMessage()
-    {
-        messageType = 2;
-    };
-    int messageType;
     bool p1;            //Tells the system if they start
 };
 
 
-union gameMessage
+struct gameMessage
 {
-    struct tileStackMessage;
-    struct moveMessage;
-    struct whoAmIMessage;
+    int messageType;
+    union 
+    {
+        struct tileStackMessage;
+        struct moveMessage;
+        struct whoAmIMessage;
+    }u;
 };

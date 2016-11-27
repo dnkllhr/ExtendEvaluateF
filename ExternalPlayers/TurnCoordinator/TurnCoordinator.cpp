@@ -6,7 +6,8 @@
 TurnCoordinator::TurnCoordinator(int port)
 {
     TurnCoordinator::AISetup = false;
-    TurnCoordinator::AIPlayerNumber = 0;
+    TurnCoordinator::ourPlayerNumber = 0;
+    TurnCoordinator::otherPlayerNumber = 0;
     TurnCoordinator::myAddr = new struct sockaddr_in;
     setupSocket(port);
 }
@@ -14,15 +15,15 @@ TurnCoordinator::TurnCoordinator(int port)
 TurnCoordinator::~TurnCoordinator()
 {
     close(TurnCoordinator::clientSocket);
-    close(TurnCoordinator::socket);
+    close(TurnCoordinator::mySocket);
 }
 
 void TurnCoordinator::setupSocket(int portNumber)
 {
     /* First call to socket() function */
-    TurnCoordinator::socket = socket(AF_INET, SOCK_STREAM, 0);
+    TurnCoordinator::mySocket = socket(AF_INET, SOCK_STREAM, 0);
    
-    if (TurnCoordinator::socket < 0) 
+    if (TurnCoordinator::mySocket < 0) 
     {
         throw std::runtime_error("ERROR opening socket");
     }
@@ -30,12 +31,12 @@ void TurnCoordinator::setupSocket(int portNumber)
     /* Initialize socket structure */
     bzero((char *) TurnCoordinator::myAddr, sizeof(*TurnCoordinator::myAddr));
    
-    TurnCoordinator::myAddr.sin_family = AF_INET;
-    TurnCoordinator::myAddr.sin_addr.s_addr = INADDR_ANY;
-    TurnCoordinator::myAddr.sin_port = htons(portNumber);
+    TurnCoordinator::myAddr->sin_family = AF_INET;
+    TurnCoordinator::myAddr->sin_addr.s_addr = INADDR_ANY;
+    TurnCoordinator::myAddr->sin_port = htons(portNumber);
    
    /* Now bind the host address using bind() call.*/
-    if (bind(TurnCoordinator::socket, (struct sockaddr *) TurnCoordinator::myAddr, sizeof(*TurnCoordinator::myAddr)) < 0) 
+    if (bind(TurnCoordinator::mySocket, (struct sockaddr *) TurnCoordinator::myAddr, sizeof(*TurnCoordinator::myAddr)) < 0) 
     {
         throw std::runtime_error("ERROR binding socket");
     }
@@ -43,40 +44,33 @@ void TurnCoordinator::setupSocket(int portNumber)
 
 void TurnCoordinator::setUpAI()
 {
-    if(TurnCoordinator::AIPlayerNumber == 0)
+    if(TurnCoordinator::ourPlayerNumber == 0)
     {
         throw std::logic_error("Trying to setup the AI before you know which player it is.");
     }
-    AI::setPlayerNumber(TurnCoordinator::AIPlayerNumber);
-    AI::AISetup = true;
+    AI::setPlayerNumber(TurnCoordinator::ourPlayerNumber);
+    TurnCoordinator::AISetup = true;
 }
 
-void TurnCoordinator::callAI(Tile& tile)
+void TurnCoordinator::callAI()
 {
     if(!TurnCoordinator::AISetup)
     {
-        if(TurnCoordinator::AIPlayerNumber == 0)
+        if(TurnCoordinator::ourPlayerNumber == 0)
         {
             throw std::logic_error("Trying to call the AI before you know which player it is.");
         }
         TurnCoordinator::setUpAI();
     }
-    Move chosenMove = AI::chooseTurn(tile);
-    BoardManager::makeMove(chosenMove);
+    Move chosenMove = AI::chooseTurn(BoardManager::getTopTileStack());
+    BoardManager::makeMove(chosenMove, TurnCoordinator::ourPlayerNumber);
 }
-
-void TurnCoordinator::doOpponentMove()
-{
-    //Convert the received msg into a Move
-    BoardManager::makeMove(mv);
-}
-
 
 Move& TurnCoordinator::convertInMove(gameMessage *msg)
 {
     if(!(msg->moveMessage.placeable))
     {
-        BoardManager::cannotPlace();
+        BoardManager::cannotPlaceTile();
     }
     unsigned int zone;
     switch (msg->moveMessage.zone)
@@ -112,36 +106,34 @@ Move& TurnCoordinator::convertInMove(gameMessage *msg)
             throw std::logic_error("Zone not recognized");
             break;
     }
-    int playerNumber = (int)msg->moveMessage.p1 + 1;
     if(!strcmp((BoardManager::getTopTileStack()).getTileName(), (std::string)msg->moveMessage.tile)) 
     {
         throw std::logic_error("Top of the tile stack and current tile move do not match");
     }
+    Move *mv;
     switch(msg->moveMessage.meepleType)
     {
         case 0:
             //No meeple
-            Move mv = new Move(BoardManager::getTopTileStack(), msg->moveMessage.x, msg->moveMessage.y, msg->moveMessage.orientation);
+            mv = new Move(BoardManager::getTopTileStack(), msg->moveMessage.x, msg->moveMessage.y, msg->moveMessage.orientation);
             break;
         case 1:
             //Tiger
-            Move mv = new Move(BoardManager::getTopTileStack(), msg->moveMessage.x, msg->moveMessage.y, msg->moveMessage.orientation, zone);
+            mv = new Move(BoardManager::getTopTileStack(), msg->moveMessage.x, msg->moveMessage.y, msg->moveMessage.orientation, zone);
             break;
         case 2:
             //Croc
-            Move mv = new Move(BoardManager::getTopTileStack(), msg->moveMessage.x, msg->moveMessage.y, msg->moveMessage.orientation, true);
+            mv = new Move(BoardManager::getTopTileStack(), msg->moveMessage.x, msg->moveMessage.y, msg->moveMessage.orientation, true);
             break;
         default:
             throw std::logic_error("Unrecognized meeple type");
             break;
     }
-    return mv;
+    return (*mv);
 }
 
 void TurnCoordinator::handleMessage(gameMessage *msg)
 {
-    //Take in the current message.
-
     //Determine if we need to pick a move
     switch(msg->whoAmIMessage.messageType)
     {
@@ -149,33 +141,34 @@ void TurnCoordinator::handleMessage(gameMessage *msg)
             BoardManager::inputStack(msg->tileStackMessage.tileStack, msg->tileStackMessage.lengthOfStack);
             break;
         case 1:
-            if(((int)(msg->moveMessage.p1)+1) != TurnCoordinator::AIPlayerNumber){BoardManager::makeMove(TurnCoordinator::convertInMove(msg));}
+            if(((int)(msg->moveMessage.p1)+1) != TurnCoordinator::ourPlayerNumber)
+            {
+                BoardManager::makeMove(TurnCoordinator::convertInMove(msg), TurnCoordinator::otherPlayerNumber);
+            }
             else
             {
                 if(!strcmp((BoardManager::getTopTileStack()).getTileName(), (std::string)msg->moveMessage.tile)) 
                 {
                     throw std::logic_error("Top of the tile stack and current tile move do not match");
                 }
-                TurnCoordinator::currentMove =  AI::chooseTurn(BoardManager::getTopTileStack());
+                TurnCoordinator::callAI();
             }
             break;
         case 2:
-            TurnCoordinator::AIPlayerNumber = (int)(msg->whoAmIMessage.p1) + 1;
+            if(msg->whoAmIMessage.p1)
+            {
+                TurnCoordinator::ourPlayerNumber = 1;
+                TurnCoordinator::otherPlayerNumber = 2;
+            }
+            else
+            {
+                TurnCoordinator::otherPlayerNumber = 1;
+                TurnCoordinator::ourPlayerNumber = 2;                
+            }
             TurnCoordinator::setUpAI();
             break;
         default:
             break;
-    }
-
-    if(AIMove)
-    {
-        //get tile ref
-        callAI(tile);
-    }
-    else
-    {
-        //pass in the message
-        doOpponentMove();
     }
 }
 
@@ -186,11 +179,11 @@ void TurnCoordinator::startCoordinator()
     struct sockaddr_in cli_addr;
 
     //Wait for a connection
-    listen(TurnCoordinator::socket,5);
+    listen(TurnCoordinator::mySocket,5);
     clilen = sizeof(cli_addr);
 
     //Accept the new connection
-    TurnCoordinator::clientSocket = accept(TurnCoordinator::socket, (struct sockaddr *) &cli_addr, &clilen);
+    TurnCoordinator::clientSocket = accept(TurnCoordinator::mySocket, (struct sockaddr *) &cli_addr, &clilen);
 
     //Hanlde any game init stuff.
 
@@ -218,7 +211,7 @@ void TurnCoordinator::receiveMessage()
 
         if (n < 0) 
         {
-            throw std::runtime_errorperror("ERROR reading from socket");
+            throw std::runtime_error("ERROR reading from socket");
         }
 
         //Handle message here
