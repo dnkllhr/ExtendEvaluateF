@@ -155,6 +155,10 @@ Tile& Tile::operator=(const Tile& other) {
     return *this;
 }
 
+bool operator==(const Tile& curr, const Tile& other) {
+    return (curr.tileId == other.tileId) && (curr.prey == other.prey) && (curr.tileType == other.tileType) && (curr.rotation == other.rotation);
+}
+
 std::ostream& operator<<(std::ostream& out, Tile tile) {
     out << tile.getTileName();
 

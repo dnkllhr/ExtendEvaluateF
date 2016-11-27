@@ -13,6 +13,11 @@ class Move {
         bool getHasCrocodile() const;
 
         friend std::ostream &operator<<(std::ostream &out, Move move);
+
+        ~Move();
+
+        Move(const Move& other);
+        Move& operator=(const Move& other);
         
         // Coord object
         Move(Tile& tile, const Coord& coord); // No rotation, meeple, or crocodile
