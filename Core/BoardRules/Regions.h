@@ -32,7 +32,8 @@ class Regions
 
         static unsigned int meeplesAvailable(unsigned int playerNumber);
 
-        static int addCroc(unsigned int playerNumber, unsigned int tileID, unsigned int edge);
+        static int addCroc(unsigned int playerNumber, unsigned int tileID);
+        static bool validCrocPlacement(unsigned int tileID);
         static unsigned int crocsAvailable(unsigned int playerNumber);
 
 #ifdef testing
@@ -102,6 +103,7 @@ struct regionSet
         player1Meeples = 0;
         player2Meeples = 0;
         edgesTillCompletion = 0;
+        hasCroc = false;
     };
 
     regionSet(const struct regionSet& other) : player1Meeples(other.player1Meeples), player2Meeples(other.player2Meeples), type(other.type) {
@@ -124,11 +126,13 @@ struct regionSet
     TerrainType type;
     std::shared_ptr<struct tileNode> head;
     std::shared_ptr<struct tileNode> tail;
+    bool hasCroc;
 };
 
 struct meeple
 {
-    meeple() {
+    meeple() 
+    {
         ownedRegion = NULL;
         inUse = false;
     };
@@ -139,13 +143,14 @@ struct meeple
 
 struct croc
 {
-    croc() {
-        ownedRegion = NULL;
+    croc() 
+    {
+        ownedRegions = NULL;
         inUse = false;
     };
 
     bool inUse;
-    std::shared_ptr<struct regionSet> ownedRegion;
+    std::shared_ptr<struct regionSet> *ownedRegions;
 };
 
 #endif
