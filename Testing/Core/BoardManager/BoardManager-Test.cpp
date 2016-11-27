@@ -326,6 +326,7 @@ TEST(BoardManagerTests, isSurrounded)
     int dx[8] = { -1, 0, 1, 1, 1, 0, -1, -1 };
     int dy[8] = { 1, 1, 1, 0, -1, -1, -1, 0 };
 
+    std::cout << Board::getCoordinatesFromTileId(centerTileId) << std::endl;
     EXPECT_EQ(BoardManager::isSurrounded(centerTileId), 0);
 
     for(unsigned int i = 0; i < 8; i++)

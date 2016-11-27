@@ -67,7 +67,7 @@ Tile& BoardManager::getTopTileStack()
     return tileStack->front();
 }
 
-std::vector<Move> BoardManager::getValidMoves(Tile& tile)
+std::vector<Move> BoardManager::getValidMoves(const Tile& tile)
 {
     std::vector<Move> validMoves;
     std::unordered_set<unsigned int> availableLocations = Board::getAvailableLocations();
