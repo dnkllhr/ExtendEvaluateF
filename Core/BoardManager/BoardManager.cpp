@@ -7,7 +7,6 @@ const Array<Array<Tile*>>& BoardManager::getBoard()
     return Board::getBoard();
 }
 
-#include <iostream>
 void BoardManager::gameInit()
 {
     Board::set(); // Set/reset the Board
@@ -22,7 +21,7 @@ void BoardManager::gameInit()
     {
         for(unsigned int j = 0; j < tiles[i].getSize(); j++)
         {
-            if(tiles[i][j].getTileType() == TileType::D && j == 0)
+            if(tiles[i][j].getTileType() == TileType::D && tiles[i][j].getPrey() == PreyType::None && j == 0)
             {
                 // Place starting tile in center
                 Coord center(NUMBER_OF_PLAYABLE_TILES, NUMBER_OF_PLAYABLE_TILES);
@@ -53,6 +52,11 @@ void BoardManager::gameInit()
 TileStack* BoardManager::getTileStack()
 {
     return tileStack;
+}
+
+const Tile& BoardManager::getTopTileStack()
+{
+    return tileStack.front();
 }
 
 std::vector<Move> BoardManager::getValidMoves(Tile& tile)
@@ -89,6 +93,41 @@ std::vector<Move> BoardManager::getValidMoves(Tile& tile)
                 }
             }
         }
+    	const Coord location = Board::getCoordinatesFromGridId(gridId);
+    	const Tile ** borderingTiles = Board::getBorderingTiles(location);
+    	//Tile tileCopy = tile;
+        // ^^ was orginally going to use a copy of the Tile to rotate intermediately, but the copy constructor exceptioned on copying the Tile Name
+
+    	for(unsigned int rotation = 0; rotation < (unsigned int) NUM_TILE_SIDES; rotation++)
+    	{
+////////////// FLOATING POINT EXCEPTION vvvvv
+    		tile.setRotation(rotation);
+////////////// FLOATING POINT EXCEPTION ^^^^^
+
+    		unsigned int numberOfEdges = NUM_TILE_SIDES * NUM_TILE_EDGES_PER_SIDE;
+
+    		if(GameRules::validTilePlacement(tile, borderingTiles))
+	        {
+	        	validMoves.push_back(Move(tile, location, rotation)); // no meeple or croc
+
+	        	for(unsigned int edgeIndex = 0; edgeIndex < numberOfEdges; edgeIndex++)
+    			{
+    				if(GameRules::validMeeplePlacement(location, edgeIndex))
+        			{
+	    				validMoves.push_back(Move(tile, location, rotation, edgeIndex));
+	    			}
+    			}
+////////////////// SEG FAULT vvvvv
+    			if(true)//GameRules::validCrocPlacement(tile, location))
+////////////////// SEG FAULT ^^^^^
+    			{
+    				validMoves.push_back(Move(tile, location, rotation, true));
+    			}
+	        }   
+    	}
+////////////// FLOATING POINT EXCEPTION vvvvv
+        tile.setRotation(0); // reset tile
+////////////// FLOATING POINT EXCEPTION ^^^^^
     }
 
     return validMoves;

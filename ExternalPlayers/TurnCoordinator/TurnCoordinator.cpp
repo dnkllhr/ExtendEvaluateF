@@ -47,7 +47,7 @@ void TurnCoordinator::setUpAI()
     {
         throw std::logic_error("Trying to setup the AI before you know which player it is.");
     }
-    AI::setPlayerNumber(AIPlayerNumber);
+    AI::setPlayerNumber(TurnCoordinator::AIPlayerNumber);
     AI::AISetup = true;
 }
 
@@ -71,6 +71,73 @@ void TurnCoordinator::doOpponentMove()
     BoardManager::makeMove(mv);
 }
 
+
+Move& TurnCoordinator::convertInMove(gameMessage *msg)
+{
+    if(!(msg->moveMessage.placeable))
+    {
+        BoardManager::cannotPlace();
+    }
+    unsigned int zone;
+    switch (msg->moveMessage.zone)
+    {
+        case 1:
+            zone = 0;
+            break;
+        case 2:
+            zone = 1;
+            break;
+        case 3:
+            zone = 2;
+            break;
+        case 4:
+            zone = 10;
+            break;
+        case 5:
+            zone = 12;
+            break;
+        case 6:
+            zone = 4;
+            break;
+        case 7:
+            zone = 8;
+            break;
+        case 8:
+            zone = 7;
+            break;
+        case 9:
+            zone = 5;
+            break;
+        default:
+            throw std::logic_error("Zone not recognized");
+            break;
+    }
+    int playerNumber = (int)msg->moveMessage.p1 + 1;
+    if(!strcmp((BoardManager::getTopTileStack()).getTileName(), (std::string)msg->moveMessage.tile)) 
+    {
+        throw std::logic_error("Top of the tile stack and current tile move do not match");
+    }
+    switch(msg->moveMessage.meepleType)
+    {
+        case 0:
+            //No meeple
+            Move mv = new Move(BoardManager::getTopTileStack(), msg->moveMessage.x, msg->moveMessage.y, msg->moveMessage.orientation);
+            break;
+        case 1:
+            //Tiger
+            Move mv = new Move(BoardManager::getTopTileStack(), msg->moveMessage.x, msg->moveMessage.y, msg->moveMessage.orientation, zone);
+            break;
+        case 2:
+            //Croc
+            Move mv = new Move(BoardManager::getTopTileStack(), msg->moveMessage.x, msg->moveMessage.y, msg->moveMessage.orientation, true);
+            break;
+        default:
+            throw std::logic_error("Unrecognized meeple type");
+            break;
+    }
+    return mv;
+}
+
 void TurnCoordinator::handleMessage(gameMessage *msg)
 {
     //Take in the current message.
@@ -79,11 +146,22 @@ void TurnCoordinator::handleMessage(gameMessage *msg)
     switch(msg->whoAmIMessage.messageType)
     {
         case 0:
-            BoardManager::inputStack(msg->tileStackMessage.tileStack)
+            BoardManager::inputStack(msg->tileStackMessage.tileStack, msg->tileStackMessage.lengthOfStack);
             break;
         case 1:
+            if(((int)(msg->moveMessage.p1)+1) != TurnCoordinator::AIPlayerNumber){BoardManager::makeMove(TurnCoordinator::convertInMove(msg));}
+            else
+            {
+                if(!strcmp((BoardManager::getTopTileStack()).getTileName(), (std::string)msg->moveMessage.tile)) 
+                {
+                    throw std::logic_error("Top of the tile stack and current tile move do not match");
+                }
+                TurnCoordinator::currentMove =  AI::chooseTurn(BoardManager::getTopTileStack());
+            }
             break;
         case 2:
+            TurnCoordinator::AIPlayerNumber = (int)(msg->whoAmIMessage.p1) + 1;
+            TurnCoordinator::setUpAI();
             break;
         default:
             break;

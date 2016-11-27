@@ -46,10 +46,8 @@ const Tile* Board::get(unsigned int tileID)
     }
 }
 
-const Tile** Board::getBorderingTiles(const Tile& tile)
+const Tile** Board::getBorderingTiles(const Coord& coord)
 {
-    const Coord& coord = Board::getCoordinatesFromTileId(tile.getId());
-
     const unsigned int numberOfBorderingTiles = 8;
     const Tile** borderingTiles = new const Tile*[numberOfBorderingTiles];
     int dx[numberOfBorderingTiles] = { -1, 0, 1, 1, 1, 0, -1, -1 };
@@ -71,7 +69,13 @@ const Tile** Board::getBorderingTiles(const Tile& tile)
         borderingTiles[i] = boardGrid[x][y];
     }
 
-    return borderingTiles;
+    return borderingTiles;    
+}
+
+const Tile** Board::getBorderingTiles(const Tile& tile)
+{
+    const Coord& coord = Board::getCoordinatesFromTileId(tile.getId());
+    return Board::getBorderingTiles(coord);
 }
 
 const Coord Board::getCoordinatesFromGridId(unsigned int gridId)

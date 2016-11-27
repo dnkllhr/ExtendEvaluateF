@@ -31,6 +31,7 @@ private:
     void setupAI();
     void setupSocket(int portNumber);
     void buildResponse();
+    Move& convertInMove(gameMessage *msg);
     static 
     static unsigned int AIPlayerNumber;
     static bool AISetup;
@@ -38,4 +39,5 @@ private:
     static int clientSocket;
     static struct sockaddr_in *myAddr;
     static struct sockaddr_in *clientAddr;
+    static Move currentMove;
 };

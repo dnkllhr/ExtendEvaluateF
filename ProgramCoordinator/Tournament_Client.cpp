@@ -42,13 +42,11 @@ int main(int argc, char *argv[])
     char buffer[256];
 
     if (argc < 3) {
-       fprintf(stderr,"usage %s hostname port\n", argv[0]);
-       exit(0);
+        fprintf(stderr,"usage %s hostname port\n", argv[0]);
+        exit(0);
     }
 
     portno = atoi(argv[2]);
-
-
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
     if (sockfd < 0)
@@ -114,18 +112,18 @@ void authenticationProtocol(int sockfd)
 //CHALLENGE PROTOCOL
 void challengeProtocol(int sockfd)
 {
-int cid, rounds;
-char buffer[256];
+  int cid, rounds;
+  char buffer[256];
 
-bzero(buffer,256);
-read(sockfd,buffer,255);  //Server: NEW CHALLENGE <cid> YOU WILL PLAY <rounds> MATCH
-sscanf(buffer,"NEW CHALLENGE %d YOU WILL PLAY %d MATCH", &cid, &rounds);
-printf("%s\n",buffer);
+  bzero(buffer,256);
+  read(sockfd,buffer,255);  //Server: NEW CHALLENGE <cid> YOU WILL PLAY <rounds> MATCH
+  sscanf(buffer,"NEW CHALLENGE %d YOU WILL PLAY %d MATCH", &cid, &rounds);
+  printf("%s\n",buffer);
 
-for(int i = 0; i < rounds; i++)
-  {
-    roundProtocol(sockfd);
-  }
+  for(int i = 0; i < rounds; i++)
+    {
+      roundProtocol(sockfd);
+    }
 
   bzero(buffer,256);
   read(sockfd,buffer,255);  //Server: END OF CHALLENGES or PLEASE WAIT
@@ -251,7 +249,7 @@ void moveProtocol(int sockfd)
       }
     }
 
-    //Server Now returns result of moves
+    //tournament server returns result of moves, Pass info to Game Server.
 
     int currentlyActive = gamesActive;
     for(int i = 0; i < currentlyActive; i++){
@@ -294,10 +292,17 @@ void moveProtocol(int sockfd)
           }
           else //TILE <tile> UNPLACEABLE PASSED
           {
-
+            //do nothing
           }
 
         }
+
+      }
+
+      else  //FORFEITED
+      {
+        sscanf(buffer,"GAME %d MOVE %d PLAYER %d FORFEITED:", &gid, &moveNum, &movePid);
+        printf("%s\n",buffer);
 
       }
 

@@ -20,7 +20,8 @@ class Board {
         static const Tile* get(const Coord& coord);
         //Gets the Tile for a given tileID
         static const Tile* get(unsigned int tileID);
-        //Get all neighbors of a given Tile
+        //Get all neighbors of a given Coord or place Tile
+        static const Tile** getBorderingTiles(const Coord& coord);
         static const Tile** getBorderingTiles(const Tile& tile);
         //Find a way to get the coordinates from the ID
         static const Coord& getCoordinatesFromTileId(unsigned int tileID);

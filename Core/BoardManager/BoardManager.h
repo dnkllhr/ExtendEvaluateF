@@ -7,6 +7,7 @@
 #include "../BoardRules/Rules.h"
 #include "Coord.h"
 #include "Move.h"
+#include <string.h>
 
 #include <vector>
 
@@ -20,6 +21,8 @@ class BoardManager {
         static void gameInit();
         /// Returns all following Tiles to be played
         static TileStack* getTileStack();
+        static const TileStack* getTileStack();
+        static const Tile& getTopTileStack();
         /// Gets all possible legal moves with the given Tile and current Board
         static std::vector<Move> getValidMoves(Tile& tile);
         /// Makes the given Move for the given playerNumber
