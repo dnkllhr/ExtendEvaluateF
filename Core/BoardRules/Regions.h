@@ -33,7 +33,6 @@ class Regions
         static unsigned int meeplesAvailable(unsigned int playerNumber);
 
         static int addCroc(unsigned int playerNumber, unsigned int tileID);
-        static bool validCrocPlacement(unsigned int tileID);
         static unsigned int crocsAvailable(unsigned int playerNumber);
 
 #ifdef testing

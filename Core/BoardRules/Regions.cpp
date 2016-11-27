@@ -24,7 +24,7 @@ int Regions::addCroc(unsigned int playerNumber, unsigned int tileID)
         return -1;
     }
 
-    if(Regions::validCrocPlacement(tileID)) 
+    if(GameRules::validCrocPlacement(tileID)) 
     {
         ownerCrocs[i].inUse = true;
         ownerCrocs[i].ownedRegions = (regionTracker.find(tileID))->second;
@@ -36,23 +36,6 @@ int Regions::addCroc(unsigned int playerNumber, unsigned int tileID)
         return 0;
     }
     return -1;
-}
-
-bool Regions::validCrocPlacement(unsigned int tileID)
-{
-    auto regionSearch = regionTracker.find(tileID);
-    if(regionSearch == regionTracker.end())
-    {
-        throw std::logic_error("Trying to place a croc on a region that doesn't exist.");
-    }
-    for(int i = 0; i < NUM_TILE_EDGES + 1; i++)
-    {
-        if(regionSearch->second[i]->hasCroc)
-        {
-            return false;
-        }
-    }
-    return true;
 }
 
 

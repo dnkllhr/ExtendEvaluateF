@@ -58,6 +58,55 @@ bool GameRules::validMeeplePlacement(const Coord& location, unsigned int edgeInd
     return ((!hasPlayer1) && (!hasPlayer2));
 }
 
+bool GameRules::validCrocPlacement(unsigned int tileID)
+{
+    std::shared_ptr<struct regionSet> * regions = Regions::getRegions(tileID);
+    for(int i = 0; i < NUM_TILE_EDGES + 1; i++)
+    {
+        if(regions[i]->hasCroc)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+bool GameRules::checkSideForCroc(unsigned int x, unsigned int y)
+{
+    Coord side = Coord(x,y);
+    unsigned int tileID = Board::getGridId(side);
+    return !(validCrocPlacement(tileID));  //If the adjacent tile regions return valid move, no croc.
+}
+
+bool GameRules::validCrocPlacement(const Coord& location)
+{
+    int currentX = location.getX();
+    int currentY = location.getY();
+
+    if(checkSideForCroc(currentX - 1, currentY)) //Croc exists
+    {
+        return false;
+    }
+
+    else if(checkSideForCroc(currentX + 1, currentY)) //Croc exists
+    {
+        return false;
+    }
+
+    else if(checkSideForCroc(currentX, currentY - 1)) //Croc exists
+    {
+        return false;
+    }
+
+    else if(checkSideForCroc(currentX, currentY + 1)) //Croc exists
+    {
+        return false;
+    }
+
+    return true;
+}
+
 unsigned int GameRules::scoreRoad(std::shared_ptr<struct regionSet> currentSet, bool actuallyScore)
 {
     std::unordered_map<unsigned int, bool> edgeTracker;

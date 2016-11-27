@@ -23,6 +23,9 @@ class GameRules
         static bool validTilePlacement(const Tile& placed, const Tile ** boarderingTiles);
         static bool validMeeplePlacement(const Tile& placed, unsigned int edgeIndex);
         static bool validMeeplePlacement(const Coord& location, unsigned int edgeIndex);
+        static bool validCrocPlacement(unsigned int tileID);
+        static bool checkSideForCroc(unsigned int x, unsigned int y);
+        static bool validCrocPlacement(const Coord& location);
         static unsigned int getCurrentScore(unsigned int tileID, unsigned int edge);
         static unsigned int getCurrentScore(std::shared_ptr<struct regionSet> * currentRegions, unsigned int edge, const Tile * tile, unsigned int tilesSurrounded);
         static unsigned int scoreEdge(unsigned int tileID, unsigned int edge);
