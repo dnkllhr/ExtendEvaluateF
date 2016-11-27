@@ -60,6 +60,22 @@ bool GameRules::validMeeplePlacement(const Coord& location, unsigned int edgeInd
 
 bool GameRules::validCrocPlacement(unsigned int tileID)
 {
+    const Tile *currentTile = Board::get(tileID);
+    bool valid = false;
+    for(int i = 0; i < NUM_TILE_EDGES + 1; i++)
+    {
+        if(currentTile->getTerrainType(i) == TerrainType::Road || currentTile->getTerrainType(i) == TerrainType::Castle)
+        {
+            valid = true;
+            break;
+        }
+    }
+
+    if(!valid)
+    {
+        return false;
+    }
+
     std::shared_ptr<struct regionSet> * regions = Regions::getRegions(tileID);
     for(int i = 0; i < NUM_TILE_EDGES + 1; i++)
     {
