@@ -22,14 +22,12 @@ struct tileStackMessage
     {
         lengthOfStack = 80;
     };
-    int messageType;
     int lengthOfStack;
     char tileStack[80*5+1];
 };
 
 struct moveMessage
 {
-    int messageType;    //Used to differentiate messages
     bool p1;            //Player flag
     char tile[6];       //Tile Identifier
     bool placeable;     //Can you use tile?
