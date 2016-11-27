@@ -1,19 +1,5 @@
 #include "AI.h"
 
-
-AI::AI()
-{
-    AI::fz = new FuzzyLogic;
-    AI::move = new AIMove;
-}
-
-AI::~AI()
-{
-    delete fz;
-    delete move;
-}
-
-
 Move& AI::chooseTurn(Tile& currentTile)
 {
     std::vector<Move> moveList = BoardManager::getValidMoves(currentTile);

@@ -12,11 +12,9 @@ class AI
 public:
     static Move& chooseTurn(Tile& currentTile);
     static void setPlayerNumber(unsigned int playerNumber);
-    AI();
-    ~AI();
 private:
-    static FuzzyLogic *fz;
-    static AIMove *move;
+    static FuzzyLogic fz;
+    static AIMove move;
     static unsigned int myPlayerNumber;
 };
 

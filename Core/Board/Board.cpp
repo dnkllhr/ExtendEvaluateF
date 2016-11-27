@@ -25,12 +25,12 @@ int Board::set()
 
 const Array<Array<Tile*>>& Board::getBoard()
 {
-	return Board::board;
+    return Board::board;
 }
 
 const Tile* Board::get(const Coord& coord)
 {
-	return board[coord.getX()][coord.getY()];
+    return board[coord.getX()][coord.getY()];
 }
 
 const Tile* Board::get(unsigned int tileID)
@@ -120,16 +120,16 @@ void Board::place(const Move& move)
         }
     }
 
-	board[coord.getX()][coord.getY()] = &tile;
+    board[coord.getX()][coord.getY()] = &tile;
 
-	//Used for accounting
+    //Used for accounting
     //Move& moveCopy = move; // not const
     tileIDTracker.insert( std::pair<unsigned int, const Move&>(tile.getId(), move) );
 }
 
 const std::unordered_set<unsigned int>& Board::getAvailableLocations()
 {
-	return availableLocations;
+    return availableLocations;
 }
 
 const Coord& Board::getCoordinatesFromTileId(unsigned int tileID)
@@ -137,10 +137,10 @@ const Coord& Board::getCoordinatesFromTileId(unsigned int tileID)
     auto tileSearch = tileIDTracker.find(tileID);
     if(tileSearch != tileIDTracker.end())
     {
-    	return tileSearch->second.getCoord();
+        return tileSearch->second.getCoord();
     }
     else
     {
-    	throw std::invalid_argument("Invalid Tile ID");
+        throw std::invalid_argument("Invalid Tile ID");
     }
 }

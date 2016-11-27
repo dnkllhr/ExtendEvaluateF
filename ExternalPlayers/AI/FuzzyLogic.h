@@ -33,9 +33,6 @@
 #define TURNS_MEDIUM_WHT    5
 #define TURNS_LONG_WHT      1
 
-
-
-
 struct Graph
 {
     Graph() {
