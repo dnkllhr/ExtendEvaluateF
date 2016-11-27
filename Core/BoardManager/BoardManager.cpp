@@ -1,6 +1,55 @@
 #include "BoardManager.h"
 
 TileStack* BoardManager::tileStack = new TileStack(NUMBER_OF_PLAYERS);
+unsigned int BoardManager::tileIDCounter = 0;
+Tile * BoardManager::startingTile = NULL;
+std::unordered_map<std::string, TileFunction> BoardManager::getTileFunctionFromName = std::unordered_map<std::string, TileFunction>();
+int v = BoardManager::setupHashMap();
+
+
+int BoardManager::setupHashMap()
+{
+    BoardManager::getTileFunctionFromName["JJJJ-"] = Tile::CreateTileY;
+    BoardManager::getTileFunctionFromName["JJJJX"] = Tile::CreateTileB;
+    BoardManager::getTileFunctionFromName["JJTJX"] = Tile::CreateTileA;
+    BoardManager::getTileFunctionFromName["TTTT-"] = Tile::CreateTileX;
+    BoardManager::getTileFunctionFromName["TJTJ-"] = Tile::CreateTileU;
+    BoardManager::getTileFunctionFromName["TJJT-"] = Tile::CreateTileV;
+    BoardManager::getTileFunctionFromName["TJTT-"] = Tile::CreateTileW;
+    BoardManager::getTileFunctionFromName["LLLL-"] = Tile::CreateTileC;
+    BoardManager::getTileFunctionFromName["JLLL-"] = Tile::CreateTileR;
+    BoardManager::getTileFunctionFromName["LLJJ-"] = Tile::CreateTileN;
+    BoardManager::getTileFunctionFromName["JLJL-"] = Tile::CreateTileG;
+    BoardManager::getTileFunctionFromName["LJLJ-"] = Tile::CreateTileH;
+    BoardManager::getTileFunctionFromName["LJJJ-"] = Tile::CreateTileE;
+    BoardManager::getTileFunctionFromName["JLLJ-"] = Tile::CreateTileI;
+    BoardManager::getTileFunctionFromName["TLJT-"] = Tile::CreateTileK;
+    BoardManager::getTileFunctionFromName["TLJTP"] = Tile::CreateTileK;
+    BoardManager::getTileFunctionFromName["JLTT-"] = Tile::CreateTileJ;
+    BoardManager::getTileFunctionFromName["JLTTB"] = Tile::CreateTileJ;
+    BoardManager::getTileFunctionFromName["TLTJ-"] = Tile::CreateTileD;
+    BoardManager::getTileFunctionFromName["TLTJD"] = Tile::CreateTileD;
+    BoardManager::getTileFunctionFromName["TLLL-"] = Tile::CreateTileT;
+    BoardManager::getTileFunctionFromName["TLTT-"] = Tile::CreateTileL;
+    BoardManager::getTileFunctionFromName["TLTTP"] = Tile::CreateTileL;
+    BoardManager::getTileFunctionFromName["TLLT-"] = Tile::CreateTileP;
+    BoardManager::getTileFunctionFromName["TLLTB"] = Tile::CreateTileP;
+    BoardManager::getTileFunctionFromName["LJTJ-"] = Tile::CreateTileZ;
+    BoardManager::getTileFunctionFromName["LJTJD"] = Tile::CreateTileZ;
+    BoardManager::getTileFunctionFromName["TLLLC"] = Tile::CreateTileZ;
+    return 0;
+}
+
+
+
+
+
+
+BoardManager::~BoardManager()
+{
+    if (startingTile != NULL) delete startingTile;
+    if (tileStack != NULL) delete tileStack;
+}
 
 const Array<Array<Tile*>>& BoardManager::getBoard()
 {
@@ -25,10 +74,13 @@ void BoardManager::gameInit()
             {
                 // Place starting tile in center
                 Coord center(NUMBER_OF_PLAYABLE_TILES, NUMBER_OF_PLAYABLE_TILES);
-                Tile& startingTile = tiles[i][j];
-                Move startingMove(startingTile, center);
+                if (startingTile != NULL) delete startingTile;
+                startingTile = new Tile(tiles[i][j]);
+                Move startingMove(*startingTile, center);
                 Board::place(startingMove);
-                startingTile.placeTile();
+                const Tile ** borderingTiles = Board::getBorderingTiles(*startingTile);
+                Regions::addConnection(*startingTile, borderingTiles);
+                startingTile->placeTile();
             }
             else
             {
@@ -47,58 +99,55 @@ void BoardManager::gameInit()
     }
 }
 
-const TileStack* BoardManager::getTileStack()
+TileStack* BoardManager::getTileStack()
 {
     return tileStack;
 }
 
-const Tile& BoardManager::getTopTileStack()
+Tile& BoardManager::getTopTileStack()
 {
-    return tileStack.front();
+    return tileStack->front();
 }
 
-std::vector<Move> BoardManager::getValidMoves(Tile& tile)
+std::vector<Move> BoardManager::getValidMoves(const Tile& tile)
 {
     std::vector<Move> validMoves;
     std::unordered_set<unsigned int> availableLocations = Board::getAvailableLocations();
-    
+
     for(const int gridId : availableLocations)
     {
-    	const Coord location = Board::getCoordinatesFromGridId(gridId);
-    	const Tile ** borderingTiles = Board::getBorderingTiles(location);
-    	//Tile tileCopy = tile;
+        const Coord location = Board::getCoordinatesFromGridId(gridId);
+        const Tile ** borderingTiles = Board::getBorderingTiles(location);
+        Tile tileCopy = tile;
         // ^^ was orginally going to use a copy of the Tile to rotate intermediately, but the copy constructor exceptioned on copying the Tile Name
 
-    	for(unsigned int rotation = 0; rotation < (unsigned int) NUM_TILE_SIDES; rotation++)
-    	{
+        for(unsigned int rotation = 0; rotation < (unsigned int) NUM_TILE_SIDES; rotation++)
+        {
 ////////////// FLOATING POINT EXCEPTION vvvvv
-    		tile.setRotation(rotation);
+            tileCopy.setRotation(rotation);
 ////////////// FLOATING POINT EXCEPTION ^^^^^
 
-    		unsigned int numberOfEdges = NUM_TILE_SIDES * NUM_TILE_EDGES_PER_SIDE;
+            unsigned int numberOfEdges = NUM_TILE_SIDES * NUM_TILE_EDGES_PER_SIDE;
 
-    		if(GameRules::validTilePlacement(tile, borderingTiles))
-	        {
-	        	validMoves.push_back(Move(tile, location, rotation)); // no meeple or croc
+            if(GameRules::validTilePlacement(tileCopy, borderingTiles))
+            {
+                validMoves.push_back(Move(tileCopy, Coord(location), rotation)); // no meeple or croc
 
-	        	for(unsigned int edgeIndex = 0; edgeIndex < numberOfEdges; edgeIndex++)
-    			{
-    				if(GameRules::validMeeplePlacement(location, edgeIndex))
-        			{
-	    				validMoves.push_back(Move(tile, location, rotation, edgeIndex));
-	    			}
-    			}
+                for(unsigned int edgeIndex = 0; edgeIndex < numberOfEdges; edgeIndex++)
+                {
+                    if(GameRules::validMeeplePlacement(location, edgeIndex))
+                    {
+                        validMoves.push_back(Move(tileCopy, Coord(location), rotation, edgeIndex));
+                    }
+                }
 ////////////////// SEG FAULT vvvvv
-    			if(true)//GameRules::validCrocPlacement(tile, location))
+                if(true)//GameRules::validCrocPlacement(tile, location))
 ////////////////// SEG FAULT ^^^^^
-    			{
-    				validMoves.push_back(Move(tile, location, rotation, true));
-    			}
-	        }   
-    	}
-////////////// FLOATING POINT EXCEPTION vvvvv
-        tile.setRotation(0); // reset tile
-////////////// FLOATING POINT EXCEPTION ^^^^^
+                {
+                    validMoves.push_back(Move(tileCopy, Coord(location), rotation, true));
+                }
+            }   
+        }
     }
 
     return validMoves;
@@ -115,11 +164,11 @@ void BoardManager::makeMove(const Move& move, unsigned int playerNumber)
 
     if(move.getMeepleLocation() != -1) // if Move includes Meeple
     {
-    	Regions::addMeeple(playerNumber, tile.getId(), move.getMeepleLocation());
+        Regions::addMeeple(playerNumber, tile.getId(), move.getMeepleLocation());
     }
     else if(move.getHasCrocodile())
     {
-    	Regions::addCroc(playerNumber, tile.getId());
+        Regions::addCroc(playerNumber, tile.getId());
     }
 
     tile.placeTile(); // mark Tile as placed so it can no longer be rotated
@@ -138,7 +187,10 @@ unsigned int BoardManager::isSurrounded(int tileID)
     {
         for(int j = -1; j <= 1; j++)
         {
-            if (boardGrid[xLocation + i][yLocation + j] != NULL && (i != 0 && j != 0))
+            int thisX = xLocation + i;
+            int thisY = yLocation + j;
+            if (thisX >= 0 && thisY >= 0 && thisX < boardGrid.getSize() && thisY < boardGrid[0].getSize() &&
+                boardGrid[xLocation + i][yLocation + j] != NULL && !(i == 0 && j == 0))
             {
                 surrounded++;
             }
@@ -151,4 +203,63 @@ unsigned int BoardManager::isSurrounded(int tileID)
 struct moveResult BoardManager::tryMove(const Tile& tile)
 {
     return Regions::tryMove(tile, Board::getBorderingTiles(tile));
+}
+
+
+
+
+
+void BoardManager::cannotPlaceTile()
+{
+    //Code special cases.
+}
+
+void BoardManager::addTileToStack(std::string tileName)
+{
+    /*auto iter = getTileFunctionFromName.find(tileName);
+    if (iter != getTileFunctionFromName.end())
+    {
+        int pseudoPreyType;
+        switch(tileName.at(4)) //Prey identifier
+        {
+            case 'D':
+                pseudoPreyType = 0;
+                break;
+            case 'B':
+                pseudoPreyType = 1;
+                break;
+            case 'P':
+                pseudoPreyType = 2;
+                break;
+            case 'C':
+                pseudoPreyType = 3;
+                break;
+            default:
+                pseudoPreyType = 4;
+                break;
+        }
+        Array<Tile> thisTile = (*iter->second)(1, BoardManager::tileIDCounter, (PreyType)pseudoPreyType);
+        tileStack->push(thisTile[0]);
+    }
+    else
+    {
+        throw std::logic_error("Could not find the function pointer for tile.");
+    }*/
+}
+
+
+void BoardManager::inputTileStack(char stack[], int length)
+{
+    if(sizeof(stack) != (length * 5 + 1))
+    {
+        throw std::logic_error("sizeof stack and anticipated stack size differ");
+    }
+
+    std::string currentTile;
+    for(int i = length - 6; i > 0; i -= 5)          //Skip over the null char and the first set of chars.
+    {
+        currentTile.assign(stack + i, stack + i + 5);
+        //std::cout << "Current tile being added to stack is :" << currentTile << std::endl;
+        BoardManager::addTileToStack(currentTile);
+    }
 }

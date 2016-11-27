@@ -15,7 +15,7 @@ Array<Array<Tile>> Tile::CreateTiles() {
     arrayOfTiles[7] = Tile::CreateTileH(3, startId, PreyType::None);
     arrayOfTiles[8] = Tile::CreateTileI(2, startId, PreyType::None);
     arrayOfTiles[9] = Tile::CreateTileJ(1, startId, PreyType::None);
-    arrayOfTiles[10] = Tile::CreateTileJ(1, startId, PreyType::Buffalo);
+    arrayOfTiles[10] = Tile::CreateTileJ(2, startId, PreyType::Buffalo);
     arrayOfTiles[11] = Tile::CreateTileK(1, startId, PreyType::None);
     arrayOfTiles[12] = Tile::CreateTileK(2, startId, PreyType::Boar);
     arrayOfTiles[13] = Tile::CreateTileL(1, startId, PreyType::None);
@@ -153,6 +153,10 @@ Tile& Tile::operator=(const Tile& other) {
     std::copy(other.edgeConnections, other.edgeConnections + (this->numberSides * this->countPerSide), this->edgeConnections);
 
     return *this;
+}
+
+bool operator==(const Tile& curr, const Tile& other) {
+    return (curr.tileId == other.tileId) && (curr.prey == other.prey) && (curr.tileType == other.tileType) && (curr.rotation == other.rotation);
 }
 
 std::ostream& operator<<(std::ostream& out, Tile tile) {

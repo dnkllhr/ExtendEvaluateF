@@ -10,7 +10,7 @@
 class AI
 {
 public:
-    static Move& chooseTurn(Tile& currentTile);
+    static Move& chooseTurn(const Tile& currentTile);
     static void setPlayerNumber(unsigned int playerNumber);
 private:
     static FuzzyLogic fz;

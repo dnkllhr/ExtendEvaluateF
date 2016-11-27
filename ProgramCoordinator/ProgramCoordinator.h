@@ -16,50 +16,40 @@ void handleGame (int gameSocket, int gamePort);
 
 void setupServerAddr (struct sockaddr_in *serverAddr);
 
-struct tileStackMessage
-{
-    tileStackMessage()
-    {
-        messageType = 0;
-        lengthOfStack = 80;
-    };
-    int messageType;
-    int lengthOfStack;
-    char tileStack[80*5+1];
-};
 
-struct moveMessage
+typedef struct 
 {
-    moveMessage()
-    {
-        messageType = 1;
-    };
-    int messageType;    //Used to differentiate messages
-    bool p1;            //Player flag
+    int lengthOfStack;
+    char tileStack[401];
+}tileStackMessage;
+
+typedef struct 
+{
+    unsigned int p1;            //Player flag
     char tile[6];       //Tile Identifier
     bool placeable;     //Can you use tile?
-    int x;              //X coordinate
-    int y;              //Y coordinate
-    int orientation;    //Orientation using network protocol offsets
+    unsigned int x;              //X coordinate
+    unsigned int y;              //Y coordinate
+    unsigned int orientation;    //Orientation using network protocol offsets
     int meepleType;     //0: NONE    1: TIGER    2: CROC
     int zone;           //Zone for meeple if TIGER
     std::string gid;    //Game ID
-};
+}moveMessage;
 
-struct whoAmIMessage
+typedef struct 
 {
-    whoAmIMessage()
-    {
-        messageType = 2;
-    };
+    unsigned int p1;            //Which player your are
+}whoAmIMessage;
+
+typedef union
+{
+    tileStackMessage tile;
+    moveMessage move;
+    whoAmIMessage who;
+}messageData;
+
+typedef struct
+{
     int messageType;
-    bool p1;            //Tells the system if they start
-};
-
-
-union gameMessage
-{
-    struct tileStackMessage;
-    struct moveMessage;
-    struct whoAmIMessage;
-};
+    messageData data;
+}gameMessage;

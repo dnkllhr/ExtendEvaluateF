@@ -40,7 +40,7 @@ class Board {
 #endif
         static Array<Array<Tile*>> board;
         //Keep track of the tile coordinates;
-        static std::unordered_map<unsigned int , const Move&> tileIDTracker;
+        static std::unordered_map<unsigned int , Move> tileIDTracker;
         static std::unordered_set<unsigned int> availableLocations;
         static const unsigned int boardWidth;
         static const unsigned int boardHeight;

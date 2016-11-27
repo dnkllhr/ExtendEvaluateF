@@ -9,10 +9,13 @@ bool GameRules::validTilePlacement(const Tile& placed, const Tile ** boarderingT
     unsigned int countPerSide = placed.getCountPerSide();
     unsigned int edgeCount = sides * countPerSide;
 
+    if (boarderingTiles == NULL) return true;
+
     for (unsigned int edge = 0; edge < edgeCount; edge++) {
         unsigned int correspondingSide = ((edge / countPerSide) + (sides / 2)) % sides;
         unsigned int correspondingEdge = (countPerSide - (edge % countPerSide) - 1) + countPerSide * correspondingSide;
 
+        if (boarderingTiles[correspondingSide] == NULL) continue;
         if (placed.getTerrainType(edge) != boarderingTiles[correspondingSide]->getTerrainType(correspondingEdge)) return false;
     }
 
