@@ -261,7 +261,7 @@ int Regions::removeMeeple(unsigned int tileID, unsigned int edge)
 
 int Regions::specialRemoveMeeple(unsigned int playerNumber, unsigned int tileID)
 {
-    for(int i = (playerNumber -  1)*(MEEPLES_PER_PLAYER); i < ((playerNumber - 1)*(MEEPLES_PER_PLAYER) + (MEEPLES_PER_PLAYER)); i++)
+    for(unsigned int i = (playerNumber -  1)*(MEEPLES_PER_PLAYER); i < ((playerNumber - 1)*(MEEPLES_PER_PLAYER) + (MEEPLES_PER_PLAYER)); i++)
     {
         if((ownerMeeples[i].inUse) && (ownerMeeples[i].tileID == tileID))    // Meeple on tileID
         {
