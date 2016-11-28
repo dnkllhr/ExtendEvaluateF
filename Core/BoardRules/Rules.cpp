@@ -106,7 +106,7 @@ bool GameRules::checkSideForCroc(unsigned int x, unsigned int y)
 {
     Coord side = Coord(x,y);
     unsigned int tileID = Board::getGridId(side);
-    return !(hasCroc(tileID));  //If the adjacent tile regions return valid move, no croc.
+    return hasCroc(tileID);  //If the adjacent tile regions return valid move, no croc.
 }
 
 bool GameRules::validCrocPlacement(const Tile& toPlace, const Coord& location)
