@@ -1,12 +1,11 @@
 #include "../ExternalPlayers/AI/FuzzyLogic.h"
 #include "../ExternalPlayers/AI/AI.h"
+#include "../Core/BoardManager/BoardManager.h"
 #include "gtest/gtest.h"
 
 TEST(FuzzyTests, getTurnScore)
 {
     //I convert the expected and return values to ints to account for some loss in accuracy in ownership
-
-
     struct Graph g;
     g.leftStart = 0;
     g.leftEnd = 3;
@@ -167,4 +166,25 @@ TEST(FuzzyTests, getResults)
                     (100.f - (100.f/6.f)) * (float)HELPING_NEUTRAL_WHT + (100.f/6.f) * (float)HELPING_GOOD_WHT +
                     (200.f/3.f) * (float)HURTING_NEUTRAL_WHT + (100.f/3.f) * (float)HURTING_GOOD_WHT;
     EXPECT_EQ((int) fz.getResults(), (int) expectedScore);
+}
+
+
+TEST(AITests, setPlayerNumber)
+{
+    AI::setPlayerNumber(0);
+    EXPECT_EQ(AI::myPlayerNumber, 0);
+
+    AI::setPlayerNumber(1);
+    EXPECT_EQ(AI::myPlayerNumber, 1);
+
+    AI::setPlayerNumber(2);
+    EXPECT_EQ(AI::myPlayerNumber, 2);
+}
+
+TEST(AITests, chooseTurn)
+{
+    BoardManager::gameInit();
+    AI::setPlayerNumber(1);
+    Move chosenMove = AI::chooseTurn(BoardManager::getTopTileStack());
+    EXPECT_EQ(chosenMove.getCoord().getX(), 9);
 }
