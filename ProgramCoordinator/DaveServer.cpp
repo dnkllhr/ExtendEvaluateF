@@ -84,7 +84,7 @@ void Tournament_Protocol (int sock)
    write(sock,buffer,255);
 
 //CHALLENGE PROTOCOL
-   int totalRounds = 2;
+   int totalRounds = 1;
 
    bzero(buffer,256);
    sprintf(buffer,"NEW CHALLENGE 123 YOU WILL PLAY %d MATCHES", totalRounds);
@@ -105,14 +105,14 @@ void Tournament_Protocol (int sock)
       write(sock,buffer,255);
 
       bzero(buffer,256);
-      sprintf(buffer,"THE REMAINING 5 TILES ARE" );
+      sprintf(buffer,"THE REMAINING 5 TILES ARE [ eeeee rrrrr ttttt yyyyy zzzzz ]" );
       write(sock,buffer,255);
 
       bzero(buffer,256);
       sprintf(buffer,"MATCH BEGINS IN 5 SECONDS");
       write(sock,buffer,255);
+      for(int i = 1; i <= 5; i++){
 
-      for(int i = 0; i < 5; i++){
           bzero(buffer,256);
           sprintf(buffer,"MAKE YOUR MOVE IN GAME A WITHIN 1 SECOND: MOVE %d PLACE TILEX", i);
           write(sock,buffer,255);
@@ -135,7 +135,7 @@ void Tournament_Protocol (int sock)
       write(sock,buffer,255);
 
       bzero(buffer,256);
-      sprintf(buffer,"GAME A OVER PLAYER <pid> <score> PLAYER <pid> <score>");
+      sprintf(buffer,"GAME B OVER PLAYER <pid> <score> PLAYER <pid> <score>");
       write(sock,buffer,255);
 
       bzero(buffer,256);
