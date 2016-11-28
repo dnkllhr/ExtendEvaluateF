@@ -106,9 +106,11 @@ void TurnCoordinator::callAI()
 
 Move& TurnCoordinator::convertInMove(gameMessage *msg)
 {
-    if(!(msg->data.move.placeable))
+    Move *mv;
+    if(!(msg->data.move.placeable) && !(msg->data.move.pass))
     {
-        BoardManager::cannotPlaceTile();
+        mv = new Move((Tile&)BoardManager::getTopTileStack(), msg->data.move.pickupMeeple);
+        return (*mv);
     }
     unsigned int zone;
     switch (msg->data.move.zone)
@@ -148,7 +150,6 @@ Move& TurnCoordinator::convertInMove(gameMessage *msg)
     {
         throw std::logic_error("Top of the tile stack and current tile move do not match");
     }
-    Move *mv;
     switch(msg->data.move.meepleType)
     {
         case 0:
@@ -181,7 +182,24 @@ void TurnCoordinator::handleMessage(gameMessage *msg)
         case 1:
             if(msg->data.move.p1 != TurnCoordinator::ourPlayerNumber)
             {
-                BoardManager::makeMove(TurnCoordinator::convertInMove(msg), TurnCoordinator::otherPlayerNumber);
+                Move *mv = &(TurnCoordinator::convertInMove(msg));
+                if(!(msg->data.move.placeable) && !(msg->data.move.pass))
+                {
+                    BoardManager::cannotPlaceTile(*mv, TurnCoordinator::otherPlayerNumber);
+                }
+                else if(!(msg->data.move.pass))
+                {
+                    BoardManager::makeMove(*mv, TurnCoordinator::otherPlayerNumber);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else if(msg->data.move.p1 == 3)
+            {
+                Move *mv = &(TurnCoordinator::convertInMove(msg));
+                BoardManager::makeMove(*mv, TurnCoordinator::otherPlayerNumber);
             }
             else
             {
