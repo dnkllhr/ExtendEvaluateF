@@ -24,7 +24,7 @@ TEST(RegionTests, addConnection) {
 
 
 
-    currentTile = &(Tile::CreateTileD(1, startID, PreyType::None)); //No prey, starting tile
+    currentTile = &(Tile::CreateTileD(1, startID, PreyType::None)[0]); //No prey, starting tile
     testingTilePlacement(startID, 72, 72, currentTile, surroundingTiles);
 
     for(int i = 0; i < 12; i++)
@@ -39,7 +39,7 @@ TEST(RegionTests, addConnection) {
 
 
 
-    currentTile = &(Tile::CreateTileW(1, startID, PreyType::None)); //No prey, starting tile
+    currentTile = &(Tile::CreateTileW(1, startID, PreyType::None)[0]); //No prey, starting tile
     testingTilePlacement(startID, 72, 73, currentTile, surroundingTiles);
 
     for(int i = 0; i < 12; i++)
@@ -55,7 +55,7 @@ TEST(RegionTests, addConnection) {
 
 
 
-    currentTile = &(Tile::CreateTileT(1, startID, PreyType::None)); //No prey, starting tile
+    currentTile = &(Tile::CreateTileT(1, startID, PreyType::None)[0]); //No prey, starting tile
     testingTilePlacement(startID, 72, 71, currentTile, surroundingTiles);
 
     for(int i = 0; i < 12; i++)
@@ -70,7 +70,7 @@ TEST(RegionTests, addConnection) {
 
 
 
-    currentTile = &(Tile::CreateTileH(1, startID, PreyType::None)); //No prey, starting tile
+    currentTile = &(Tile::CreateTileH(1, startID, PreyType::None)[0]); //No prey, starting tile
     testingTilePlacement(startID, 73, 72, currentTile, surroundingTiles);
 
     for(int i = 0; i < 12; i++)
@@ -85,7 +85,7 @@ TEST(RegionTests, addConnection) {
 
 
 
-    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)); //No prey, starting tile
+    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]); //No prey, starting tile
     testingTilePlacement(startID, 73, 73, currentTile, surroundingTiles);
 
     for(int i = 0; i < 12; i++)
@@ -99,7 +99,7 @@ TEST(RegionTests, addConnection) {
 
 
 
-    currentTile = &(Tile::CreateTileA(1, startID, PreyType::None)); //No prey, starting tile
+    currentTile = &(Tile::CreateTileA(1, startID, PreyType::None)[0]); //No prey, starting tile
     testingTilePlacement(startID, 71, 73, currentTile, surroundingTiles);
 
     for(int i = 0; i < 12; i++)
@@ -114,7 +114,7 @@ TEST(RegionTests, addConnection) {
 
 
 
-    currentTile = &(Tile::CreateTileB(1, startID, PreyType::None)); //No prey, starting tile
+    currentTile = &(Tile::CreateTileB(1, startID, PreyType::None)[0]); //No prey, starting tile
     testingTilePlacement(startID, 71, 72, currentTile, surroundingTiles);
 
     for(int i = 0; i < 12; i++)
@@ -128,7 +128,7 @@ TEST(RegionTests, addConnection) {
 
 
 
-    currentTile = &(Tile::CreateTileF(1, startID, PreyType::None)); //No prey, starting tile
+    currentTile = &(Tile::CreateTileF(1, startID, PreyType::None)[0]); //No prey, starting tile
     testingTilePlacement(startID, 71, 71, currentTile, surroundingTiles);
 
     for(int i = 0; i < 12; i++)
@@ -142,7 +142,7 @@ TEST(RegionTests, addConnection) {
 
 
 
-    currentTile = &(Tile::CreateTileN(1, startID, PreyType::None)); //No prey, starting tile
+    currentTile = &(Tile::CreateTileN(1, startID, PreyType::None)[0]); //No prey, starting tile
     testingTilePlacement(startID, 73, 71, currentTile, surroundingTiles);
 
     for(int i = 0; i < 12; i++)
@@ -324,25 +324,25 @@ TEST(RulesTest, scoreRoad)
     Tile **surroundingTiles;
 
     // test four 'v' tiles placed so that road is closed square. No prey so should be awarded 4 points.
-    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]);
     //upperRightTile
     currentTile->setRotation(3);
     testingTilePlacement(startID, 72,72, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]);
     //upperLeftTile
     currentTile->setRotation(2);
     testingTilePlacement(startID, 71, 72, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None);
+    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]);
     //bottomLeftTile
     currentTile->setRotation(1);
     testingTilePlacement(startID, 71, 71, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]);
     //bottomRightTile
     currentTile->setRotation(0);
     testingTilePlacement(startID, 72, 71, currentTile, surroundingTiles);
@@ -372,22 +372,22 @@ TEST(RulesTest, scoreGrassAndRoad)
     Tile **surroundingTiles;
 
     //this creates a complete castle, so grass should be 5 pts
-    currentTile = &(Tile::CreateTileZ(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileZ(1, startID, PreyType::None)[0]);
     currentTile->setRotation(2);
     testingTilePlacement(startID, 72, 71, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileG(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileG(1, startID, PreyType::None)[0]);
     currentTile->setRotation(1);
     testingTilePlacement(startID, 72, 70, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileE(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileE(1, startID, PreyType::None)[0]);
     currentTile->setRotation(0);
     testingTilePlacement(startID, 72, 69, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileA(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileA(1, startID, PreyType::None)[0]);
     currentTile->setRotation(0);
     testingTilePlacement(startID, 72, 72, currentTile, surroundingTiles);
     currentTile->placeTile();
@@ -415,47 +415,47 @@ TEST(RulesTest, scoreMoreGrass)
     Coord *currentCoord;
     Tile **surroundingTiles;
 
-    currentTile = &(Tile::CreateTileB(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileB(1, startID, PreyType::None)[0]);
     currentTile->setRotation(0);
     testingTilePlacement(startID, 72, 72, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]);
     currentTile->setRotation(2);
     testingTilePlacement(startID, 71, 73), currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileU(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileU(1, startID, PreyType::None)[0]);
     currentTile->setRotation(1);
     testingTilePlacement(startID, 72, 73, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]);
     currentTile->setRotation(3);
     testingTilePlacement(startID, 71, 73), currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileW(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileW(1, startID, PreyType::None)[0]);
     currentTile->setRotation(0);
     testingTilePlacement(startID, 71, 72, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileY(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileY(1, startID, PreyType::None)[0]);
     currentTile->setRotation(0);
     testingTilePlacement(startID, 72, 71, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]);
     currentTile->setRotation(0);
     testingTilePlacement(startID, 71, 71, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileE(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileE(1, startID, PreyType::None)[0]);
     currentTile->setRotation(0);
     testingTilePlacement(startID, 73, 71, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileZ(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileZ(1, startID, PreyType::None)[0]);
     currentTile->setRotation(2);
     testingTilePlacement(startID, 73, 72, currentTile, surroundingTiles);
     currentTile->placeTile();
@@ -479,22 +479,22 @@ TEST(RulesTest, scoreMoreRoads)
     Coord *currentCoord;
     Tile **surroundingTiles;
 
-    currentTile = &(Tile::CreateTileZ(1, startID, PreyType::Deer));
+    currentTile = &(Tile::CreateTileZ(1, startID, PreyType::Deer)[0]);
     currentTile->setRotation(3);
     testingTilePlacement(startID, 72, 72, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileK(1, startID, PreyType::Boar));
+    currentTile = &(Tile::CreateTileK(1, startID, PreyType::Boar)[0]);
     currentTile->setRotation(0);
     testingTilePlacement(startID, 73, 72, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileU(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileU(1, startID, PreyType::None)[0]);
     currentTile->setRotation(1);
     testingTilePlacement(startID, 74, 73, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo));
+    currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0]);
     currentTile->setRotation(3);
     testingTilePlacement(startID, 73, 73, currentTile, surroundingTiles);
     currentTile->placeTile();
@@ -519,22 +519,22 @@ TEST (RulesTest, scoreMoreMoreRoads)
     Coord *currentCoord;
     Tile **surroundingTiles;
 
-    currentTile = &(Tile::CreateTileA(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileA(1, startID, PreyType::None[0]));
     currentTile->setRotation(3);
     testingTilePlacement(startID, 72, 72, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo));
+    currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0]);
     currentTile->setRotation(0);
     testingTilePlacement(startID, 73, 72, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]);
     currentTile->setRotation(1);
     testingTilePlacement(startID, 73, 71, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileA(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileA(1, startID, PreyType::None)[0]);
     currentTile->setRotation(1);
     testingTilePlacement(startID, 72, 72, currentTile, surroundingTiles);
     currentTile->placeTile();
@@ -560,42 +560,42 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
     Coord *currentCoord;
     Tile **surroundingTiles;
 
-    currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo));
+    currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0]);
     currentTile->setRotation(3);
     testingTilePlacement(startID, 72, 72, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]);
     currentTile->setRotation(0);
     testingTilePlacement(startID, 73,72, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileA(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileA(1, startID, PreyType::None)[0]);
     currentTile->setRotation(1);
     testingTilePlacement(startID, 72, 72, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileU(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileU(1, startID, PreyType::None)[0]);
     currentTile->setRotation(0);
     testingTilePlacement(startID, 73,70, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileU(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileU(1, startID, PreyType::None)[0]);
     currentTile->setRotation(0);
     testingTilePlacement(startID, 72,70, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileU(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileU(1, startID, PreyType::None)[0]);
     currentTile->setRotation(1);
     testingTilePlacement(startID, 74,72, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]);
     currentTile->setRotation(0);
     testingTilePlacement(startID, 74,70, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileD(1, &startId, PreyType::Deer));
+    currentTile = &(Tile::CreateTileD(1, &startId, PreyType::Deer)[0]);
     currentTile->setRotation(0);
     testingTilePlacement(startID, 74,71, currentTile, surroundingTiles);
     currentTile->placeTile();
@@ -610,7 +610,7 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
 
     ASSERT_EQ(realRoadScore, returnRoadScore);
 
-    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None));
+    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]);
     currentTile.setRotation(1);
     testingTilePlacement(startID, 72, 71, currentTile, surroundingTiles);
     currentTile.placeTile();
@@ -634,7 +634,7 @@ TEST(RulesTest, getCurrentScore) {
 	Coord *currentCoord;
 	Tile **surroundingTiles;
 
-	currentTile = &(Tile::CreateTileD(1, startID, PreyType::None));
+	currentTile = &(Tile::CreateTileD(1, startID, PreyType::None)[0]);
 	currentTile->setRotation(0);
 	testingTilePlacement(startID, 72, 72, currentTile, surroundingTiles);
 	currentTile->placeTile();
@@ -650,7 +650,7 @@ TEST(RulesTest, getCurrentScore) {
 
 	ASSERT_EQ(actualScore, expectedScore);
 
-	currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo));
+	currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0]);
 	currentTile->setRotation(2);
 	testingTilePlacement(startID, 73, 72, currentTile, surroundingTiles);
 	currentTile->placeTile();
