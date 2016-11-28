@@ -59,7 +59,7 @@ gameMessage& TurnCoordinator::buildResponse(Move& move)
     //gMsg->messageType = 1;
     //memcpy(gMsg->data.move.tile, (move.getTile().getTileName()).c_str());
 
-    return gMsg;
+    return *gMsg;
 
 /*
     unsigned int p1;            //Player flag

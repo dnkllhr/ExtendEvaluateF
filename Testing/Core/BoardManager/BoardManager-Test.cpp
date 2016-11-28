@@ -27,7 +27,7 @@ TEST(BoardManagerTests, gameInit)
                 EXPECT_EQ(tile->getTileType(), TileType::D);
 
 ////////////////FLOATING POINT EXCEPTION vvvv
-                EXPECT_EQ(tile->getRotation(), 0);
+                EXPECT_EQ(tile->getRotation(), (unsigned int)0);
 ////////////////FLOATING POINT EXCEPTION ^^^^
 
                 EXPECT_EQ(tile->getPrey(), PreyType::None);
@@ -314,7 +314,7 @@ TEST(BoardManagerTests, isSurrounded)
     int dx[8] = { -1, 0, 1, 1, 1, 0, -1, -1 };
     int dy[8] = { 1, 1, 1, 0, -1, -1, -1, 0 };
 
-    EXPECT_EQ(BoardManager::isSurrounded(centerTileId), 0);
+    EXPECT_EQ(BoardManager::isSurrounded(centerTileId), (unsigned int)0);
 
     for(unsigned int i = 0; i < 8; i++)
     {

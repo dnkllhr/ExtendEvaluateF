@@ -189,7 +189,7 @@ unsigned int BoardManager::isSurrounded(int tileID)
         {
             int thisX = xLocation + i;
             int thisY = yLocation + j;
-            if (thisX >= 0 && thisY >= 0 && thisX < boardGrid.getSize() && thisY < boardGrid[0].getSize() &&
+            if (thisX >= 0 && thisY >= 0 && thisX < (int)boardGrid.getSize() && thisY < (int)boardGrid[0].getSize() &&
                 boardGrid[xLocation + i][yLocation + j] != NULL && !(i == 0 && j == 0))
             {
                 surrounded++;
@@ -204,10 +204,6 @@ struct moveResult BoardManager::tryMove(const Tile& tile)
 {
     return Regions::tryMove(tile, Board::getBorderingTiles(tile));
 }
-
-
-
-
 
 void BoardManager::cannotPlaceTile()
 {
