@@ -171,9 +171,9 @@ TEST(RulesTest, ScoreChurch) {
 	unsigned int tilesSurrounded = isSurrounded(tileID);
 
 	// how should actuallyScore change the values returned?
-	actualScore = scoreChurch(tilesSurrounded, true);
+	actualScore = Rules::scoreChurch(tilesSurrounded, true);
 	ASSERT(actualScore == 0);
-	actualScore = scoreChurch(tilesSurrounded, false);
+	actualScore = Rules::scoreChurch(tilesSurrounded, false);
 	ASSERT(actualScore == 1);
 
 	//place other tiles around churchTile
@@ -196,7 +196,7 @@ TEST(RulesTest, ScoreChurch) {
 				tilesSurrounded = isSurrounded(tileID);
 
 				// how should actuallyScore change values returned?
-				actualScore = scoreChurch(tilesSurrounded, true);
+				actualScore = Rules::scoreChurch(tilesSurrounded, true);
 
 				// just placed final boardering tile, actuallyScore set to true should return full value
 				if (i == 1 && j == 1)
@@ -209,7 +209,7 @@ TEST(RulesTest, ScoreChurch) {
 				{
 					ASSERT(actualScore == 0);
 				}
-				actualScore = scoreChurch(tilesSurrounded, false);
+				actualScore = Rules::scoreChurch(tilesSurrounded, false);
 				ASSERT(actualScore == expectedScore);
 			}
 		}
@@ -226,12 +226,12 @@ TEST(RulesTest, ScoreCastle1) {
 	Coord *position1 = new Coord(76, 76);
 	Move *castleMove1 = new Move(castleTile1, position1);
 	Board::place(castleMove1);
-	std::shared_ptr<struct regionSet> newRegion(Regions::getRegions(tileID1));
+	std::shared_ptr<struct regionSet> *newRegion(Regions::getRegions(tileID1));
 
 	// How should actuallyScore change the return value?
-	actualScore = scoreCastle(newRegion, true);
+	actualScore = Rules::scoreCastle(newRegion, true);
 	ASSERT(actualScore == 0);
-	actualScore = scoreCastle(newRegion, false);
+	actualScore = Rules::scoreCastle(newRegion, false);
 	ASSERT(actualScore == 2);
 
 	// add another tile to extend the lake region
@@ -245,9 +245,9 @@ TEST(RulesTest, ScoreCastle1) {
 	Regions::addConnection(castleTile2, surroundingTiles);
 
 	// How should actuallyScore change the return value?
-	actualScore = scoreCastle(newRegion, true);
+	actualScore = Rules::scoreCastle(newRegion, true);
 	ASSERT(actualScore == 12);
-	actualScore = scoreCastle(newRegion, false);
+	actualScore = Rules::scoreCastle(newRegion, false);
 	ASSERT(actualScore == 12);
 }
 
@@ -260,7 +260,7 @@ TEST(RulesTest, ScoreCastle2) {
 	Coord *position1 = new Coord(76, 76);
 	Move *castleMove1 = new Move(castleTile1, position1);
 	Board::place(castleMove1);
-	std::shared_ptr<struct regionSet> newRegion(Regions::getRegions(tileID1)); // create new region for the first tile placed
+	std::shared_ptr<struct regionSet> *newRegion(Regions::getRegions(tileID1)); // create new region for the first tile placed
 
 	// anotha one
 	const Tile *castleTile2 = tiles[10][0];
@@ -295,9 +295,9 @@ TEST(RulesTest, ScoreCastle2) {
 	surroundingTiles = Board::getBorderingTiles(castleTile5);
 	Regions::addConnection(castleTile5, surroundingTiles);
 
-	actualScore = scoreCastle(newRegion, true);
+	actualScore = Rules::scoreCastle(newRegion, true);
 	ASSERT(actualScore == 0);
-	actualScore = scoreCastle(newRegion, false);
+	actualScore = Rules::scoreCastle(newRegion, false);
 	ASSERT(actualScore == 10);
 
 	// anotha one
@@ -308,9 +308,9 @@ TEST(RulesTest, ScoreCastle2) {
 	surroundingTiles = Board::getBorderingTiles(castleTile6);
 	Regions::addConnection(castleTile6, surroundingTiles);
 
-	actualScore = scoreCastle(newRegion, true);
+	actualScore = Rules::scoreCastle(newRegion, true);
 	ASSERT(actualScore == 24);
-	actualScore = scoreCastle(newRegion, false);
+	actualScore = Rules::scoreCastle(newRegion, false);
 	ASSERT(actualScore == 24);
 }
 
@@ -349,10 +349,10 @@ TEST(RulesTest, scoreRoad)
     currentTile->placeTile();
 
     unsigned int currentTileID = currentTile->getId();
-    std::shared_ptr<struct regionSet> currentSet = Regions::getRegions(currentTileID);
+    std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
     // not sure what to pass through for bool actuallyScore
-    unsigned int returnScore = scoreRoad(currentSet);
+    unsigned int returnScore = Rules::scoreRoad(currentSet);
 
     //completed road = 1 pt per tile
     unsigned int realScore = 4;
@@ -393,12 +393,12 @@ TEST(RulesTest, scoreGrassAndRoad)
     currentTile->placeTile();
 
     unsigned int currentTileID = currentTile->getId();
-    std::shared_ptr<struct regionSet> currentSet = Regions::getRegions(currentTileID);
+    std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
     // get score for Grass in this set of 4 tiles that is placed together
-    unsigned int returnGrassScore = scoreGrass(currentSet, currentTileID, 10);
+    unsigned int returnGrassScore = Rules::scoreGrass(currentSet, currentTileID, 10);
    // get score for the completed road  in this set of 4 tiles placed together
-    unsigned int returnRoadScore = scoreRoad(currentSet);
+    unsigned int returnRoadScore = Rules::ad(currentSet);
     unsigned int realGrassScore = 5;
     unsigned int realRoadScore = 2;
 
@@ -462,9 +462,9 @@ TEST(RulesTest, scoreMoreGrass)
 
 
     unsigned int currentTileID = currentTile->getId();
-    std::shared_ptr<struct regionSet> currentSet = Regions::getRegions(currentTileID);
+    std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
-    unsigned int returnGrassScore = scoreGrass(curentSet, currentTileID, 10);
+    unsigned int returnGrassScore = Rules::scoreGrass(currentSet, currentTileID, 10);
     unsigned int realGrassScore = 8; //5 pt for completed lake + 3 pts for completed den
 
     ASSERT_EQ(returnGrassScore, realGrassScore);
@@ -501,9 +501,9 @@ TEST(RulesTest, scoreMoreRoads)
 
     unsigned int currentTileID = currentTile->getId();
 
-    std::shared_ptr<struct regionSet> currentSet = Regions::getRegions(currentTileID);
+    std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
-    unsigned int returnRoadScore = scoreRoad(currentSet);
+    unsigned int returnRoadScore = Rules::scoreRoad(currentSet);
 
     unsigned int realRoadScore = 7;
 
@@ -541,9 +541,9 @@ TEST (RulesTest, scoreMoreMoreRoads)
 
     unsigned int currentTileID = currentTile->getId();
 
-    std::shared_ptr<struct regionSet> currentSet = Regions::getRegions(currentTileID);
+    std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
-    unsigned int returnRoadScore = scoreRoad(currentSet);
+    unsigned int returnRoadScore = Rules::scoreRoad(currentSet);
 
     unsigned int realRoadScore = 5;
 
@@ -602,9 +602,9 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
 
     //Testing road portion of this landscape
     unsigned int currentTileId = currentTile->getId();
-    std::shared_ptr<struct regionSet> currentSet = Regions::getRegions(currentTileId);
+    std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileId);
 
-    unsigned int returnRoadScore = scoreRoad(currentSet);
+    unsigned int returnRoadScore = Rules::scoreRoad(currentSet);
 
     unsigned int realRoadScore = 6;
 
@@ -616,10 +616,10 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
     currentTile.placeTile();
 
     unsigned int currentTileID = currentTile->getId();
-    std::shared_ptr<struct regionSet> currentSet2 = Regions::getRegions(currentTileID);
+    std::shared_ptr<struct regionSet> *currentSet2 = Regions::getRegions(currentTileID);
 
-    unsigned int return returnRoadScore2 = scoreRoad(currentSet2);
-    unsigned int returnGrassScore = scoreGrass(currentSet2, currentTileID, 7);
+    unsigned int return returnRoadScore2 = Rules::scoreRoad(currentSet2);
+    unsigned int returnGrassScore = Rules::scoreGrass(currentSet2, currentTileID, 7);
     unsigned int realRoadScore2 = 5;
     unsigned int realGrassScore  3;
     ASSERT_EQ(realRoadScore2, returnRoadScore2);
@@ -640,7 +640,7 @@ TEST(RulesTest, getCurrentScore) {
 	currentTile->placeTile();
 
 	unsigned int currentTileId = currentTile->getId();
-	std::shared_ptr<struct regionSet> currentSet = Regions::getRegions(currentTileId);
+	std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileId);
 
 	unsigned int edge = 4; // uncompleted city on right side of tile
 	unsigned int tilesSurrounded = BoardManager::isSurrounded(currentTileId);
