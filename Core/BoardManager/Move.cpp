@@ -144,7 +144,7 @@ Move::Move(bool throwaway) // passes
 
 Move::~Move()
 {
-    delete this->coord;
+    //delete this->coord;
 }
 
 /// TODO: Include meepleLocation and crocodile 

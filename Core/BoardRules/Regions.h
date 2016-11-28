@@ -89,11 +89,11 @@ struct tileNode
 
         return *this;
     };
-
+/*
     ~tileNode() {
         delete[] preyCounts;
     }
-
+*/
     unsigned int tileID;
     unsigned int edge;
     unsigned int * preyCounts;

@@ -77,6 +77,8 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
     unsigned int centerEdge = countPerSide / 2;
     std::unordered_map<unsigned int, std::shared_ptr<struct regionSet> *> * tracker = &regionTracker;
 
+    ////printf("numOfSides %d countPerSide %d totalEdges %d id %d centerEdge %d\n", numOfSides, countPerSide, totalEdges, id, centerEdge);
+
     if (trackerToUse != NULL) tracker = trackerToUse;
 
     // add one to total edges so that we have an array location for the center
@@ -94,6 +96,7 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
     const Tile* boarderingTiles[numOfSides];
     unsigned int sideInc = 0;
     for (unsigned int currSide = 0; currSide < numOfSides * 2; currSide++) {
+        //printf("for loop #1 %d\n", currSide);
         if (allBoarderingTiles[currSide] != NULL) {
             if (allBoarderingTiles[currSide]->getCenter() == TerrainType::Church) {
                 unsigned int boarderingId = allBoarderingTiles[currSide]->getId();
@@ -112,6 +115,7 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
 
     // from what I can tell, this can't be optimised much. This is currently O(n + n^2) and the best case is we get O(n^2)
     for (unsigned int edge = 0; edge < totalEdges; edge++) {
+        //printf("for loop #2 %d\n", edge);
         unsigned int side = edge / countPerSide;
         unsigned int correspondingSide = (side + (numOfSides / 2)) % numOfSides;
         unsigned int correspondingEdge = (countPerSide - (edge % countPerSide) - 1) + (countPerSide * correspondingSide);
@@ -137,6 +141,7 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
     }
 
     for (unsigned int edge = 0; edge < totalEdges; edge++) {
+        //printf("for loop #3 %d\n", edge);
         if (newRegions[edge] == NULL) {
             newRegions[edge] = createRegion(id, edge, newTile.getTerrainType(edge));
             newRegions[edge]->tail->preyCounts[static_cast<int>(newTile.getPrey())]++;
@@ -146,6 +151,7 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
         }
 
         for (unsigned int otherEdge = edge + 1; otherEdge < totalEdges; otherEdge++) {
+            //printf("for loop #4 %d\n", otherEdge);
             if (!newTile.isConnected(edge, otherEdge)) continue;
             else if (newRegions[otherEdge] == newRegions[edge]) continue;
             else if (newRegions[otherEdge] == NULL) {
@@ -170,6 +176,7 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
             }
         }
     }
+    //printf("Exiting addConnection\n");
 
     return newRegions;
 }
