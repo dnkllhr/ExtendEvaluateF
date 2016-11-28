@@ -1,7 +1,9 @@
+#define WHY_ME
+
 #ifndef __TURN_COORDINATOR_H
 #define __TURN_COORDINATOR_H
-#include "../AI/AI.h"
 #include "../../ProgramCoordinator/ProgramCoordinator.h"
+#include "../AI/AI.h"
 
 #include <stdio.h>
 #include <stdlib.h>
