@@ -324,7 +324,7 @@ TEST(RulesTest, scoreRoad)
     std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
     // not sure what to pass through for bool actuallyScore
-    unsigned int returnScore = GameRules::scoreRoad(currentSet);
+    unsigned int returnScore = GameRules::scoreRoad(currentSet, true);
 
     //completed road = 1 pt per tile
     unsigned int realScore = 4;
@@ -370,7 +370,7 @@ TEST(RulesTest, scoreGrassAndRoad)
     // get score for Grass in this set of 4 tiles that is placed together
     unsigned int returnGrassScore = GameRules::scoreGrass(currentSet, currentTileID, 10);
    // get score for the completed road  in this set of 4 tiles placed together
-    unsigned int returnRoadScore = GameRules::ad(currentSet);
+    unsigned int returnRoadScore = GameRules::scoreRoad(currentSet, true);
     unsigned int realGrassScore = 5;
     unsigned int realRoadScore = 2;
 
@@ -475,7 +475,7 @@ TEST(RulesTest, scoreMoreRoads)
 
     std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
-    unsigned int returnRoadScore = GameRules::scoreRoad(currentSet);
+    unsigned int returnRoadScore = GameRules::scoreRoad(currentSet, false);
 
     unsigned int realRoadScore = 7;
 
@@ -515,7 +515,7 @@ TEST (RulesTest, scoreMoreMoreRoads)
 
     std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
-    unsigned int returnRoadScore = GameRules::scoreRoad(currentSet);
+    unsigned int returnRoadScore = GameRules::scoreRoad(currentSet, false);
 
     unsigned int realRoadScore = 5;
 
@@ -576,7 +576,7 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
     unsigned int currentTileId = currentTile->getId();
     std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileId);
 
-    unsigned int returnRoadScore = GameRules::scoreRoad(currentSet);
+    unsigned int returnRoadScore = GameRules::scoreRoad(currentSet, false);
 
     unsigned int realRoadScore = 6;
 
@@ -590,7 +590,7 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
     unsigned int currentTileID = currentTile->getId();
     std::shared_ptr<struct regionSet> *currentSet2 = Regions::getRegions(currentTileID);
 
-    unsigned int return returnRoadScore2 = GameRules::scoreRoad(currentSet2);
+    unsigned int return returnRoadScore2 = GameRules::scoreRoad(currentSet2, false);
     unsigned int returnGrassScore = GameRules::scoreGrass(currentSet2, currentTileID, 7);
     unsigned int realRoadScore2 = 5;
     unsigned int realGrassScore = 3;
