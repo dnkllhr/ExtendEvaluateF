@@ -53,8 +53,8 @@ const Tile** Board::getBorderingTiles(const Coord& coord)
 {
     const unsigned int numberOfBorderingTiles = 8;
     const Tile** borderingTiles = new const Tile*[numberOfBorderingTiles];
-    int dx[numberOfBorderingTiles] = { -1, 0, 1, 1, 1, 0, -1, -1 };
-    int dy[numberOfBorderingTiles] = { 1, 1, 1, 0, -1, -1, -1, 0 };
+    int dx[numberOfBorderingTiles] = { 1, 0, -1, -1, -1, 0, 1, 1 };// { -1, 0, 1, 1, 1, 0, -1, -1 };
+    int dy[numberOfBorderingTiles] = { -1, -1, -1, 0, 1, 1, 1, 0 };//{ 1, 1, 1, 0, -1, -1, -1, 0 };
 
     const Array<Array<Tile*>>& boardGrid = Board::getBoard();
 

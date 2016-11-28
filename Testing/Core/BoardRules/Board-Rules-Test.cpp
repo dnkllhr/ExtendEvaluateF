@@ -665,3 +665,70 @@ TEST(RulesTest, getCurrentScore) {
 
 	ASSERT_EQ(actualScore, expectedScore);
 }
+
+TEST(RulesTest, validTilePlacement)
+{
+    BoardManager::gameInit();
+
+    unsigned int tileIdCounter = 100;
+
+
+    Tile tile = Tile::CreateTileJ(1, tileIdCounter, PreyType::None)[0];
+
+
+    const Coord left = Coord(75, 76);
+    const Coord right = Coord(77, 76);
+    const Coord up = Coord(76, 77);
+    const Coord down = Coord(76, 75);
+
+    tile.setRotation(0);
+    std::cout << std::endl << "left ";
+    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(left))) { std::cout <<  "0 "; }
+    tile.setRotation(1);
+    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(left))) { std::cout <<  "1 "; }
+    tile.setRotation(2);
+    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(left))) { std::cout <<  "2 "; }
+    tile.setRotation(3);
+    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(left))) { std::cout <<  "3 "; }
+
+    tile.setRotation(0);
+    std::cout << std::endl << "right ";
+    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(right))) { std::cout <<  "0 "; }
+    tile.setRotation(1);
+    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(right))) { std::cout <<  "1 "; }
+    tile.setRotation(2);
+    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(right))) { std::cout <<  "2 "; }
+    tile.setRotation(3);
+    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(right))) { std::cout <<  "3 "; }
+
+    tile.setRotation(0);
+    std::cout << std::endl << "up ";
+    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(up))) { std::cout <<  "0 "; }
+    tile.setRotation(1);
+    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(up))) { std::cout <<  "1 "; }
+    tile.setRotation(2);
+    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(up))) { std::cout <<  "2 "; }
+    tile.setRotation(3);
+    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(up))) { std::cout <<  "3 "; }
+
+    tile.setRotation(0);
+    std::cout << std::endl << "down ";
+    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(down))) { std::cout <<  "0 "; }
+    tile.setRotation(1);
+    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(down))) { std::cout <<  "1 "; }
+    tile.setRotation(2);
+    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(down))) { std::cout <<  "2 "; }
+    tile.setRotation(3);
+    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(down))) { std::cout <<  "3 "; }
+
+    /*
+    Tile tile2 = Tile::CreateTileV(1, tileIdCounter, PreyType::None)[0];
+    Coord coord2 = Coord(77, 75);
+    Move move2 = Move(tile2, coord2);
+
+    
+
+    Tile tile3 = Tile::CreateTileK(1, tileIdCounter, PreyType::None)[0];
+    Coord coord3 = Coord(77, 76);
+    Move move3 = Move(tile3, coord3, 2);*/
+}
