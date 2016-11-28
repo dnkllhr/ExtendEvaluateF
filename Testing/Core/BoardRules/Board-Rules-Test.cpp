@@ -590,7 +590,7 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
     unsigned int currentTileID = currentTile->getId();
     std::shared_ptr<struct regionSet> *currentSet2 = Regions::getRegions(currentTileID);
 
-    unsigned int return returnRoadScore2 = GameRules::scoreRoad(currentSet2, false);
+    unsigned int returnRoadScore2 = GameRules::scoreRoad(currentSet2, false);
     unsigned int returnGrassScore = GameRules::scoreGrass(currentSet2, currentTileID, 7);
     unsigned int realRoadScore2 = 5;
     unsigned int realGrassScore = 3;
