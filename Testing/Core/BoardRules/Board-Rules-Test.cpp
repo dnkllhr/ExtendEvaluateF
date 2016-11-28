@@ -217,100 +217,92 @@ TEST(RulesTest, ScoreChurch) {
 }
 
 TEST(RulesTest, ScoreCastle1) {
-	Array<Array<Tile>> tiles = Tile::CreateTiles();
-	Board board;
-	unsigned int actualScore;
+	unsigned int startID = 0;
+	Tile *currentTile;
+	Move *currentMove;
+	Coord *currentCoord;
+	const Tile **surroundingTiles;
 
-	const Tile *castleTile1 = tiles[4][0];
-	unsigned int tileID1 = castleTile1.getId();
-	Coord *position1 = new Coord(76, 76);
-	Move *castleMove1 = new Move(castleTile1, position1);
-	Board::place(castleMove1);
-	std::shared_ptr<struct regionSet> *newRegion(Regions::getRegions(tileID1));
+	currentTile = &(Tile::CreateTileD(1, startID, PreyType::Deer)[0]);
+	currentTile->setRotation(0);
+	testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
+	currentTile->placeTile();
 
-	// How should actuallyScore change the return value?
-	actualScore = Rules::scoreCastle(newRegion, true);
+	unsigned int currentTileID = currentTile->getId();
+	std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
+
+	unsigned int actualScore = Rules::scoreCastle(currentSet, true);
 	ASSERT(actualScore == 0);
-	actualScore = Rules::scoreCastle(newRegion, false);
+	actualScore = Rules::scoreCastle(currentSet, false);
 	ASSERT(actualScore == 2);
 
 	// add another tile to extend the lake region
-	const Tile *castleTile2 = tiles[12][0];
-	castleTile2->setRotation(2);
-	unsigned int tileID2 = castleTile2.getId();
-	Coord *position2 = new Coord(77, 77);
-	Move *castleMove2(castleTile2, position2);
-	Board::place(castleMove2);
-	const Tile** surroundingTiles = Board::getBorderingTiles(castleTile2);
-	Regions::addConnection(*castleTile2, surroundingTiles);
+	currentTile = &(Tile::CreateTileK(1, startID, PreyType::Boar)[0]);
+	currentTile->setRotation(2);
+	testingTilePlacement(&startID, 73, 72, currentTile, surroundingTiles);
+	currentTile->placeTile();
 
-	// How should actuallyScore change the return value?
-	actualScore = Rules::scoreCastle(newRegion, true);
+	currentTileID = currentTile->getId();
+	currentSet = Regions::getRegions(currentTileID);
+
+	actualScore = Rules::scoreCastle(currentSet, true);
 	ASSERT(actualScore == 12);
-	actualScore = Rules::scoreCastle(newRegion, false);
+	actualScore = Rules::scoreCastle(currentSet, false);
 	ASSERT(actualScore == 12);
+
 }
 
 TEST(RulesTest, ScoreCastle2) {
-	Array<Array<Tile>> tiles = Tile::CreateTiles();
-	unsigned int actualScore;
+	unsigned int startID = 0;
+	Tile *currentTile;
+	Move *currentMove;
+	Coord *currentCoord;
+	const Tile **surroundingTiles;
 
-	const Tile *castleTile1 = tiles[8][0];
-	unsigned int tileID1 = castleTile1.getId();
-	Coord *position1 = new Coord(76, 76);
-	Move *castleMove1 = new Move(castleTile1, position1);
-	Board::place(castleMove1);
-	std::shared_ptr<struct regionSet> *newRegion(Regions::getRegions(tileID1)); // create new region for the first tile placed
+	currentTile = &(Tile::CreateTileI(1, startID, PreyType::None)[0]);
+	currentTile->setRotation(0);
+	testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
+	currentTile->placeTile();
 
-	// anotha one
-	const Tile *castleTile2 = tiles[10][0];
-	Coord *position2 = new Coord(75, 77);
-	Move *castleMove2 = new Move(castleTile2, position2);
-	Board::place(castleMove2);
-	const Tile** surroundingTiles = Board::getBorderingTiles(castleTile2);
-	Regions::addConnection(*castleTile2, surroundingTiles);
+	currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0]);
+	currentTile->setRotation(0);
+	testingTilePlacement(&startID, 71, 73, currentTile, surroundingTiles);
+	currentTile->placeTile();
 
-	// anotha one
-	const Tile *castleTile3 = tiles[2][0];
-	Coord *position3 = new Coord(76, 77);
-	Move *castleMove3 = new Move(castleTile3, position3);
-	Board::place(castleMove3);
-	surroundingTiles = Board::getBorderingTiles(castleTile3);
-	Regions::addConnection(*castleTile3, surroundingTiles);
+	currentTile = &(Tile::CreateTileC(1, startID, PreyType::None)[0]);
+	currentTile->setRotation(0);
+	testingTilePlacement(&startID, 72, 73, currentTile, surroundingTiles);
+	currentTile->placeTile();
 
-	// anotha one
-	const Tile *castleTile4 = tiles[5][0];
-	Coord *position4 = new Coord(76, 78);
-	Move *castleMove4 = new Move(castleTile4, position4);
-	Board::place(castleMove4);
-	surroundingTiles = Board::getBorderingTiles(castleTile4);
-	Regions::addConnection(*castleTile4, surroundingTiles);
+	currentTile = &(Tile::CreateTileE(1, startID, PreyType::None)[0]);
+	currentTile->setRotation(0);
+	testingTilePlacement(&startID, 72, 74, currentTile, surroundingTiles);
+	currentTile->placeTile();
 
-	// anotha one
-	const Tile *castleTile5 = tiles[15][0];
-	castleTile5->setRotation(3);
-	Coord *position5 = new Coord(77, 77);
-	Move *castleMove5 = new Move(castleTile5, position5);
-	Board::place(castleMove5);
-	surroundingTiles = Board::getBorderingTiles(castleTile5);
-	Regions::addConnection(*castleTile5, surroundingTiles);
+	currentTile = &(Tile::CreateTileN(1, startID, PreyType::None)[0]);
+	currentTile->setRotation(3);
+	testingTilePlacement(&startID, 73, 73, currentTile, surroundingTiles);
+	currentTile->placeTile();
 
-	actualScore = Rules::scoreCastle(newRegion, true);
+	unsigned int currentTileID = currentTile->getId();
+	std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
+
+	unsigned int actualScore = Rules::scoreCastle(currentSet, true);
 	ASSERT(actualScore == 0);
-	actualScore = Rules::scoreCastle(newRegion, false);
+	actualScore = Rules::scoreCastle(currentSet, false);
 	ASSERT(actualScore == 10);
+	
+	currentTile = &(Tile::CreateTileN(1, startID, PreyType::None)[0]);
+	currentTile->setRotation(2);
+	testingTilePlacement(&startID, 73, 73, currentTile, surroundingTiles);
+	currentTile->placeTile();
 
-	// anotha one
-	const Tile *castleTile6 = tiles[15][0];
-	Coord *position6 = new Coord(77, 76);
-	Move *castleMove6 = new Move(castleTile6, position6);
-	Board::place(castleMove6);
-	surroundingTiles = Board::getBorderingTiles(castleTile6);
-	Regions::addConnection(*castleTile6, surroundingTiles);
+	currentTileID = currentTile->getId();
+	currentSet = Regions::getRegions(currentTileID);
 
-	actualScore = Rules::scoreCastle(newRegion, true);
+	actualScore = Rules::scoreCastle(currentSet, true);
 	ASSERT(actualScore == 24);
-	actualScore = Rules::scoreCastle(newRegion, false);
+	actualScore = Rules::scoreCastle(currentSet, false);
 	ASSERT(actualScore == 24);
 }
 
