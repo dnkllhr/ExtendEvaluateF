@@ -3,40 +3,43 @@
 TileStack* BoardManager::tileStack = new TileStack(NUMBER_OF_PLAYERS);
 unsigned int BoardManager::tileIDCounter = 0;
 Tile * BoardManager::startingTile = NULL;
-std::unordered_map<std::string, TileFunction> BoardManager::getTileFunctionFromName = std::unordered_map<std::string, TileFunction>();
+std::unordered_map<std::string, int> BoardManager::getTileFunctionFromName = std::unordered_map<std::string, int>();
 int v = BoardManager::setupHashMap();
 
 
 int BoardManager::setupHashMap()
 {
-    BoardManager::getTileFunctionFromName["JJJJ-"] = Tile::CreateTileY;
-    BoardManager::getTileFunctionFromName["JJJJX"] = Tile::CreateTileB;
-    BoardManager::getTileFunctionFromName["JJTJX"] = Tile::CreateTileA;
-    BoardManager::getTileFunctionFromName["TTTT-"] = Tile::CreateTileX;
-    BoardManager::getTileFunctionFromName["TJTJ-"] = Tile::CreateTileU;
-    BoardManager::getTileFunctionFromName["TJJT-"] = Tile::CreateTileV;
-    BoardManager::getTileFunctionFromName["TJTT-"] = Tile::CreateTileW;
-    BoardManager::getTileFunctionFromName["LLLL-"] = Tile::CreateTileC;
-    BoardManager::getTileFunctionFromName["JLLL-"] = Tile::CreateTileR;
-    BoardManager::getTileFunctionFromName["LLJJ-"] = Tile::CreateTileN;
-    BoardManager::getTileFunctionFromName["JLJL-"] = Tile::CreateTileG;
-    BoardManager::getTileFunctionFromName["LJLJ-"] = Tile::CreateTileH;
-    BoardManager::getTileFunctionFromName["LJJJ-"] = Tile::CreateTileE;
-    BoardManager::getTileFunctionFromName["JLLJ-"] = Tile::CreateTileI;
-    BoardManager::getTileFunctionFromName["TLJT-"] = Tile::CreateTileK;
-    BoardManager::getTileFunctionFromName["TLJTP"] = Tile::CreateTileK;
-    BoardManager::getTileFunctionFromName["JLTT-"] = Tile::CreateTileJ;
-    BoardManager::getTileFunctionFromName["JLTTB"] = Tile::CreateTileJ;
-    BoardManager::getTileFunctionFromName["TLTJ-"] = Tile::CreateTileD;
-    BoardManager::getTileFunctionFromName["TLTJD"] = Tile::CreateTileD;
-    BoardManager::getTileFunctionFromName["TLLL-"] = Tile::CreateTileT;
-    BoardManager::getTileFunctionFromName["TLTT-"] = Tile::CreateTileL;
-    BoardManager::getTileFunctionFromName["TLTTP"] = Tile::CreateTileL;
-    BoardManager::getTileFunctionFromName["TLLT-"] = Tile::CreateTileP;
-    BoardManager::getTileFunctionFromName["TLLTB"] = Tile::CreateTileP;
-    BoardManager::getTileFunctionFromName["LJTJ-"] = Tile::CreateTileZ;
-    BoardManager::getTileFunctionFromName["LJTJD"] = Tile::CreateTileZ;
-    BoardManager::getTileFunctionFromName["TLLLC"] = Tile::CreateTileZ;
+    Board::set();                                           // Set/reset the Board
+    tileStack = new TileStack(NUMBER_OF_PLAYERS);           // Initialize Tile stack
+
+    BoardManager::getTileFunctionFromName["JJJJ-"] = 25;    //Tile::CreateTileY;
+    BoardManager::getTileFunctionFromName["JJJJX"] = 4;     //Tile::CreateTileB;
+    BoardManager::getTileFunctionFromName["JJTJX"] = 1;     //Tile::CreateTileA;
+    BoardManager::getTileFunctionFromName["TTTT-"] = 0;     //Tile::CreateTileX;
+    BoardManager::getTileFunctionFromName["TJTJ-"] = 21;    //Tile::CreateTileU;
+    BoardManager::getTileFunctionFromName["TJJT-"] = 22;    //Tile::CreateTileV;
+    BoardManager::getTileFunctionFromName["TJTT-"] = 23;    //Tile::CreateTileW;
+    BoardManager::getTileFunctionFromName["LLLL-"] = 2;     //Tile::CreateTileC;
+    BoardManager::getTileFunctionFromName["JLLL-"] = 18;    //Tile::CreateTileR;
+    BoardManager::getTileFunctionFromName["LLJJ-"] = 15;    //Tile::CreateTileN;
+    BoardManager::getTileFunctionFromName["JLJL-"] = 6;     //Tile::CreateTileG;
+    BoardManager::getTileFunctionFromName["LJLJ-"] = 7;     //Tile::CreateTileH;
+    BoardManager::getTileFunctionFromName["LJJJ-"] = 5;     //Tile::CreateTileE;
+    BoardManager::getTileFunctionFromName["JLLJ-"] = 8;     //Tile::CreateTileI;
+    BoardManager::getTileFunctionFromName["TLJT-"] = 11;    //Tile::CreateTileK;
+    BoardManager::getTileFunctionFromName["TLJTP"] = 12;    //Tile::CreateTileK;
+    BoardManager::getTileFunctionFromName["JLTT-"] = 9;     //Tile::CreateTileJ;
+    BoardManager::getTileFunctionFromName["JLTTB"] = 10;    //Tile::CreateTileJ;
+    BoardManager::getTileFunctionFromName["TLTJ-"] = 3;     //Tile::CreateTileD;
+    BoardManager::getTileFunctionFromName["TLTJD"] = 4;     //Tile::CreateTileD;
+    BoardManager::getTileFunctionFromName["TLLL-"] = 19;    //Tile::CreateTileT;
+    BoardManager::getTileFunctionFromName["TLTT-"] = 13;    //Tile::CreateTileL;
+    BoardManager::getTileFunctionFromName["TLTTP"] = 14;    //Tile::CreateTileL;
+    BoardManager::getTileFunctionFromName["TLLT-"] = 16;    //Tile::CreateTileP;
+    BoardManager::getTileFunctionFromName["TLLTB"] = 17;    //Tile::CreateTileP;
+    BoardManager::getTileFunctionFromName["LJTJ-"] = 26;    //Tile::CreateTileZ;
+    BoardManager::getTileFunctionFromName["LJTJD"] = 27;    //Tile::CreateTileZ;
+    BoardManager::getTileFunctionFromName["TLLLC"] = 20;    //Tile::CreateTileZ;
     return 0;
 }
 
@@ -187,8 +190,8 @@ unsigned int BoardManager::isSurrounded(int tileID)
     {
         for(int j = -1; j <= 1; j++)
         {
-            int thisX = xLocation + i;
-            int thisY = yLocation + j;
+            unsigned int thisX = xLocation + i;
+            unsigned int thisY = yLocation + j;
             if (thisX >= 0 && thisY >= 0 && thisX < boardGrid.getSize() && thisY < boardGrid[0].getSize() &&
                 boardGrid[xLocation + i][yLocation + j] != NULL && !(i == 0 && j == 0))
             {
@@ -205,61 +208,37 @@ struct moveResult BoardManager::tryMove(const Tile& tile)
     return Regions::tryMove(tile, Board::getBorderingTiles(tile));
 }
 
-
-
-
-
 void BoardManager::cannotPlaceTile()
 {
     //Code special cases.
 }
 
-void BoardManager::addTileToStack(std::string tileName)
-{
-    /*auto iter = getTileFunctionFromName.find(tileName);
-    if (iter != getTileFunctionFromName.end())
-    {
-        int pseudoPreyType;
-        switch(tileName.at(4)) //Prey identifier
-        {
-            case 'D':
-                pseudoPreyType = 0;
-                break;
-            case 'B':
-                pseudoPreyType = 1;
-                break;
-            case 'P':
-                pseudoPreyType = 2;
-                break;
-            case 'C':
-                pseudoPreyType = 3;
-                break;
-            default:
-                pseudoPreyType = 4;
-                break;
-        }
-        Array<Tile> thisTile = (*iter->second)(1, BoardManager::tileIDCounter, (PreyType)pseudoPreyType);
-        tileStack->push(thisTile[0]);
-    }
-    else
-    {
-        throw std::logic_error("Could not find the function pointer for tile.");
-    }*/
-}
-
-
 void BoardManager::inputTileStack(char stack[], int length)
 {
-    if(sizeof(stack) != (length * 5 + 1))
+    if(sizeof(*stack) != (length * 5 + 1))
     {
         throw std::logic_error("sizeof stack and anticipated stack size differ");
     }
+    // Build the Tile list
+    Array<Array<Tile>> tiles = Tile::CreateTiles();
 
     std::string currentTile;
+    int offset;
     for(int i = length - 6; i > 0; i -= 5)          //Skip over the null char and the first set of chars.
     {
+            
         currentTile.assign(stack + i, stack + i + 5);
-        //std::cout << "Current tile being added to stack is :" << currentTile << std::endl;
-        BoardManager::addTileToStack(currentTile);
+
+        auto iter = getTileFunctionFromName.find(currentTile);
+        if (iter != getTileFunctionFromName.end())
+        {
+            offset = tileStack->getCount(tiles[(iter->second)][0].getTileType(), tiles[(iter->second)][0].getPrey());
+            tileStack->push(tiles[(iter->second)][offset]);
+        }
+        else
+        {
+            throw std::logic_error("Could not find the function pointer for tile.");
+        }
+        //BoardManager::addTileToStack(currentTile);
     }
 }

@@ -11,7 +11,7 @@
 
 #include <vector>
 
-typedef Array<Tile> (*TileFunction)(unsigned int, unsigned int&, PreyType); // function pointer type
+//typedef Array<Tile> (*TileFunction)(unsigned int, unsigned int&, PreyType); // function pointer type
 class BoardManager {
     
     public:
@@ -37,7 +37,7 @@ class BoardManager {
         static void cannotPlaceTile();
         static void inputTileStack(char stack[], int length);
         static int setupHashMap();
-        static std::unordered_map<std::string, TileFunction> getTileFunctionFromName;
+        static std::unordered_map<std::string, int> getTileFunctionFromName;
 
 
     
@@ -45,7 +45,6 @@ class BoardManager {
     private:
 #endif
 
-        static void addTileToStack(std::string tileName);
         static Tile * startingTile;
         // remaining Tiles to be played
         static TileStack* tileStack;
