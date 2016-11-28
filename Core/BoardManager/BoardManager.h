@@ -34,7 +34,7 @@ class BoardManager {
         static struct moveResult tryMove(const Tile& tile);
 
         //Handle special cases.
-        static void cannotPlaceTile();
+        static void cannotPlaceTile(const Move& move, unsigned int playerNumber);
         static void inputTileStack(char stack[], int length);
         static int setupHashMap();
         static std::unordered_map<std::string, int> getTileFunctionFromName;
