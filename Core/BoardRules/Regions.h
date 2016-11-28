@@ -40,7 +40,7 @@ class Regions
 #ifdef __testing
         static void clearRegionTracker();
         static void clearOwnerMeeples();
-
+#else
 
     private:
 #endif
