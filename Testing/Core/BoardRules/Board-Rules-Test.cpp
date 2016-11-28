@@ -348,8 +348,8 @@ Test(RulesTest, scoreRoad)
     testingTilePlacement(&startID, 72, 71, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    unsigned int currentTileID = currentTile->getTileId();
-    shared_ptr<struct regionSet> currentSet = getRegions(currentTileID);
+    unsigned int currentTileID = currentTile->getId();
+    std::shared_ptr<struct regionSet> currentSet = getRegions(currentTileID);
 
     // not sure what to pass through for bool actuallyScore
     unsigned int returnScore = scoreRoad(currentSet);
@@ -392,8 +392,8 @@ TEST(RulesTest, scoreGrassAndRoad)
     testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    unsigned int currentTileID = currentTile->getTileId();
-    shared_ptr<struct regionSet> currentSet = getRegions(currentTileID);
+    unsigned int currentTileID = currentTile->getId();
+    std::shared_ptr<struct regionSet> currentSet = getRegions(currentTileID);
 
     // get score for Grass in this set of 4 tiles that is placed together
     unsigned int returnGrassScore = scoreGrass(currentSet, currentTileID, 10);
@@ -461,11 +461,11 @@ TEST(RulesTest, scoreMoreGrass)
     currentTile->placeTile();
 
 
-    unsigned int currentTileID = currentTile->getTileId();
-    shared_ptr<struct regionSet> currentSet = getRegions(currentTileID);
+    unsigned int currentTileID = currentTile->getId();
+    std::shared_ptr<struct regionSet> currentSet = getRegions(currentTileID);
 
-    unsigned int returnGrassScore = scoreGrass(currentSet, currentTileID, 10);
-    int realGrassScore = 8; //5 pt for completed lake + 3 pts for completed den
+    unsigned int returnGrassScore = scoreGrass(curentSet, currentTileID, 10);
+    unsigned int realGrassScore = 8; //5 pt for completed lake + 3 pts for completed den
 
     ASSERT_EQ(returnGrassScore, realGrassScore);
 }
@@ -489,9 +489,9 @@ TEST(RulesTest, scoreMoreRoads)
     testingTilePlacement(&startID, 73, 72, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile:CreateTileU(1, &startID, None));
+    currentTile = &(Tile::CreateTileU(1, &startID, None));
     currentTile->setRotation(1);
-    testingTilePlacement(&tartID, 74, 73, currentTile, surroundingTiles);
+    testingTilePlacement(&startID, 74, 73, currentTile, surroundingTiles);
     currentTile->placeTile();
 
     currentTile = &(Tile::CreateTileJ(1, &startID, Buffalo));
@@ -499,9 +499,9 @@ TEST(RulesTest, scoreMoreRoads)
     testingTilePlacement(&startID, 73, 73, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    unsigned int currentTileID = currentTile->getTileId();
+    unsigned int currentTileID = currentTile->getId();
 
-    shared_ptr<struct regionSet> currentSet = getRegions(currentTileID);
+    std::shared_ptr<struct regionSet> currentSet = getRegions(currentTileID);
 
     unsigned int returnRoadScore = scoreRoad(currentSet);
 
@@ -539,9 +539,9 @@ TEST (RulesTest, scoreMoreMoreRoads)
     testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    unsigned int currentTileID = currentTile->getTileId();
+    unsigned int currentTileID = currentTile->getId();
 
-    shared_ptr<struct regionSet> currentSet = getRegions(currentTileID);
+    std::shared_ptr<struct regionSet> currentSet = getRegions(currentTileID);
 
     unsigned int returnRoadScore = scoreRoad(currentSet);
 
@@ -601,8 +601,8 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
     currentTile->placeTile();
 
     //Testing road portion of this landscape
-    unsigned int currentTileId = currentTile->getTileId();
-    shared_ptr<struct regionSet> currentSet = getRegions(currentTileId);
+    unsigned int currentTileId = currentTile->getId();
+    std::shared_ptr<struct regionSet> currentSet = getRegions(currentTileId);
 
     unsigned int returnRoadScore = scoreRoad(currentSet);
 
@@ -615,8 +615,8 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
     testingTilePlacement(&startID, 72, 71, currentTile, surroundingTiles);
     currentTile.placeTile();
 
-    unsigned int currentTileID = currentTile->getTileId();
-    shared_ptr<struct regionSet> currentSet2 = getRegions(currentTileID);
+    unsigned int currentTileID = currentTile->getId();
+    std::shared_ptr<struct regionSet> currentSet2 = getRegions(currentTileID);
 
     unsigned int return returnRoadScore2 = scoreRoad(currentSet2);
     unsigned int returnGrassScore = scoreGrass(currentSet2, currentTileID, 7);
@@ -628,51 +628,40 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
 }
 
 TEST(RulesTest, getCurrentScore) {
-	Array<Array<Tile>> tiles = Tile::CreateTiles();
-	unsigned int actualScore;
-	unsigned int expectedScore;
-	unsigned int edge; // get the current score for the structure on that edge
-	unsigned int tilesSurrounded;
+	unsigned int startID = 0;
+	Tile *currentTile;
+	Move *currentMove;
+	Coord *currentCoord;
+	Tile **surroundingTiles;
 
-	// place an initial tile
-	const Tile *firstTile = tiles[3][0];
-	Coord *position1 = new Coord(72, 72);
-	Move *firstMove = new Move(firstTile, position1);
-	Board::place(firstMove);
+	currentTile = &(Tile::CreateTileD(1, &startID, None));
+	currentTile->setRotation(0);
+	testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
+	currentTile->placeTile();
 
-	unsigned int tileID1 = firstTile->getId();
-	std::shared_ptr<struct regionSet> newRegion(Regions::getRegions(tileID1)); // create new region for the first tile placed
-	tilesSurrounded = isSurrounded(tileID1);
+	unsigned int currentTileId = currentTile->getId();
+	std::shared_ptr<struct regionSet> currentSet = getRegions(currentTileId);
 
-	edge = 1; // test top center of tile
-	expectedScore = 1; // uncompleted road on one tile
-	actualScore = GameRules::getCurrentScore(newRegion, edge, firstTile, tilesSurrounded);
-	ASSERT(actualScore == expectedScore);
+	unsigned int edge = 4; // uncompleted city on right side of tile
+	unsigned int tilesSurrounded = BoardManager::isSurrounded(currentTileId);
 
-	edge = 4; // test right side of tile
-	expectedScore = 1; // uncompleted city on one tile
-	actualScore = GameRules::getCurrentScore(newRegion, edge, firstTile, tilesSurrounded);
-	ASSERT(actualScore == expectedScore);
+	unsigned int actualScore = Rules::getCurrentScore(currentSet, edge, currentTile, tilesSurrounded);
+	unsigned int expectedScore = 1; // uncompleted city on right side of tile
 
-	// create and place a second tile
-	const Tile *secondTile = tiles[4][0];
-	secondTile->setRotation(2);
-	Coord *position2 = new Coord(73, 72);
-	Move *secondMove = new Move(secondTile, position2);
-	Board::place(secondMove);
+	ASSERT_EQ(actualScore, expectedScore);
 
-	unsigned int tileID2 = secondTile->getID();
-	Tile** surroundingTiles = Board::getBorderingTiles(secondTile);
-	Regions::addConnection(secondTile, surroundingTiles);
-	tilesSurrounded = isSurrounded(tileID2);
+	currentTile = &(Tile::CreateTileJ(1, &startID, Buffalo));
+	currentTile->setRotation(2);
+	testingTilePlacement(&startID, 73, 72, currentTile, surroundingTiles);
+	currentTile->placeTile();
 
-	edge = 10; // test left side of new tile
-	expectedScore = 8; // 8 points for the completed city adjacent to 1 unique prey
-	actualScore = GameRules::getCurrentScore(newRegion, edge, secondTile, tilesSurrounded);
-	ASSERT(actualScore == expectedScore);
+	currentTileId = currentTile->getId();
+	currentSet = getRegions(currentTileId);
+	edge = 10; // test left side of tile
+	tilesSurrounded = BoardManager::isSurrounded(currentTileId);
 
-	edge = 1; // test top of the new tile
-	expectedScore = 2; // 1 for the uncompleted road segment + 1 for being adjacent to 1 unique prey animal
-	actualScore = GameRules::getCurrentScore(newRegion, edge, secondTile, tilesSurrounded);
-	ASSERT(actualScore == expectedScore);
+	actualScore = Rules::getCurrentScore(currentSet, edge, currentTile, tilesSurrounded);
+	expectedScore = 8; // 8 points for a completed city adjacent to 1 unique prey
+
+	ASSERT_EQ(actualScore, expectedScore);
 }

@@ -185,7 +185,7 @@ TEST(BoardManagerTests, getValidMoves)
 
     std::vector<Move> validMoves1 = BoardManager::getValidMoves(tile1);
 
-    EXPECT_EQ(validMoves1.size(), 6 * 11); 
+    EXPECT_EQ(validMoves1.size(), (unsigned int)(6 * 11)); 
     
     for(unsigned int i = 0; i < validMoves1.size(); i++)
     {
@@ -210,7 +210,7 @@ TEST(BoardManagerTests, getValidMoves)
 
     std::vector<Move> validMoves2 = BoardManager::getValidMoves(tile2);
 
-    EXPECT_EQ(validMoves2.size(), 132);
+    EXPECT_EQ(validMoves2.size(), (unsigned int)132);
 /*
     for(unsigned int i = 0; i < validMoves2.size(); i++)
     {
@@ -225,7 +225,7 @@ TEST(BoardManagerTests, getValidMoves)
 
     std::vector<Move> validMoves3 = BoardManager::getValidMoves(tile3);
 
-    EXPECT_EQ(validMoves3.size(), 88);
+    EXPECT_EQ(validMoves3.size(), (unsigned int)88);
 /*
     for(unsigned int i = 0; i < validMoves3.size(); i++)
     {
