@@ -20,7 +20,7 @@ TEST(RegionTests, addConnection) {
     Tile *currentTile;
     Move *currentMove;
     Coord *currentCoord;
-    Tile **surroundingTiles; //Init'd to NULL
+    const Tile **surroundingTiles; //Init'd to NULL
 
 
 
@@ -241,7 +241,7 @@ TEST(RulesTest, ScoreCastle1) {
 	Coord *position2 = new Coord(77, 77);
 	Move *castleMove2(castleTile2, position2);
 	Board::place(castleMove2);
-	Tile** surroundingTiles = Board::getBorderingTiles(castleTile2);
+	const Tile** surroundingTiles = Board::getBorderingTiles(castleTile2);
 	Regions::addConnection(*castleTile2, surroundingTiles);
 
 	// How should actuallyScore change the return value?
@@ -267,7 +267,7 @@ TEST(RulesTest, ScoreCastle2) {
 	Coord *position2 = new Coord(75, 77);
 	Move *castleMove2 = new Move(castleTile2, position2);
 	Board::place(castleMove2);
-	Tile** surroundingTiles = Board::getBorderingTiles(castleTile2);
+	const Tile** surroundingTiles = Board::getBorderingTiles(castleTile2);
 	Regions::addConnection(*castleTile2, surroundingTiles);
 
 	// anotha one
@@ -321,7 +321,7 @@ TEST(RulesTest, scoreRoad)
     Tile *currentTile;
     Move *currentMove;
     Coord *currentCoord;
-    Tile **surroundingTiles;
+    const Tile **surroundingTiles;
 
     // test four 'v' tiles placed so that road is closed square. No prey so should be awarded 4 points.
     currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]);
@@ -369,7 +369,7 @@ TEST(RulesTest, scoreGrassAndRoad)
     Tile *currentTile;
     Move *currentMove;
     Coord *currentCoord;
-    Tile **surroundingTiles;
+    const Tile **surroundingTiles;
 
     //this creates a complete castle, so grass should be 5 pts
     currentTile = &(Tile::CreateTileZ(1, startID, PreyType::None)[0]);
@@ -413,7 +413,7 @@ TEST(RulesTest, scoreMoreGrass)
     Tile *currentTile;
     Move *currentMove;
     Coord *currentCoord;
-    Tile **surroundingTiles;
+    const Tile **surroundingTiles;
 
     currentTile = &(Tile::CreateTileB(1, startID, PreyType::None)[0]);
     currentTile->setRotation(0);
@@ -477,7 +477,7 @@ TEST(RulesTest, scoreMoreRoads)
     Tile *currentTile;
     Move *currentMove;
     Coord *currentCoord;
-    Tile **surroundingTiles;
+    const Tile **surroundingTiles;
 
     currentTile = &(Tile::CreateTileZ(1, startID, PreyType::Deer)[0]);
     currentTile->setRotation(3);
@@ -517,7 +517,7 @@ TEST (RulesTest, scoreMoreMoreRoads)
     Tile *currentTile;
     Move *currentMove;
     Coord *currentCoord;
-    Tile **surroundingTiles;
+    const Tile **surroundingTiles;
 
     currentTile = &(Tile::CreateTileA(1, startID, PreyType::None[0]));
     currentTile->setRotation(3);
@@ -558,7 +558,7 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
     Tile *currentTile;
     Move *currentMove;
     Coord *currentCoord;
-    Tile **surroundingTiles;
+    const Tile **surroundingTiles;
 
     currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0]);
     currentTile->setRotation(3);
@@ -632,7 +632,7 @@ TEST(RulesTest, getCurrentScore) {
 	Tile *currentTile;
 	Move *currentMove;
 	Coord *currentCoord;
-	Tile **surroundingTiles;
+	const Tile **surroundingTiles;
 
 	currentTile = &(Tile::CreateTileD(1, startID, PreyType::None)[0]);
 	currentTile->setRotation(0);
