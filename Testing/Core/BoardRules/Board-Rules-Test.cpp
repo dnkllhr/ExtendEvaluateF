@@ -10,8 +10,8 @@ void testingTilePlacement(unsigned int *startID, unsigned int coordX, unsigned i
     Coord *currentCoord = new Coord(coordX, coordY); //Center
     Move *currentMove = new Move(*currentTile, *currentCoord);
     Board::place(*currentMove);
-    surroundingTiles = Board::getBorderingTiles(currentTile);
-    Regions::addConnection(currentTile, surroundingTiles);
+    surroundingTiles = Board::getBorderingTiles(*currentTile);
+    Regions::addConnection(*currentTile, *surroundingTiles);
 }
 
 TEST(RegionTests, addConnection) {
@@ -33,8 +33,8 @@ TEST(RegionTests, addConnection) {
          ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
-     ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 1)) == 2); //Make sure the road has two sides open.
-     ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)) == 1); //Make sure the castle has one side open.
+     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 1)), 2); //Make sure the road has two sides open.
+     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)), 1); //Make sure the castle has one side open.
 
     currentTile = &(Tile::CreateTileW(1, startID, PreyType::None)[0]); //No prey, starting tile
     testingTilePlacement(&startID, 72, 73, currentTile, surroundingTiles);
@@ -45,9 +45,9 @@ TEST(RegionTests, addConnection) {
          ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
-     ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 1)) == 1); //Make sure the top road has one side open.
-     ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)) == 1); //Make sure the right road has one side open.
-     ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)) == 1); //Make sure the left road has one side open.
+     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 1)), 1); //Make sure the top road has one side open.
+     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)), 1); //Make sure the right road has one side open.
+     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)), 1); //Make sure the left road has one side open.
 
     currentTile = &(Tile::CreateTileT(1, startID, PreyType::None)[0]); //No prey, starting tile
     testingTilePlacement(&startID, 72, 71, currentTile, surroundingTiles);
@@ -58,8 +58,8 @@ TEST(RegionTests, addConnection) {
          ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
-     ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 7)) == 0); //Make sure the road has zero sides open.
-     ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 1)) == 3); //Make sure the castle has three sides open.
+    ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 7)), 0); //Make sure the road has zero sides open.
+    ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 1)), 3); //Make sure the castle has three sides open.
 
     currentTile = &(Tile::CreateTileH(1, startID, PreyType::None)[0]); //No prey, starting tile
     testingTilePlacement(&startID, 73, 72, currentTile, surroundingTiles);
@@ -71,8 +71,8 @@ TEST(RegionTests, addConnection) {
 
     }
 
-     ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)) == 2); //Make sure the right castle has one side open.
-     ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)) == 1); //Make sure the left castle has zero sides open.
+     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)),2); //Make sure the right castle has one side open.
+     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)),1); //Make sure the left castle has zero sides open.
 
     currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]); //No prey, starting tile
     testingTilePlacement(&startID, 73, 73, currentTile, surroundingTiles);
@@ -94,8 +94,8 @@ TEST(RegionTests, addConnection) {
          ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
-     ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)) == 0); //Make sure the road has one side open.
-     ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 12)) == 5); //Make sure the church has fives sides open.
+     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)),0); //Make sure the road has one side open.
+     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 12)),5); //Make sure the church has fives sides open.
 
     currentTile = &(Tile::CreateTileB(1, startID, PreyType::None)[0]); //No prey, starting tile
     testingTilePlacement(&startID, 71, 72, currentTile, surroundingTiles);
@@ -106,7 +106,7 @@ TEST(RegionTests, addConnection) {
          ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
-     ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 12)) == 3); //Make sure the church has three sides open.
+     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 12)),3); //Make sure the church has three sides open.
 
     currentTile = &(Tile::CreateTileE(1, startID, PreyType::None)[0]); //No prey, starting tile
     testingTilePlacement(&startID, 71, 71, currentTile, surroundingTiles);
@@ -117,7 +117,7 @@ TEST(RegionTests, addConnection) {
         ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
-     ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)) == 3); //Make sure the castle has three sides open.
+     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)),3); //Make sure the castle has three sides open.
 
     currentTile = &(Tile::CreateTileN(1, startID, PreyType::None)[0]); //No prey, starting tile
     testingTilePlacement(&startID, 73, 71, currentTile, surroundingTiles);
@@ -129,7 +129,7 @@ TEST(RegionTests, addConnection) {
 
     }
 
-     ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)) == 3); //Make sure the castle has three sides open.
+    ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)),3); //Make sure the castle has three sides open.
 }
 
 TEST(RulesTest, ScoreChurch) {
@@ -211,9 +211,9 @@ TEST(RulesTest, ScoreCastle1) {
 	unsigned int currentTileID = currentTile->getId();
 	std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
-	unsigned int actualScore = GameRules::scoreCastle(currentSet, true, false);
+	unsigned int actualScore = GameRules::scoreCastle(*currentSet, true, false);
 	ASSERT_EQ(actualScore,0);
-	actualScore = GameRules::scoreCastle(currentSet, false, false);
+	actualScore = GameRules::scoreCastle(*currentSet, false, false);
 	ASSERT_EQ(actualScore,2);
 
 	// add another tile to extend the lake region
@@ -225,9 +225,9 @@ TEST(RulesTest, ScoreCastle1) {
 	currentTileID = currentTile->getId();
 	currentSet = Regions::getRegions(currentTileID);
 
-	actualScore = GameRules::scoreCastle(currentSet, true, false);
+	actualScore = GameRules::scoreCastle(*currentSet, true, false);
 	ASSERT_EQ(actualScore,12);
-	actualScore = GameRules::scoreCastle(currentSet, false, false);
+	actualScore = GameRules::scoreCastle(*currentSet, false, false);
 	ASSERT_EQ(actualScore,12);
 
 }
@@ -267,9 +267,9 @@ TEST(RulesTest, ScoreCastle2) {
 	unsigned int currentTileID = currentTile->getId();
 	std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
-	unsigned int actualScore = GameRules::scoreCastle(currentSet, true);
+	unsigned int actualScore = GameRules::scoreCastle(*currentSet, true, false);
 	ASSERT_EQ(actualScore,0);
-	actualScore = GameRules::scoreCastle(currentSet, false, false);
+	actualScore = GameRules::scoreCastle(*currentSet, false, false);
 	ASSERT_EQ(actualScore,10);
 	
 	currentTile = &(Tile::CreateTileN(1, startID, PreyType::None)[0]);
@@ -280,9 +280,9 @@ TEST(RulesTest, ScoreCastle2) {
 	currentTileID = currentTile->getId();
 	currentSet = Regions::getRegions(currentTileID);
 
-	actualScore = GameRules::scoreCastle(currentSet, true, false);
+	actualScore = GameRules::scoreCastle(*currentSet, true, false);
 	ASSERT_EQ(actualScore,24);
-	actualScore = GameRules::scoreCastle(currentSet, false, false);
+	actualScore = GameRules::scoreCastle(*currentSet, false, false);
 	ASSERT_EQ(actualScore,24);
 }
 

@@ -31,7 +31,9 @@ class GameRules
         static unsigned int getCurrentScore(std::shared_ptr<struct regionSet> * currentRegions, unsigned int edge, const Tile * tile, unsigned int tilesSurrounded);
         static unsigned int scoreEdge(unsigned int tileID, unsigned int edge, bool endOfGame = false);
         static unsigned int getPlayerScore(unsigned int player);
+#ifndef __testing
     private:
+#endif
         static unsigned int scoreRoad(std::shared_ptr<struct regionSet> currentSet, bool actuallyScore);
         static unsigned int scoreCastle(std::shared_ptr<struct regionSet> currentSet, bool actuallyScore, bool endOfGame = false);
         static unsigned int scoreGrass(std::shared_ptr<struct regionSet> * currentSets, unsigned int tileID, unsigned int edge, const Tile * passedTile = NULL);
