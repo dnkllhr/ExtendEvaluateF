@@ -179,7 +179,7 @@ TEST(BoardManagerTests, getValidMoves)
 
     Tile& tile1 = tiles[9][0];//Tile::CreateTileJ(1, tileIdCounter, PreyType::None)[0];
     Coord coord1 = Coord(76, 75);
-    const Move& move1 = Move(tile1, coord1, 2);
+    const Move& move1 = Move(tile1, coord1, 2, (unsigned int) 1); // rotation = 2, meeple at edge 1
 
     std::vector<Move> validMoves1 = BoardManager::getValidMoves(tile1, 1);
 
@@ -274,12 +274,12 @@ TEST(BoardManagerTests, getValidMoves)
     }
 
     EXPECT_FALSE(tile1.isPlaced());
-    BoardManager::makeMove(move1, 2);
+    BoardManager::makeMove(move1, 1);
     EXPECT_TRUE(tile1.isPlaced());
 
     Tile& tile2 = tiles[22][0]; // V
     Coord coord2 = Coord(77, 75);
-    Move move2 = Move(tile2, coord2);
+    Move move2 = Move(tile2, coord2, 0, true); // rotation = 0, croc
 
     std::vector<Move> validMoves2 = BoardManager::getValidMoves(tile2, 2);
 
@@ -308,15 +308,17 @@ TEST(BoardManagerTests, getValidMoves)
         //EXPECT_EQ(actualValidMove, expectedValidMoves1[i]);
     }*/
 
-    BoardManager::makeMove(move2, 1);
+    BoardManager::makeMove(move2, 2);
 
     Tile& tile3 = tiles[11][0]; // K
     Coord coord3 = Coord(77, 76);
-    Move move3 = Move(tile3, coord3, 2);
+    Move move3 = Move(tile3, coord3, 2, (unsigned int) 10); // rotation = 2, meeple at edge 0
 
     std::vector<Move> validMoves3 = BoardManager::getValidMoves(tile3, 1);
 
     EXPECT_EQ(validMoves3.size(), (unsigned int)88);
+
+    BoardManager::makeMove(move3, 1);
 
     /*for(unsigned int i = 0; i < validMoves3.size(); i++)
     {

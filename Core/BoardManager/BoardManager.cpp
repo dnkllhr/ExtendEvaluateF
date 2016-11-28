@@ -138,7 +138,7 @@ std::vector<Move> BoardManager::getValidMoves(const Tile& tile, unsigned int pla
 
                     if(GameRules::validMeeplePlacement(location, edgeIndex))
                     {
-                        validMoves.push_back(Move(tileCopy, Coord(location), rotation, edgeIndex));
+                        validMoves.push_back(Move(tileCopy, Coord(location), rotation, (unsigned int) edgeIndex));
                     }
                 }
 
