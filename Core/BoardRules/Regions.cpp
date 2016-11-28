@@ -69,7 +69,6 @@ void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, u
     }
 }
 
-#include <iostream>
 std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, const Tile ** allBoarderingTiles, std::unordered_map<unsigned int, std::shared_ptr<struct regionSet> *> * trackerToUse) {
     unsigned int numOfSides = newTile.getNumberOfSides();
     unsigned int countPerSide = newTile.getCountPerSide();
@@ -262,7 +261,7 @@ int Regions::removeMeeple(unsigned int tileID, unsigned int edge)
 
 int Regions::specialRemoveMeeple(unsigned int playerNumber, unsigned int tileID)
 {
-     for(i = (playerNumber -  1)*(MEEPLES_PER_PLAYER); i < ((playerNumber - 1)*(MEEPLES_PER_PLAYER) + (MEEPLES_PER_PLAYER)); i++)
+    for(unsigned int i = (playerNumber -  1)*(MEEPLES_PER_PLAYER); i < ((playerNumber - 1)*(MEEPLES_PER_PLAYER) + (MEEPLES_PER_PLAYER)); i++)
     {
         if((ownerMeeples[i].inUse) && (ownerMeeples[i].tileID == tileID))    // Meeple on tileID
         {

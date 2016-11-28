@@ -112,13 +112,16 @@ Tile& BoardManager::getTopTileStack()
     return tileStack->front();
 }
 
+#include <iostream>
 std::vector<Move> BoardManager::getValidMoves(const Tile& tile)
 {
     std::vector<Move> validMoves;
     std::unordered_set<unsigned int> availableLocations = Board::getAvailableLocations();
+    unsigned int daveTigerOrder[9] = { 0, 1, 2, 10, 12, 4, 8, 7, 5 };
 
     for(const int gridId : availableLocations)
     {
+        std::cout << gridId << std::endl;
         const Coord location = Board::getCoordinatesFromGridId(gridId);
         const Tile ** borderingTiles = Board::getBorderingTiles(location);
         Tile tileCopy = tile;
@@ -127,14 +130,14 @@ std::vector<Move> BoardManager::getValidMoves(const Tile& tile)
         {
             tileCopy.setRotation(rotation);
 
-            unsigned int numberOfEdges = NUM_TILE_SIDES * NUM_TILE_EDGES_PER_SIDE;
-
             if(GameRules::validTilePlacement(tileCopy, borderingTiles))
             {
                 validMoves.push_back(Move(tileCopy, Coord(location), rotation)); // no meeple or croc
 
-                for(unsigned int edgeIndex = 0; edgeIndex < numberOfEdges; edgeIndex++)
+                for(unsigned int daveTigerIndex = 0; daveTigerIndex < 9; daveTigerIndex++)
                 {
+                    unsigned int edgeIndex = daveTigerOrder[daveTigerIndex];
+
                     if(GameRules::validMeeplePlacement(location, edgeIndex))
                     {
                         validMoves.push_back(Move(tileCopy, Coord(location), rotation, edgeIndex));

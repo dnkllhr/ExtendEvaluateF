@@ -52,32 +52,79 @@ void TurnCoordinator::setUpAI()
     TurnCoordinator::AISetup = true;
 }
 
+int TurnCoordinator::convertEdgeToZone(int edge)
+{
+    switch (edge)
+    {
+        case 0:
+            return 1;
+            break;
+        case 1:
+            return 2;
+            break;
+        case 2:
+        case 3:
+            return 3;
+            break;
+        case 4:
+            return 6;
+            break;
+        case 5:
+        case 6:
+            return 9;
+            break;
+        case 7:
+            return 8;
+            break;
+        case 8:
+        case 9:
+            return 7;
+            break;
+        case 10:
+            return 4;
+            break;
+        case 11:
+            return 1;
+            break;
+        case 12:
+            return 5;
+            break;
+        default:
+            throw std::logic_error("Invalid edge input for convertEdgeToZone");
+            return 0;
+            break;
+    }
+}
 
-gameMessage& TurnCoordinator::buildResponse(Move& move)
+
+gameMessage TurnCoordinator::buildResponse(Move& move)
 {
     gameMessage *gMsg = new gameMessage;
-    //gMsg->messageType = 1;
-    //memcpy(gMsg->data.move.tile, (move.getTile().getTileName()).c_str());
+    gMsg->messageType = 1;
+    strcpy(gMsg->data.move.tile, (move.getTile().getTileName()).c_str());
+
+    gMsg->data.move.p1 = TurnCoordinator::ourPlayerNumber;
+
+    gMsg->data.move.x = move.getCoord().getX();
+    gMsg->data.move.y = move.getCoord().getY();
+    gMsg->data.move.orientation = move.getTile().getRotation();
+    
+    if(move.getHasCrocodile())
+    {
+        gMsg->data.move.meepleType = 2; //Croc Type
+    }
+    else if(move.getMeepleLocation() != -1)
+    {
+        gMsg->data.move.meepleType = 1; //Meeple Type
+        gMsg->data.move.zone = TurnCoordinator::convertEdgeToZone(move.getMeepleLocation());
+    }
+    else
+    {
+        gMsg->data.move.meepleType = 0; //None type
+    }
+
 
     return *gMsg;
-
-/*
-    unsigned int p1;            //Player flag
-    char tile[6];       //Tile Identifier
-    bool placeable;     //Can you use tile?
-    unsigned int x;              //X coordinate
-    unsigned int y;              //Y coordinate
-    unsigned int orientation;    //Orientation using network protocol offsets
-    int meepleType;     //0: NONE    1: TIGER    2: CROC
-    int zone;           //Zone for meeple if TIGER
-    std::string gid;    //Game ID
-
-        Tile& getTile() const;
-        const Coord& getCoord() const;
-        unsigned int getRotation() const;
-        int getMeepleLocation() const;
-        bool getHasCrocodile() const;
-        */
 }
 
 
@@ -106,9 +153,11 @@ void TurnCoordinator::callAI()
 
 Move& TurnCoordinator::convertInMove(gameMessage *msg)
 {
-    if(!(msg->data.move.placeable))
+    Move *mv;
+    if(!(msg->data.move.placeable) && !(msg->data.move.pass))
     {
-        BoardManager::cannotPlaceTile();
+        mv = new Move((Tile&)BoardManager::getTopTileStack(), msg->data.move.pickupMeeple);
+        return (*mv);
     }
     unsigned int zone;
     switch (msg->data.move.zone)
@@ -148,7 +197,6 @@ Move& TurnCoordinator::convertInMove(gameMessage *msg)
     {
         throw std::logic_error("Top of the tile stack and current tile move do not match");
     }
-    Move *mv;
     switch(msg->data.move.meepleType)
     {
         case 0:
@@ -181,7 +229,24 @@ void TurnCoordinator::handleMessage(gameMessage *msg)
         case 1:
             if(msg->data.move.p1 != TurnCoordinator::ourPlayerNumber)
             {
-                BoardManager::makeMove(TurnCoordinator::convertInMove(msg), TurnCoordinator::otherPlayerNumber);
+                Move *mv = &(TurnCoordinator::convertInMove(msg));
+                if(!(msg->data.move.placeable) && !(msg->data.move.pass))
+                {
+                    BoardManager::cannotPlaceTile(*mv, TurnCoordinator::otherPlayerNumber);
+                }
+                else if(!(msg->data.move.pass))
+                {
+                    BoardManager::makeMove(*mv, TurnCoordinator::otherPlayerNumber);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else if(msg->data.move.p1 == 3)
+            {
+                Move *mv = &(TurnCoordinator::convertInMove(msg));
+                BoardManager::makeMove(*mv, TurnCoordinator::otherPlayerNumber);
             }
             else
             {
