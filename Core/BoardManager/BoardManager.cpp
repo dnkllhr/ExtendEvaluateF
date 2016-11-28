@@ -138,7 +138,7 @@ std::vector<Move> BoardManager::getValidMoves(const Tile& tile, unsigned int pla
 
                     if(GameRules::validMeeplePlacement(location, edgeIndex))
                     {
-                        validMoves.push_back(Move(tileCopy, Coord(location), rotation, edgeIndex));
+                        validMoves.push_back(Move(tileCopy, Coord(location), rotation, (unsigned int) edgeIndex));
                     }
                 }
 
@@ -231,9 +231,9 @@ unsigned int BoardManager::isSurrounded(int tileID)
 }
 
 //Entry points for AI
-struct moveResult BoardManager::tryMove(const Tile& tile)
+struct moveResult BoardManager::tryMove(const Tile& tile, int meepleEdge, bool specialMeeple)
 {
-    return Regions::tryMove(tile, Board::getBorderingTiles(tile));
+    return Regions::tryMove(tile, Board::getBorderingTiles(tile), meepleEdge, specialMeeple);
 }
 
 

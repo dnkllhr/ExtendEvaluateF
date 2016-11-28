@@ -181,8 +181,10 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
     return newRegions;
 }
 
-int Regions::addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned int edge)
+int Regions::addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned int edge, std::unordered_map<unsigned int, std::shared_ptr<struct regionSet> *> * tracker)
 {
+    if (tracker == NULL) tracker = &regionTracker;
+
     unsigned int i;
     bool valid = false;
     for(i = (playerNumber -  1)*(MEEPLES_PER_PLAYER); i < ((playerNumber - 1)*(MEEPLES_PER_PLAYER) + (MEEPLES_PER_PLAYER)); i++)
@@ -201,7 +203,7 @@ int Regions::addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned 
     {
         ownerMeeples[i].tileID = tileID;
         ownerMeeples[i].inUse = true;
-        ownerMeeples[i].ownedRegion = regionTracker.find(tileID)->second[edge];
+        ownerMeeples[i].ownedRegion = tracker->find(tileID)->second[edge];
         Regions::availableMeeples[playerNumber - 1]--;
         return 0;
     }
@@ -242,9 +244,11 @@ int Regions::addMeepleSpecial(unsigned int playerNumber, unsigned int tileID)
     return -1;  //Nooo existing meeple on tile
 }
 
-int Regions::removeMeeple(unsigned int tileID, unsigned int edge)
+int Regions::removeMeeple(unsigned int tileID, unsigned int edge, std::unordered_map<unsigned int, std::shared_ptr<struct regionSet> *> * tracker)
 {
-    std::shared_ptr<struct regionSet> wantedRegion = regionTracker.find(tileID)->second[edge];
+    if (tracker == NULL) tracker = &regionTracker;
+
+    std::shared_ptr<struct regionSet> wantedRegion = tracker->find(tileID)->second[edge];
     for(int i = 0; i < TOTAL_MEEPLES; i++)
     {
         if(ownerMeeples[i].inUse && (ownerMeeples[i].ownedRegion == wantedRegion))
@@ -339,7 +343,7 @@ unsigned int Regions::getMeepleTileId(unsigned int meepleIndex)
 }
 
 // This expects all 12 boardering tiles
-struct moveResult Regions::tryMove(const Tile& tile, const Tile ** boarderingTiles) {
+struct moveResult Regions::tryMove(const Tile& tile, const Tile ** boarderingTiles, int meepleEdge, bool specialMeeple) {
     // create a new unordered_map to hold our potential move so that we don't actually make the changes to our game
     std::unordered_map<unsigned int, std::shared_ptr<struct regionSet> *> myTracker;
     // iterate through the current regions and copy them to our new one
@@ -348,6 +352,9 @@ struct moveResult Regions::tryMove(const Tile& tile, const Tile ** boarderingTil
 
     // add a connection using our test unordered_map so that changes aren't made to the actual game
     std::shared_ptr<struct regionSet> * testRegions = addConnection(tile, boarderingTiles, &myTracker);
+    int meepleOwner = checkOwner(tile.getId(), meepleEdge, &myTracker);
+    if (!specialMeeple && meepleEdge >= 0 && meepleEdge < 13) addMeeple(meepleOwner == OWNER_P1 ? 1 : 2, tile.getId(), meepleEdge, &myTracker);
+    else if (specialMeeple) addMeepleSpecial(meepleOwner == OWNER_P1 ? 1 : 2, tile.getId());
 
     // get some basic tile info
     unsigned int numSides = tile.getNumberOfSides();
@@ -393,14 +400,15 @@ struct moveResult Regions::tryMove(const Tile& tile, const Tile ** boarderingTil
         }
     }
 
+    if (!specialMeeple && meepleEdge >= 0 && meepleEdge < 13) removeMeeple(tile.getId(), meepleEdge, &myTracker);
+    else if (specialMeeple) specialRemoveMeeple(meepleOwner == OWNER_P1 ? 1 : 2, tile.getId());
+
     // iterate through all of the unordered_map's elements deleting the regionSet arrays
     for (auto iter = myTracker.begin(); iter != myTracker.end(); iter++)
         delete[] iter->second;
 
     return result;
 }
-
-
 
 unsigned int Regions::meeplesAvailable(unsigned int playerNumber)
 {
