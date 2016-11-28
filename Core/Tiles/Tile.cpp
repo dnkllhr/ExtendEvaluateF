@@ -74,7 +74,8 @@ TerrainType Tile::getCenter() const {
 }
 
 TerrainType Tile::getTerrainType(unsigned int edge) const {
-    return this->edges[edge];
+    unsigned int offsetIn = (edge + this->rotation) % (this->numberSides * this->countPerSide);
+    return this->edges[offsetIn];
 }
 
 std::string Tile::getTileName() const {
