@@ -1,5 +1,14 @@
 #include "TurnCoordinator.h"
 
+
+unsigned int TurnCoordinator::ourPlayerNumber = 0;
+unsigned int TurnCoordinator::otherPlayerNumber = 0;
+bool TurnCoordinator::AISetup = false;
+int TurnCoordinator::mySocket = 0;
+int TurnCoordinator::clientSocket = 0;
+struct sockaddr_in *TurnCoordinator::myAddr = NULL;
+struct sockaddr_in *TurnCoordinator::clientAddr = NULL;
+
 //Main functionality is to receive messages from the external game client and tell the AI when to take a turn.
 //It will also call the BoardManager to update opponent moves.
 
@@ -9,6 +18,7 @@ TurnCoordinator::TurnCoordinator(int port)
     TurnCoordinator::ourPlayerNumber = 0;
     TurnCoordinator::otherPlayerNumber = 0;
     TurnCoordinator::myAddr = new struct sockaddr_in;
+    TurnCoordinator::clientAddr = new struct sockaddr_in;
     setupSocket(port);
 }
 
@@ -154,12 +164,14 @@ void TurnCoordinator::callAI()
 Move& TurnCoordinator::convertInMove(gameMessage *msg)
 {
     Move *mv;
+    //printf("Who's\n");
     if(!(msg->data.move.placeable) && !(msg->data.move.pass))
     {
         mv = new Move((Tile&)BoardManager::getTopTileStack(), msg->data.move.pickupMeeple);
         return (*mv);
     }
     unsigned int zone;
+    //printf("That\n");
     switch (msg->data.move.zone)
     {
         case 1:
@@ -193,10 +205,13 @@ Move& TurnCoordinator::convertInMove(gameMessage *msg)
             throw std::logic_error("Zone not recognized");
             break;
     }
-    if(!strcmp((BoardManager::getTopTileStack()).getTileName().c_str(), msg->data.move.tile))
+    //printf("Girl\n");
+    //std::cout << "TopTile : " << BoardManager::getTopTileStack().getTileName() << "MsgTile : " << msg->data.move.tile << std::endl;
+    if(!BoardManager::getTopTileStack().getTileName().compare(msg->data.move.tile))
     {
         throw std::logic_error("Top of the tile stack and current tile move do not match");
     }
+    //printf("It's\n");
     switch(msg->data.move.meepleType)
     {
         case 0:
@@ -215,6 +230,7 @@ Move& TurnCoordinator::convertInMove(gameMessage *msg)
             throw std::logic_error("Unrecognized meeple type");
             break;
     }
+    //printf("Jess\n");
     return (*mv);
 }
 

@@ -1,5 +1,10 @@
 #include "AI.h"
 
+
+FuzzyLogic AI::fz;
+AIMove AI::move;
+unsigned int AI::myPlayerNumber;
+
 Move& AI::chooseTurn(const Tile& currentTile)
 {
     std::vector<Move> moveList = BoardManager::getValidMoves((Tile&)currentTile);
