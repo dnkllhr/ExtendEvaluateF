@@ -162,13 +162,21 @@ void matchProtocol(int sockfd) {
 
     bzero(buffer,256);
     read(sockfd,buffer,255);  //Server: STARTING TILE IS <tile> AT <x> <y> <orientation>
-    sscanf(buffer,"STARTING TILE IS %d AT %d %d %d", &tile,&x, &y, &orientation);
+    sscanf(buffer,"STARTING TILE IS %d AT %d %d %d", &tile, &x, &y, &orientation);
     printf("%s\n",buffer);
 
     bzero(buffer,256);
     read(sockfd,buffer,255);  //Server: THE REMAINING <number_tiles> TILES ARE [ <tiles> ]
     sscanf(buffer,"THE REMAINING %d TILES ARE [ <tiles> ]", &number_tiles);   //need to decide how to handle tile queue
     printf("%s\n",buffer);
+
+    std::istringstream brett (buffer);
+    std::vector<std::string> strings;
+    std::string s;
+    while(getline(brett, s, ' '))
+      strings.push_back(s);
+
+
 
     bzero(buffer,256);
     read(sockfd,buffer,255);  //Server: MATCH BEGINS IN <timeplan> SECONDS
@@ -177,7 +185,7 @@ void matchProtocol(int sockfd) {
 
     //Pre Match AI Grind
 
-    for(int i = 0; i < number_tiles; i++)
+    for(int i = 1; i <= number_tiles; i++)
     moveProtocol(sockfd);
 
     bzero(buffer,256);
@@ -199,9 +207,21 @@ void moveProtocol(int sockfd)
 
     bzero(buffer,256);
     read(sockfd,buffer,255);  //Server: MAKE YOUR MOVE IN GAME <gid> WITHIN <timemove> SECOND: MOVE <#> PLACE <tile>
-    sscanf(buffer,"MAKE YOUR MOVE IN GAME %d WITHIN %d %[SECOND]: MOVE %d PLACE %s", &gid, &timeMove, __null, &moveNum, (char *)tile);
-    printf("%s\n",buffer);
+    std::istringstream iss1 (buffer);
+    std::vector<std::string> moveMsgStrings;
+    std::string tempString;
+    while(getline(iss1, tempString, ' ')){
+      moveMsgStrings.push_back(tempString);
+    }
+    //std::cout<<moveMsgStrings[5]<<"\t"<<moveMsgStrings[7]<<"\t"<<moveMsgStrings[10];
+    //gid = moveMsgStrings[5];
+    timeMove = stoi(moveMsgStrings[7]);
+    moveNum = stoi(moveMsgStrings[10]);
+    tile = moveMsgStrings[12].c_str();
+    std::cout << moveMsgStrings[12]<<std::endl;
 
+//    sscanf(buffer,"MAKE YOUR MOVE IN GAME %d WITHIN %d %[SECOND]: MOVE %d PLACE %s", &gid, &timeMove, __null, &moveNum, (char *)tile);
+    printf("%s\n",buffer);
     /*Decide Move with given Tile and Time
 
     >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
@@ -218,7 +238,7 @@ void moveProtocol(int sockfd)
     if(!r.placeable) // missing retrieve and add tiger for nonplacable tiger
     {
       bzero(buffer,256);
-      sprintf(buffer,"GAME %d TILE %s UNPLACEABLE PASS", gid, tile);
+      sprintf(buffer,"GAME %d MOVE %d TILE %s UNPLACEABLE PASS", gid, moveNum, tile);
       printf("%s\n",buffer);
       write(sockfd,buffer,strlen(buffer));  //Client: "GAME %d TILE %s UNPLACEABLE PASS"
     }
@@ -228,19 +248,19 @@ void moveProtocol(int sockfd)
       {
         case 0: //NONE
           bzero(buffer,256);
-          sprintf(buffer,"GAME %d PLACE %s AT %d %d %d NONE", gid, tile, r.x, r.y, r.orientation);
+          sprintf(buffer,"GAME %d MOVE %d PLACE %s AT %d %d %d NONE", gid, moveNum, tile, r.x, r.y, r.orientation);
           printf("%s\n",buffer);
           write(sockfd,buffer,strlen(buffer));  //Client: GAME <gid> PLACE <tile> AT <x> <y> <orientation> NONE
           break;
         case 1: //TIGER
           bzero(buffer,256);
-          sprintf(buffer,"GAME %d PLACE %s AT %d %d %d TIGER %d", gid, tile, r.x, r.y, r.orientation, r.zone);
+          sprintf(buffer,"GAME %d MOVE %d PLACE %s AT %d %d %d TIGER %d", gid, moveNum, tile, r.x, r.y, r.orientation, r.zone);
           printf("%s\n",buffer);
           write(sockfd,buffer,strlen(buffer));  //Client: GAME <gid> PLACE <tile> AT <x> <y> <orientation> TIGER <zone>
           break;
         case 2://CROC
           bzero(buffer,256);
-          sprintf(buffer,"GAME %d PLACE %s AT %d %d %d CROCODILE", gid, tile, r.x, r.y, r.orientation);
+          sprintf(buffer,"GAME %d MOVE %d PLACE %s AT %d %d %d CROCODILE", gid, moveNum, tile, r.x, r.y, r.orientation);
           printf("%s\n",buffer);
           write(sockfd,buffer,strlen(buffer));  //Client: GAME <gid> PLACE <tile> AT <x> <y> <orientation> CROCODILE
           break;

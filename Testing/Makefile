@@ -1,7 +1,7 @@
 CC=g++
 CPPFLAGS=-isystem gtest/include
 CFLAGS=-g -Wall -Wextra -pthread -lpthread
-DEPS=Compiled/Tile-Test.o ../Compiled/Tile.o ../Compiled/TileStack.o ../Compiled/Board.o Compiled/Board-Test.o ../Compiled/BoardManager.o ../Compiled/Move.o ../Compiled/Coord.o ../Compiled/Rules.o ../Compiled/Regions.o Compiled/Fuzzy-Test.o ../Compiled/FuzzyLogic.o Compiled/BoardManager-Test.o
+DEPS=Compiled/Tile-Test.o ../Compiled/Tile.o ../Compiled/TileStack.o ../Compiled/Board.o Compiled/Board-Test.o ../Compiled/BoardManager.o ../Compiled/Move.o ../Compiled/Coord.o ../Compiled/Rules.o ../Compiled/Regions.o Compiled/Fuzzy-Test.o ../Compiled/FuzzyLogic.o Compiled/BoardManager-Test.o Compiled/Board-Rules-Test.o
 UNAME_S := $(shell uname -s)
 GCCVERSION = $(shell gcc --version | grep ^gcc | sed 's/^.* //g')
 

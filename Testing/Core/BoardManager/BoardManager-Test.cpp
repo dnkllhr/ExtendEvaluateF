@@ -169,7 +169,7 @@ TEST(BoardManagerTests, getValidMoves)
 {
     BoardManager::gameInit();
 
-    unsigned int tileIdCounter = 0;
+    unsigned int tileIdCounter = 100;
 
     Tile tile1 = Tile::CreateTileJ(1, tileIdCounter, PreyType::None)[0];
     Coord coord1 = Coord(76, 75);
@@ -185,23 +185,33 @@ TEST(BoardManagerTests, getValidMoves)
 
     std::vector<Move> validMoves1 = BoardManager::getValidMoves(tile1);
 
-    EXPECT_EQ(validMoves1.size(), 40); /*
-
+    EXPECT_EQ(validMoves1.size(), 6 * 11); 
+    
     for(unsigned int i = 0; i < validMoves1.size(); i++)
     {
         Move move = validMoves1[i];
+        std::cout << "PLACE TILE (id) " << (tile1.getId()) << " AT " << move.getCoord() << " ROTATION " << move.getRotation() * 90;
+        if(move.getMeepleLocation() >= 0)
+        {
+           std::cout << " MEEPLE (edge) " << move.getMeepleLocation();
+        }
+        if(move.getHasCrocodile())
+        {
+            std::cout << " CROCODILE";
+        }
+        std::cout << std::endl;/*
         EXPECT_EQ(&move.getTile(), &tile1);
         EXPECT_EQ(move.getCoord().getX(), -1);
         EXPECT_EQ(move.getCoord().getY(), -1);
         EXPECT_EQ(move.getRotation(), -1);
         EXPECT_EQ(move.getMeepleLocation(), -1);
-        EXPECT_EQ(move.getHasCrocodile(), false);
+        EXPECT_EQ(move.getHasCrocodile(), false);*/
     }
 
     std::vector<Move> validMoves2 = BoardManager::getValidMoves(tile2);
 
-    EXPECT_EQ(validMoves2.size(), -1);
-
+    EXPECT_EQ(validMoves2.size(), 132);
+/*
     for(unsigned int i = 0; i < validMoves2.size(); i++)
     {
         Move move = validMoves2[i];
@@ -211,12 +221,12 @@ TEST(BoardManagerTests, getValidMoves)
         EXPECT_EQ(move.getRotation(), -1);
         EXPECT_EQ(move.getMeepleLocation(), -1);
         EXPECT_EQ(move.getHasCrocodile(), false);
-    }
+    }*/
 
     std::vector<Move> validMoves3 = BoardManager::getValidMoves(tile3);
 
-    EXPECT_EQ(validMoves3.size(), -1);
-
+    EXPECT_EQ(validMoves3.size(), 88);
+/*
     for(unsigned int i = 0; i < validMoves3.size(); i++)
     {
         // have arrays
@@ -227,9 +237,9 @@ TEST(BoardManagerTests, getValidMoves)
         EXPECT_EQ(move.getRotation(), -1);
         EXPECT_EQ(move.getMeepleLocation(), -1);
         EXPECT_EQ(move.getHasCrocodile(), false);
-    }
+    }*/
 
-    throw std::logic_error("Test incomplete, see comments");*/
+    //throw std::logic_error("Test incomplete, see comments");
 }
 
 // Should this also test the calls of Regions::addConection,addMeeple,addCroc, as applicable?
