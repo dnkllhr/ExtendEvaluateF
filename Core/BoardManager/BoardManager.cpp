@@ -122,13 +122,10 @@ std::vector<Move> BoardManager::getValidMoves(const Tile& tile)
         const Coord location = Board::getCoordinatesFromGridId(gridId);
         const Tile ** borderingTiles = Board::getBorderingTiles(location);
         Tile tileCopy = tile;
-        // ^^ was orginally going to use a copy of the Tile to rotate intermediately, but the copy constructor exceptioned on copying the Tile Name
 
         for(unsigned int rotation = 0; rotation < (unsigned int) NUM_TILE_SIDES; rotation++)
         {
-////////////// FLOATING POINT EXCEPTION vvvvv
             tileCopy.setRotation(rotation);
-////////////// FLOATING POINT EXCEPTION ^^^^^
 
             unsigned int numberOfEdges = NUM_TILE_SIDES * NUM_TILE_EDGES_PER_SIDE;
 
@@ -143,9 +140,8 @@ std::vector<Move> BoardManager::getValidMoves(const Tile& tile)
                         validMoves.push_back(Move(tileCopy, Coord(location), rotation, edgeIndex));
                     }
                 }
-////////////////// SEG FAULT vvvvv
-                if(true)//GameRules::validCrocPlacement(tile, location))
-////////////////// SEG FAULT ^^^^^
+
+                if(GameRules::validCrocPlacement(tile, location))
                 {
                     validMoves.push_back(Move(tileCopy, Coord(location), rotation, true));
                 }

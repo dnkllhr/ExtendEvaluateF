@@ -61,10 +61,15 @@ bool GameRules::validMeeplePlacement(const Coord& location, unsigned int edgeInd
     return ((!hasPlayer1) && (!hasPlayer2));
 }
 
-
 bool GameRules::hasCroc(unsigned int tileID)
 {
     std::shared_ptr<struct regionSet> * regions = Regions::getRegions(tileID);
+
+    if(regions == nullptr)
+    {
+        return false;
+    }
+
     for(int i = 0; i < NUM_TILE_EDGES + 1; i++)
     {
         if(regions[i]->hasCroc)
