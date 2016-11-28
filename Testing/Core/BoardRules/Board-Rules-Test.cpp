@@ -125,7 +125,7 @@ TEST(RegionTests, addConnection) {
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 12)) == 3); //Make sure the church has three sides open.
 
-    currentTile = &(Tile::CreateTileF(1, startID, PreyType::None)[0]); //No prey, starting tile
+    currentTile = &(Tile::CreateTileE(1, startID, PreyType::None)[0]); //No prey, starting tile
     testingTilePlacement(&startID, 71, 71, currentTile, surroundingTiles);
 
     for(int i = 0; i < 12; i++)
@@ -146,6 +146,7 @@ TEST(RegionTests, addConnection) {
     {
         //Make sure everything has a region
          ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId()),i));
+
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)) == 3); //Make sure the castle has three sides open.
@@ -173,7 +174,7 @@ TEST(RulesTest, ScoreChurch) {
 	unsigned int actualScore = Rules::scoreChurch(tilesSurrounded, true);
 	ASSERT_EQ(actualScore, 0);
 	actualScore = Rules::scoreChurch(tilesSurrounded, false);
-	ASSERT(actualScore == 1);
+	ASSERT_EQ(actualScore,1);
 
 	for (int i = -1; i <= 1; i++)
 	{
@@ -231,9 +232,9 @@ TEST(RulesTest, ScoreCastle1) {
 	std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
 	unsigned int actualScore = Rules::scoreCastle(currentSet, true);
-	ASSERT(actualScore == 0);
+	ASSERT_EQ(actualScore,0);
 	actualScore = Rules::scoreCastle(currentSet, false);
-	ASSERT(actualScore == 2);
+	ASSERT_EQ(actualScore,2);
 
 	// add another tile to extend the lake region
 	currentTile = &(Tile::CreateTileK(1, startID, PreyType::Boar)[0]);
@@ -287,9 +288,9 @@ TEST(RulesTest, ScoreCastle2) {
 	std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
 	unsigned int actualScore = Rules::scoreCastle(currentSet, true);
-	ASSERT(actualScore == 0);
+	ASSERT_EQ(actualScore,0);
 	actualScore = Rules::scoreCastle(currentSet, false);
-	ASSERT(actualScore == 10);
+	ASSERT_EQ(actualScore,10);
 	
 	currentTile = &(Tile::CreateTileN(1, startID, PreyType::None)[0]);
 	currentTile->setRotation(2);
@@ -300,9 +301,9 @@ TEST(RulesTest, ScoreCastle2) {
 	currentSet = Regions::getRegions(currentTileID);
 
 	actualScore = Rules::scoreCastle(currentSet, true);
-	ASSERT(actualScore == 24);
+	ASSERT_EQ(actualScore,24);
 	actualScore = Rules::scoreCastle(currentSet, false);
-	ASSERT(actualScore == 24);
+	ASSERT_EQ(actualScore,24);
 }
 
 TEST(RulesTest, scoreRoad)
@@ -413,7 +414,7 @@ TEST(RulesTest, scoreMoreGrass)
 
     currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]);
     currentTile->setRotation(2);
-    testingTilePlacement(&startID, 71, 73), currentTile, surroundingTiles);
+    testingTilePlacement(&startID, 71, 73, currentTile, surroundingTiles);
     currentTile->placeTile();
 
     currentTile = &(Tile::CreateTileU(1, startID, PreyType::None)[0]);
@@ -423,7 +424,7 @@ TEST(RulesTest, scoreMoreGrass)
 
     currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]);
     currentTile->setRotation(3);
-    testingTilePlacement(&startID, 71, 73), currentTile, surroundingTiles);
+    testingTilePlacement(&startID, 71, 73, currentTile, surroundingTiles);
     currentTile->placeTile();
 
     currentTile = &(Tile::CreateTileW(1, startID, PreyType::None)[0]);
@@ -586,7 +587,7 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
     testingTilePlacement(&startID, 74,70, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileD(1, &startId, PreyType::Deer)[0]);
+    currentTile = &(Tile::CreateTileD(1, startId, PreyType::Deer)[0]);
     currentTile->setRotation(0);
     testingTilePlacement(&startID, 74,71, currentTile, surroundingTiles);
     currentTile->placeTile();
@@ -602,9 +603,9 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
     ASSERT_EQ(realRoadScore, returnRoadScore);
 
     currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]);
-    currentTile.setRotation(1);
+    currentTile->setRotation(1);
     testingTilePlacement(&startID, 72, 71, currentTile, surroundingTiles);
-    currentTile.placeTile();
+    currentTile->placeTile();
 
     unsigned int currentTileID = currentTile->getId();
     std::shared_ptr<struct regionSet> *currentSet2 = Regions::getRegions(currentTileID);
@@ -612,7 +613,7 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
     unsigned int return returnRoadScore2 = Rules::scoreRoad(currentSet2);
     unsigned int returnGrassScore = Rules::scoreGrass(currentSet2, currentTileID, 7);
     unsigned int realRoadScore2 = 5;
-    unsigned int realGrassScore  3;
+    unsigned int realGrassScore = 3;
     ASSERT_EQ(realRoadScore2, returnRoadScore2);
     ASSERT_EQ(realGrassScore, returnGrassScore);
 
