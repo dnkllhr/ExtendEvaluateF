@@ -187,10 +187,10 @@ TEST(RulesTest, ScoreChurch) {
 				// church isn't completely surrounded, actuallyScore set to true should return 0
 				else
 				{
-					ASSERT(actualScore == 0);
+					ASSERT_EQ(actualScore,0);
 				}
 				actualScore = GameRules::scoreChurch(tilesSurrounded, false);
-				ASSERT(actualScore == expectedScore);
+				ASSERT_EQ(actualScore,expectedScore);
 			}
 		}
 	}
@@ -211,9 +211,9 @@ TEST(RulesTest, ScoreCastle1) {
 	unsigned int currentTileID = currentTile->getId();
 	std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
-	unsigned int actualScore = GameRules::scoreCastle(currentSet, true);
+	unsigned int actualScore = GameRules::scoreCastle(currentSet, true, false);
 	ASSERT_EQ(actualScore,0);
-	actualScore = GameRules::scoreCastle(currentSet, false);
+	actualScore = GameRules::scoreCastle(currentSet, false, false);
 	ASSERT_EQ(actualScore,2);
 
 	// add another tile to extend the lake region
@@ -225,9 +225,9 @@ TEST(RulesTest, ScoreCastle1) {
 	currentTileID = currentTile->getId();
 	currentSet = Regions::getRegions(currentTileID);
 
-	actualScore = GameRules::scoreCastle(currentSet, true);
+	actualScore = GameRules::scoreCastle(currentSet, true, false);
 	ASSERT_EQ(actualScore,12);
-	actualScore = GameRules::scoreCastle(currentSet, false);
+	actualScore = GameRules::scoreCastle(currentSet, false, false);
 	ASSERT_EQ(actualScore,12);
 
 }
@@ -269,7 +269,7 @@ TEST(RulesTest, ScoreCastle2) {
 
 	unsigned int actualScore = GameRules::scoreCastle(currentSet, true);
 	ASSERT_EQ(actualScore,0);
-	actualScore = GameRules::scoreCastle(currentSet, false);
+	actualScore = GameRules::scoreCastle(currentSet, false, false);
 	ASSERT_EQ(actualScore,10);
 	
 	currentTile = &(Tile::CreateTileN(1, startID, PreyType::None)[0]);
@@ -280,9 +280,9 @@ TEST(RulesTest, ScoreCastle2) {
 	currentTileID = currentTile->getId();
 	currentSet = Regions::getRegions(currentTileID);
 
-	actualScore = GameRules::scoreCastle(currentSet, true);
+	actualScore = GameRules::scoreCastle(currentSet, true, false);
 	ASSERT_EQ(actualScore,24);
-	actualScore = GameRules::scoreCastle(currentSet, false);
+	actualScore = GameRules::scoreCastle(currentSet, false, false);
 	ASSERT_EQ(actualScore,24);
 }
 
