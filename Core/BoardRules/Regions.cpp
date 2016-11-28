@@ -336,7 +336,7 @@ unsigned int Regions::getMeepleTileId(unsigned int meepleIndex)
 }
 
 // This expects all 12 boardering tiles
-struct moveResult Regions::tryMove(const Tile& tile, const Tile ** boarderingTiles, unsigned int meepleEdge, bool specialMeeple) {
+struct moveResult Regions::tryMove(const Tile& tile, const Tile ** boarderingTiles, int meepleEdge, bool specialMeeple) {
     // create a new unordered_map to hold our potential move so that we don't actually make the changes to our game
     std::unordered_map<unsigned int, std::shared_ptr<struct regionSet> *> myTracker;
     // iterate through the current regions and copy them to our new one
@@ -346,8 +346,8 @@ struct moveResult Regions::tryMove(const Tile& tile, const Tile ** boarderingTil
     // add a connection using our test unordered_map so that changes aren't made to the actual game
     std::shared_ptr<struct regionSet> * testRegions = addConnection(tile, boarderingTiles, &myTracker);
     int meepleOwner = checkOwner(tile.getId(), meepleEdge, &myTracker);
-    if (specialMeeple) addMeeple(meepleOwner == OWNER_P1 ? 1 : 2, tile.getId(), meepleEdge, &myTracker);
-    else addMeepleSpecial(meepleOwner == OWNER_P1 ? 1 : 2, tile.getId());
+    if (!specialMeeple && meepleEdge >= 0 && meepleEdge < 13) addMeeple(meepleOwner == OWNER_P1 ? 1 : 2, tile.getId(), meepleEdge, &myTracker);
+    else if (specialMeeple) addMeepleSpecial(meepleOwner == OWNER_P1 ? 1 : 2, tile.getId());
 
     // get some basic tile info
     unsigned int numSides = tile.getNumberOfSides();
@@ -393,8 +393,8 @@ struct moveResult Regions::tryMove(const Tile& tile, const Tile ** boarderingTil
         }
     }
 
-    removeMeeple(tile.getId(), meepleEdge, &myTracker);
-    specialRemoveMeeple(meepleOwner == OWNER_P1 ? 1 : 2, tile.getId());
+    if (!specialMeeple && meepleEdge >= 0 && meepleEdge < 13) removeMeeple(tile.getId(), meepleEdge, &myTracker);
+    else if (specialMeeple) specialRemoveMeeple(meepleOwner == OWNER_P1 ? 1 : 2, tile.getId());
 
     // iterate through all of the unordered_map's elements deleting the regionSet arrays
     for (auto iter = myTracker.begin(); iter != myTracker.end(); iter++)

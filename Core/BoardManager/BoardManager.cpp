@@ -231,7 +231,7 @@ unsigned int BoardManager::isSurrounded(int tileID)
 }
 
 //Entry points for AI
-struct moveResult BoardManager::tryMove(const Tile& tile, unsigned int meepleEdge, bool specialMeeple)
+struct moveResult BoardManager::tryMove(const Tile& tile, int meepleEdge, bool specialMeeple)
 {
     return Regions::tryMove(tile, Board::getBorderingTiles(tile), meepleEdge, specialMeeple);
 }

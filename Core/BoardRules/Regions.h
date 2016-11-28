@@ -30,7 +30,7 @@ class Regions
         static int removeMeeple(unsigned int tileID, unsigned int edge, std::unordered_map<unsigned int, std::shared_ptr<struct regionSet> *> * tracker = NULL);
         static bool checkRegionExistence(unsigned int tileID, unsigned int edge);
         static unsigned int checkRegionEdgesTillCompletion(unsigned int tileID, unsigned int edge);
-        static struct moveResult tryMove(const Tile& tile, const Tile ** boarderingTiles, unsigned int meepleEdge, bool specialMeeple);
+        static struct moveResult tryMove(const Tile& tile, const Tile ** boarderingTiles, int meepleEdge = -1, bool specialMeeple = false);
 
         static unsigned int meeplesAvailable(unsigned int playerNumber);
         static bool ownerMeepleInUse(unsigned int meepleIndex);
