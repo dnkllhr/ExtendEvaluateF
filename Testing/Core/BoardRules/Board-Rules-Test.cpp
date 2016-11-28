@@ -5,13 +5,13 @@
 
 #include "gtest/gtest.h"
 
-void testingTilePlacement(unsigned int coordX, unsigned int coordY, Tile *currentTile, const Tile **surroundingTiles)
+void testingTilePlacement(unsigned int coordX, unsigned int coordY, Tile& currentTile, const Tile **surroundingTiles)
 {
     Coord *currentCoord = new Coord(coordX, coordY); //Center
-    Move *currentMove = new Move(*currentTile, *currentCoord);
+    Move *currentMove = new Move(currentTile, *currentCoord);
     Board::place(*currentMove);
-    surroundingTiles = Board::getBorderingTiles(*currentTile);
-    Regions::addConnection(*currentTile, surroundingTiles);
+    surroundingTiles = Board::getBorderingTiles(currentTile);
+    Regions::addConnection(currentTile, surroundingTiles);
 }
 
 
@@ -23,14 +23,14 @@ TEST(RegionTests, addConnection) {
 
     BoardManager::gameInit();
 
-    *currentTile = BoardManager::getTopTileStack(); //No prey, starting tile
-    testingTilePlacement(2, 2, currentTile, surroundingTiles);
+    currentTile = &BoardManager::getTopTileStack(); //No prey, starting tile
+    testingTilePlacement(2, 2, *currentTile, surroundingTiles);
 
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
         //printf("Round %d\n", i);
-        ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
+        ASSERT_TRUE(Regions::checkRegionExistence((*currentTile).getId(),i));
         //printf("Passed\n"); 
     }
 }
