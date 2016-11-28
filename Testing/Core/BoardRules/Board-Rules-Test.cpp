@@ -30,7 +30,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-        ASSERT(Regions::checkRegionExistence(currentTile->getId()), i);
+        ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId()),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 1)) == 2); //Make sure the road has two sides open.
@@ -45,7 +45,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-         ASSERT(Regions::checkRegionExistence(currentTile->getId()), i);
+        ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId()),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 1)) == 1); //Make sure the top road has one side open.
@@ -61,7 +61,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-         ASSERT(Regions::checkRegionExistence(currentTile->getId()), i);
+        ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId()),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 7)) == 0); //Make sure the road has zero sides open.
@@ -76,7 +76,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-         ASSERT(Regions::checkRegionExistence(currentTile->getId()), i);
+        ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId()),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)) == 2); //Make sure the right castle has one side open.
@@ -91,7 +91,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-         ASSERT(Regions::checkRegionExistence(currentTile->getId()), i);
+        ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId()),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)) == 1); //Make sure the road has one side open.
@@ -105,7 +105,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-         ASSERT(Regions::checkRegionExistence(currentTile->getId()), i);
+        ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId()),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)) == 0); //Make sure the road has one side open.
@@ -120,7 +120,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-         ASSERT(Regions::checkRegionExistence(currentTile->getId()), i);
+        ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId()),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 12)) == 3); //Make sure the church has three sides open.
@@ -131,7 +131,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-        ASSERT(Regions::checkRegionExistence(currentTile->getId()), i);
+        ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId()),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)) == 3); //Make sure the castle has three sides open.
@@ -145,7 +145,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-         ASSERT(Regions::checkRegionExistence(currentTile->getId()), i);
+         ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId()),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)) == 3); //Make sure the castle has three sides open.
