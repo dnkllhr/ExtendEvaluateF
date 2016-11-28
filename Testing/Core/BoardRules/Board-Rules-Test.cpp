@@ -8,8 +8,8 @@
 void testingTilePlacement(unsigned int *startID, unsigned int coordX, unsigned int coordY, Tile *currentTile, const Tile **surroundingTiles)
 {
     Coord *currentCoord = new Coord(coordX, coordY); //Center
-    Move *currentMove = new Move(currentTile, currentCoord);
-    Board::place(currentMove);
+    Move *currentMove = new Move(*currentTile, *currentCoord);
+    Board::place(*currentMove);
     surroundingTiles = Board::getBorderingTiles(currentTile);
     Regions::addConnection(currentTile, surroundingTiles);
 }
@@ -30,7 +30,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-         ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId(),i));
+         ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 1)) == 2); //Make sure the road has two sides open.
@@ -45,7 +45,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-         ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId(),i));
+         ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 1)) == 1); //Make sure the top road has one side open.
@@ -61,7 +61,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-         ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId(),i));
+         ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 7)) == 0); //Make sure the road has zero sides open.
@@ -76,7 +76,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-         ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId(),i));
+         ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
 
     }
 
@@ -92,7 +92,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-        ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId(),i));
+        ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)) == 1); //Make sure the road has one side open.
@@ -106,7 +106,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-         ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId(),i));
+         ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)) == 0); //Make sure the road has one side open.
@@ -121,7 +121,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-         ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId(),i));
+         ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 12)) == 3); //Make sure the church has three sides open.
@@ -132,7 +132,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-        ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId(),i));
+        ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)) == 3); //Make sure the castle has three sides open.
@@ -146,7 +146,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-         ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId(),i));
+        ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
 
     }
 
