@@ -15,7 +15,9 @@
 char* TOURNAMENT_PASSWD;
 char* USERNAME;
 char* PASSWD;
+int pid;
 
+int createSocket(std::string, int);
 void authenticationProtocol(int);
 void challengeProtocol(int);
 void roundProtocol(int);
@@ -24,41 +26,31 @@ void moveProtocol(int);
 std::string strAtIndex(std::string,int);
 
 
-void error(const char *msg)
-{
-    perror(msg);
-    exit(0);
-}
-
 int main(int argc, char *argv[])
 {
     TOURNAMENT_PASSWD = argv[3];
     USERNAME = argv[4];
     PASSWD = argv[5];
 
-    int sockfd, portno, n;
+    std::string hostname (argv[1]);
+    int portno = atoi(argv[2]);
+
+//SOCKET GOOD TO GO
+int sockfd = createSocket(hostname,portno);
+std::cout << sockfd <<std::endl;
+authenticationProtocol(sockfd);
+challengeProtocol(sockfd);
+
+return 0;
+}
+
+int createSocket(std::string hostname, int portno)
+{
+    int sockfd;
     struct sockaddr_in serv_addr;
     struct hostent *server;
-
-    char buffer[256];
-
-    if (argc < 3) {
-        fprintf(stderr,"usage %s hostname port\n", argv[0]);
-        exit(0);
-    }
-
-    portno = atoi(argv[2]);
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
-
-    if (sockfd < 0)
-        error("ERROR opening socket");
-
-    server = gethostbyname(argv[1]);
-
-    if (server == NULL) {
-        fprintf(stderr,"ERROR, no such host\n");
-        exit(0);
-    }
+    server = gethostbyname(hostname.c_str());
 
     bzero((char *) &serv_addr, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
@@ -66,17 +58,9 @@ int main(int argc, char *argv[])
          (char *)&serv_addr.sin_addr.s_addr,
          server->h_length);
     serv_addr.sin_port = htons(portno);
+    connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr));
 
-
-    if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0)
-        error("ERROR connecting");
-
-//SOCKET GOOD TO GO
-std::cout << sockfd <<std::endl;
-authenticationProtocol(sockfd);
-challengeProtocol(sockfd);
-
-return 0;
+    return sockfd;
 }
 
 //AUTHENTICATION PROTOCOL
@@ -96,7 +80,7 @@ void authenticationProtocol(int sockfd)
     bzero(buffer,256);
     out<<"JOIN ";
     out<<TOURNAMENT_PASSWD;
-    std::cout<<"\t"<<out.str()<<std::endl;
+    std::cout<<out.str()<<std::endl;
     write(sockfd,out.str().c_str(),out.gcount()+1);
     out.str("");
 
@@ -109,7 +93,7 @@ void authenticationProtocol(int sockfd)
     bzero(buffer,256);
     out<<"I AM ";
     out<<USERNAME<<" "<<PASSWD;
-    std::cout<<"\t"<<out.str()<<std::endl;
+    std::cout<<out.str()<<std::endl;
     write(sockfd,out.str().c_str(),out.gcount()+1);
     out.str("");
 
@@ -137,11 +121,11 @@ void challengeProtocol(int sockfd)
     for(int i = 0; i < rounds; i++)
         roundProtocol(sockfd);
 
-/*    //Server: END OF CHALLENGES or PLEASE WAIT
+   //Server: END OF CHALLENGES or PLEASE WAIT
     bzero(buffer,256);
     read(sockfd,buffer,255);
     printf("%s\n",buffer);
-*/
+
 }
 
 void roundProtocol(int sockfd)
@@ -158,12 +142,12 @@ void roundProtocol(int sockfd)
 
   //matchProtocol
   matchProtocol(sockfd);
-/*
+
   //Server: END OF ROUND <rid> OF <rounds>
   bzero(buffer,256);
   read(sockfd,buffer,255);
   printf("%s\n",buffer);
- */
+
 }
 
 void matchProtocol(int sockfd)
@@ -178,13 +162,15 @@ void matchProtocol(int sockfd)
     bzero(buffer,256);
     read(sockfd,buffer,255);
     printf("%s\n",buffer);
-      oppPid = strAtIndex(buffer,4);
+     oppPid = strAtIndex(buffer,4);
 
+    //Create Game Instances
 
     //Server: STARTING TILE IS <tile> AT <x> <y> <orientation>
     bzero(buffer,256);
     read(sockfd,buffer,255);
     printf("%s\n",buffer);
+    tile = strAtIndex(std::string(buffer),3);
     x = stoi(strAtIndex(std::string(buffer),5));
     y = stoi(strAtIndex(std::string(buffer),6));
     orientation = stoi(strAtIndex(std::string(buffer),7));
@@ -199,12 +185,25 @@ void matchProtocol(int sockfd)
 
     //CREATE TILE STACK OF INTERNAL SERVER
     std::string tileStack;
+    out<<tile;
     for(int i = 0; i < number_tiles;i++)
         out<<strAtIndex(std::string(buffer),6+i);
+
+    //Create Tile Stack Massage
+    struct gameMessage* msg = new struct gameMessage;
+    msg -> data.tile.lengthOfStack = 80;
+    strcpy(msg -> data.tile.tileStack, tileStack.c_str());
 
     //add tileStack to message once thats operational
     std::cout<<"TILE STACK: "<<out.str()<<std::endl;
     out.str("");
+
+    //Custom Move
+    msg -> data.move.p1 = 3;
+    strcpy(msg -> data.move.tile, tile.c_str());
+    msg -> data.move.x = 0;
+    msg -> data.move.y = 0;
+    msg -> data.move.orientation = (unsigned int)orientation;
 
 
     //Server: MATCH BEGINS IN <timeplan> SECONDS
@@ -236,8 +235,9 @@ void moveProtocol(int sockfd)
     int gamesActive = 2;
     std::string tile, gid;
 
-    //Prepare Output and Input Stream
+    //Prepare Output and msg
     std::stringstream out;
+    struct gameMessage* msg = new struct gameMessage;
 
     //Server: MAKE YOUR MOVE IN GAME <gid> WITHIN <timemove> SECOND: MOVE <#> PLACE <tile>
     bzero(buffer,256);
@@ -249,11 +249,14 @@ void moveProtocol(int sockfd)
     tile = strAtIndex(std::string(buffer),12);
 
     //Create Move Message and Pass to INTERNAL Server
+    strcpy(msg -> data.move.tile, tile.c_str());
+
+
 
     //Await response
 
     //Respond to Tournament Server With Move
-    int response = 1;
+    int response;
     bzero(buffer,256);
 
     switch (response) {

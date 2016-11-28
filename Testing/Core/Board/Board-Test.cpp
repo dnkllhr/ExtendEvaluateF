@@ -111,14 +111,19 @@ TEST(BoardTests, getBorderingTiles)
     Tile tile5 = Tile::CreateTileG(1, tileIDcounter, PreyType::None)[0];
     Tile tile6 = Tile::CreateTileH(1, tileIDcounter, PreyType::None)[0];
 
+    unsigned int i = 0;
+
+    int dx[8] = { 1, 0, -1, -1, -1, 0, 1, 1 }; 
+    int dy[8] = { -1, -1, -1, 0, 1, 1, 1, 0 };
+
     const Move& moveCenter = Move(tileCenter, 1, 1);
-    const Move& move0 = Move(tile0, 0, 2); // upper left
-    const Move& move1 = Move(tile1, 1, 2); // upper
-    const Move& move2 = Move(tile2, 2, 2); // upper right
-    const Move& move3 = Move(tile3, 2, 1); // right
-    const Move& move4 = Move(tile4, 2, 0); // lower right
-    const Move& move5 = Move(tile5, 1, 0); // lower
-    const Move& move6 = Move(tile6, 0, 0); // lower left
+    const Move& move0 = Move(tile0, 1 + dx[i], 1 + dy[i]); i++;
+    const Move& move1 = Move(tile1, 1 + dx[i], 1 + dy[i]);  i++;
+    const Move& move2 = Move(tile2, 1 + dx[i], 1 + dy[i]);  i++;
+    const Move& move3 = Move(tile3, 1 + dx[i], 1 + dy[i]);  i++;
+    const Move& move4 = Move(tile4, 1 + dx[i], 1 + dy[i]);  i++;
+    const Move& move5 = Move(tile5, 1 + dx[i], 1 + dy[i]);  i++;
+    const Move& move6 = Move(tile6, 1 + dx[i], 1 + dy[i]); 
 
     Board::place(moveCenter);
     Board::place(move0);
