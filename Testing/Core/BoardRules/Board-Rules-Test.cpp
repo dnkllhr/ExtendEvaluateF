@@ -5,7 +5,7 @@
 
 #include "gtest/gtest.h"
 
-void testingTilePlacement(unsigned int *startID, unsigned int coordX, unsigned int coordY, Tile *currentTile, Tile **surroundingTiles)
+void testingTilePlacement(unsigned int *startID, unsigned int coordX, unsigned int coordY, Tile *currentTile, const Tile **surroundingTiles)
 {
     Coord *currentCoord = new Coord(coordX, coordY); //Center
     Move *currentMove = new Move(currentTile, currentCoord);
@@ -519,7 +519,7 @@ TEST (RulesTest, scoreMoreMoreRoads)
     Coord *currentCoord;
     const Tile **surroundingTiles;
 
-    currentTile = &(Tile::CreateTileA(1, startID, PreyType::None[0]));
+    currentTile = &(Tile::CreateTileA(1, startID, PreyType::None)[0]);
     currentTile->setRotation(3);
     testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
     currentTile->placeTile();
