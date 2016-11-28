@@ -40,9 +40,10 @@ class Regions
 #ifdef __testing
         static void clearRegionTracker();
         static void clearOwnerMeeples();
-#endif
+
 
     private:
+#endif
         static std::shared_ptr<struct regionSet> createRegion(unsigned int tileID, unsigned int edge, TerrainType type);
         static int countEdgesTillCompletion(unsigned int placedTileID);
         static void mergeRegions(unsigned int placedTileID, unsigned int placedEdge, unsigned int connectingTileID, unsigned int connectingEdge);
