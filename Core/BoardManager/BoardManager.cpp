@@ -112,7 +112,6 @@ Tile& BoardManager::getTopTileStack()
     return tileStack->front();
 }
 
-#include <iostream>
 std::vector<Move> BoardManager::getValidMoves(const Tile& tile)
 {
     std::vector<Move> validMoves;
@@ -121,7 +120,6 @@ std::vector<Move> BoardManager::getValidMoves(const Tile& tile)
 
     for(const int gridId : availableLocations)
     {
-        std::cout << gridId << std::endl;
         const Coord location = Board::getCoordinatesFromGridId(gridId);
         const Tile ** borderingTiles = Board::getBorderingTiles(location);
         Tile tileCopy = tile;
@@ -161,8 +159,10 @@ void BoardManager::makeMove(const Move& move, unsigned int playerNumber)
     Board::place(move);
 
     Tile& tile = move.getTile();
+    tile.setRotation(move.getRotation());
+
     const Tile ** borderingTiles = Board::getBorderingTiles(tile);
-    Regions::addConnection(tile, borderingTiles);
+    //Regions::addConnection(tile, borderingTiles);
 
     if(move.getMeepleLocation() != -1) // if Move includes Meeple
     {
