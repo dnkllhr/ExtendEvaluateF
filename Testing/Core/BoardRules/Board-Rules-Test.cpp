@@ -30,7 +30,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-        ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId()),i));
+         ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 1)) == 2); //Make sure the road has two sides open.
@@ -45,7 +45,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-        ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId()),i));
+         ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 1)) == 1); //Make sure the top road has one side open.
@@ -61,7 +61,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-        ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId()),i));
+         ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 7)) == 0); //Make sure the road has zero sides open.
@@ -76,7 +76,8 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-        ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId()),i));
+         ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId(),i));
+
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)) == 2); //Make sure the right castle has one side open.
@@ -91,7 +92,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-        ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId()),i));
+        ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)) == 1); //Make sure the road has one side open.
@@ -105,7 +106,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-        ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId()),i));
+         ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)) == 0); //Make sure the road has one side open.
@@ -120,7 +121,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-        ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId()),i));
+         ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 12)) == 3); //Make sure the church has three sides open.
@@ -131,7 +132,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-        ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId()),i));
+        ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
      ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)) == 3); //Make sure the castle has three sides open.
@@ -145,7 +146,7 @@ TEST(RegionTests, addConnection) {
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-         ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId()),i));
+         ASSERT_TRUE((Regions::checkRegionExistence(currentTile->getId(),i));
 
     }
 
@@ -201,7 +202,7 @@ TEST(RulesTest, ScoreChurch) {
 				// just placed final boardering tile, actuallyScore set to true should return full value
 				if (i == 1 && j == 1)
 				{
-					ASSERT(actualScore == expectedScore);
+					ASSERT_EQ(actualScore,expectedScore);
 				}
 
 				// church isn't completely surrounded, actuallyScore set to true should return 0
@@ -246,9 +247,9 @@ TEST(RulesTest, ScoreCastle1) {
 	currentSet = Regions::getRegions(currentTileID);
 
 	actualScore = Rules::scoreCastle(currentSet, true);
-	ASSERT(actualScore == 12);
+	ASSERT_EQ(actualScore,12);
 	actualScore = Rules::scoreCastle(currentSet, false);
-	ASSERT(actualScore == 12);
+	ASSERT_EQ(actualScore,12);
 
 }
 
