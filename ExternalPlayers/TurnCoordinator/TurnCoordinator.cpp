@@ -52,32 +52,79 @@ void TurnCoordinator::setUpAI()
     TurnCoordinator::AISetup = true;
 }
 
+int TurnCoordinator::convertEdgeToZone(int edge)
+{
+    switch (edge)
+    {
+        case 0:
+            return 1;
+            break;
+        case 1:
+            return 2;
+            break;
+        case 2:
+        case 3:
+            return 3;
+            break;
+        case 4:
+            return 6;
+            break;
+        case 5:
+        case 6:
+            return 9;
+            break;
+        case 7:
+            return 8;
+            break;
+        case 8:
+        case 9:
+            return 7;
+            break;
+        case 10:
+            return 4;
+            break;
+        case 11:
+            return 1;
+            break;
+        case 12:
+            return 5;
+            break;
+        default:
+            throw std::logic_error("Invalid edge input for convertEdgeToZone");
+            return 0;
+            break;
+    }
+}
 
-gameMessage& TurnCoordinator::buildResponse(Move& move)
+
+gameMessage TurnCoordinator::buildResponse(Move& move)
 {
     gameMessage *gMsg = new gameMessage;
-    //gMsg->messageType = 1;
-    //memcpy(gMsg->data.move.tile, (move.getTile().getTileName()).c_str());
+    gMsg->messageType = 1;
+    strcpy(gMsg->data.move.tile, (move.getTile().getTileName()).c_str());
+
+    gMsg->data.move.p1 = TurnCoordinator::ourPlayerNumber;
+
+    gMsg->data.move.x = move.getCoord().getX();
+    gMsg->data.move.y = move.getCoord().getY();
+    gMsg->data.move.orientation = move.getTile().getRotation();
+    
+    if(move.getHasCrocodile())
+    {
+        gMsg->data.move.meepleType = 2; //Croc Type
+    }
+    else if(move.getMeepleLocation() != -1)
+    {
+        gMsg->data.move.meepleType = 1; //Meeple Type
+        gMsg->data.move.zone = TurnCoordinator::convertEdgeToZone(move.getMeepleLocation());
+    }
+    else
+    {
+        gMsg->data.move.meepleType = 0; //None type
+    }
+
 
     return *gMsg;
-
-/*
-    unsigned int p1;            //Player flag
-    char tile[6];       //Tile Identifier
-    bool placeable;     //Can you use tile?
-    unsigned int x;              //X coordinate
-    unsigned int y;              //Y coordinate
-    unsigned int orientation;    //Orientation using network protocol offsets
-    int meepleType;     //0: NONE    1: TIGER    2: CROC
-    int zone;           //Zone for meeple if TIGER
-    std::string gid;    //Game ID
-
-        Tile& getTile() const;
-        const Coord& getCoord() const;
-        unsigned int getRotation() const;
-        int getMeepleLocation() const;
-        bool getHasCrocodile() const;
-        */
 }
 
 
