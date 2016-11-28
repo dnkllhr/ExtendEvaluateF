@@ -325,6 +325,16 @@ std::shared_ptr<struct regionSet> * Regions::getRegions(unsigned int tileID)
     return NULL;
 }
 
+bool Regions::ownerMeepleInUse(unsigned int meepleIndex)
+{
+    return ownerMeeples[meepleIndex].inUse;
+}
+
+unsigned int Regions::getMeepleTileId(unsigned int meepleIndex)
+{
+    return ownerMeeples[meepleIndex].tileID;
+}
+
 // This expects all 12 boardering tiles
 struct moveResult Regions::tryMove(const Tile& tile, const Tile ** boarderingTiles, unsigned int meepleEdge, bool specialMeeple) {
     // create a new unordered_map to hold our potential move so that we don't actually make the changes to our game

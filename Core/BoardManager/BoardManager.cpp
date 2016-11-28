@@ -112,7 +112,7 @@ Tile& BoardManager::getTopTileStack()
     return tileStack->front();
 }
 
-std::vector<Move> BoardManager::getValidMoves(const Tile& tile)
+std::vector<Move> BoardManager::getValidMoves(const Tile& tile, unsigned int playerNumber)
 {
     std::vector<Move> validMoves;
     std::unordered_set<unsigned int> availableLocations = Board::getAvailableLocations();
@@ -147,6 +147,21 @@ std::vector<Move> BoardManager::getValidMoves(const Tile& tile)
                     validMoves.push_back(Move(tileCopy, Coord(location), rotation, true));
                 }
             }   
+        }
+    }
+
+    if(validMoves.size() == 0) // special cases woo
+    {
+        validMoves.push_back(Move(false)); // pass
+        for(unsigned int i = 7 * (playerNumber - 1); i < (7 * playerNumber); i++)
+        {
+            if(Regions::ownerMeepleInUse(i))
+            {
+                unsigned int meepleTileId = Regions::getMeepleTileId(i);
+                Tile& meepleTile = *Board::get(meepleTileId);
+                validMoves.push_back(Move(meepleTile, true)); // place another
+                validMoves.push_back(Move(meepleTile, false)); // remove
+            }
         }
     }
 

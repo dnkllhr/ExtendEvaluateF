@@ -33,6 +33,8 @@ class Regions
         static struct moveResult tryMove(const Tile& tile, const Tile ** boarderingTiles, unsigned int meepleEdge, bool specialMeeple);
 
         static unsigned int meeplesAvailable(unsigned int playerNumber);
+        static bool ownerMeepleInUse(unsigned int meepleIndex);
+        static unsigned int getMeepleTileId(unsigned int meepleIndex);
 
         static int addCroc(unsigned int playerNumber, unsigned int tileID);
         static unsigned int crocsAvailable(unsigned int playerNumber);
