@@ -167,92 +167,90 @@ TEST(BoardManagerTests, getTileStack)
 
 TEST(BoardManagerTests, getValidMoves)
 {
+
     BoardManager::gameInit();
 
     unsigned int tileIdCounter = 100;
 
-    Tile tile1 = Tile::CreateTileJ(1, tileIdCounter, PreyType::None)[0];
+    TileStack* tileStack = BoardManager::getTileStack();
+    unsigned int initalSize = tileStack->getSize();
+
+    Array<Array<Tile>> tiles = Tile::CreateTiles();
+
+    Tile& tile1 = tiles[9][0];//Tile::CreateTileJ(1, tileIdCounter, PreyType::None)[0];
     Coord coord1 = Coord(76, 75);
-    Move move1 = Move(tile1, coord1, 2);
-
-    Tile tile2 = Tile::CreateTileV(1, tileIdCounter, PreyType::None)[0];
-    Coord coord2 = Coord(77, 75);
-    Move move2 = Move(tile2, coord2);
-
-    Tile tile3 = Tile::CreateTileK(1, tileIdCounter, PreyType::None)[0];
-    Coord coord3 = Coord(77, 76);
-    Move move3 = Move(tile3, coord3, 2);
+    const Move& move1 = Move(tile1, coord1, 2);
 
     std::vector<Move> validMoves1 = BoardManager::getValidMoves(tile1);
 
     EXPECT_EQ(validMoves1.size(), (unsigned int)(6 * 11)); 
-    
-    std::string expectedValidMoves1[66] = { "PLACE TILE (id) 100 AT 76 75 ROTATION 90",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 90 MEEPLE (edge) 0",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 90 MEEPLE (edge) 1",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 90 MEEPLE (edge) 2",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 90 MEEPLE (edge) 10",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 90 MEEPLE (edge) 12",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 90 MEEPLE (edge) 4",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 90 MEEPLE (edge) 8",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 90 MEEPLE (edge) 7",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 90 MEEPLE (edge) 5",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 90 CROCODILE",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 180",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 180 MEEPLE (edge) 0",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 180 MEEPLE (edge) 1",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 180 MEEPLE (edge) 2",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 180 MEEPLE (edge) 10",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 180 MEEPLE (edge) 12",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 180 MEEPLE (edge) 4",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 180 MEEPLE (edge) 8",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 180 MEEPLE (edge) 7",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 180 MEEPLE (edge) 5",
-    "PLACE TILE (id) 100 AT 76 75 ROTATION 180 CROCODILE",
-    "PLACE TILE (id) 100 AT 77 76 ROTATION 180",
-    "PLACE TILE (id) 100 AT 77 76 ROTATION 180 MEEPLE (edge) 0",
-    "PLACE TILE (id) 100 AT 77 76 ROTATION 180 MEEPLE (edge) 1",
-    "PLACE TILE (id) 100 AT 77 76 ROTATION 180 MEEPLE (edge) 2",
-    "PLACE TILE (id) 100 AT 77 76 ROTATION 180 MEEPLE (edge) 10",
-    "PLACE TILE (id) 100 AT 77 76 ROTATION 180 MEEPLE (edge) 12",
-    "PLACE TILE (id) 100 AT 77 76 ROTATION 180 MEEPLE (edge) 4",
-    "PLACE TILE (id) 100 AT 77 76 ROTATION 180 MEEPLE (edge) 8",
-    "PLACE TILE (id) 100 AT 77 76 ROTATION 180 MEEPLE (edge) 7",
-    "PLACE TILE (id) 100 AT 77 76 ROTATION 180 MEEPLE (edge) 5",
-    "PLACE TILE (id) 100 AT 77 76 ROTATION 180 CROCODILE",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 0",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 0 MEEPLE (edge) 0",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 0 MEEPLE (edge) 1",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 0 MEEPLE (edge) 2",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 0 MEEPLE (edge) 10",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 0 MEEPLE (edge) 12",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 0 MEEPLE (edge) 4",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 0 MEEPLE (edge) 8",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 0 MEEPLE (edge) 7",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 0 MEEPLE (edge) 5",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 0 CROCODILE",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 270",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 270 MEEPLE (edge) 0",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 270 MEEPLE (edge) 1",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 270 MEEPLE (edge) 2",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 270 MEEPLE (edge) 10",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 270 MEEPLE (edge) 12",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 270 MEEPLE (edge) 4",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 270 MEEPLE (edge) 8",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 270 MEEPLE (edge) 7",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 270 MEEPLE (edge) 5",
-    "PLACE TILE (id) 100 AT 76 77 ROTATION 270 CROCODILE",
-    "PLACE TILE (id) 100 AT 75 76 ROTATION 90",
-    "PLACE TILE (id) 100 AT 75 76 ROTATION 90 MEEPLE (edge) 0",
-    "PLACE TILE (id) 100 AT 75 76 ROTATION 90 MEEPLE (edge) 1",
-    "PLACE TILE (id) 100 AT 75 76 ROTATION 90 MEEPLE (edge) 2",
-    "PLACE TILE (id) 100 AT 75 76 ROTATION 90 MEEPLE (edge) 10",
-    "PLACE TILE (id) 100 AT 75 76 ROTATION 90 MEEPLE (edge) 12",
-    "PLACE TILE (id) 100 AT 75 76 ROTATION 90 MEEPLE (edge) 4",
-    "PLACE TILE (id) 100 AT 75 76 ROTATION 90 MEEPLE (edge) 8",
-    "PLACE TILE (id) 100 AT 75 76 ROTATION 90 MEEPLE (edge) 7",
-    "PLACE TILE (id) 100 AT 75 76 ROTATION 90 MEEPLE (edge) 5",
-    "PLACE TILE (id) 100 AT 75 76 ROTATION 90 CROCODILE" };
+
+    std::string expectedValidMoves1[66] = { "PLACE TILE (id) 25 AT 76 75 ROTATION 90",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 90 MEEPLE (edge) 0",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 90 MEEPLE (edge) 1",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 90 MEEPLE (edge) 2",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 90 MEEPLE (edge) 10",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 90 MEEPLE (edge) 12",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 90 MEEPLE (edge) 4",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 90 MEEPLE (edge) 8",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 90 MEEPLE (edge) 7",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 90 MEEPLE (edge) 5",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 90 CROCODILE",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 180",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 180 MEEPLE (edge) 0",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 180 MEEPLE (edge) 1",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 180 MEEPLE (edge) 2",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 180 MEEPLE (edge) 10",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 180 MEEPLE (edge) 12",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 180 MEEPLE (edge) 4",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 180 MEEPLE (edge) 8",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 180 MEEPLE (edge) 7",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 180 MEEPLE (edge) 5",
+    "PLACE TILE (id) 25 AT 76 75 ROTATION 180 CROCODILE",
+    "PLACE TILE (id) 25 AT 77 76 ROTATION 180",
+    "PLACE TILE (id) 25 AT 77 76 ROTATION 180 MEEPLE (edge) 0",
+    "PLACE TILE (id) 25 AT 77 76 ROTATION 180 MEEPLE (edge) 1",
+    "PLACE TILE (id) 25 AT 77 76 ROTATION 180 MEEPLE (edge) 2",
+    "PLACE TILE (id) 25 AT 77 76 ROTATION 180 MEEPLE (edge) 10",
+    "PLACE TILE (id) 25 AT 77 76 ROTATION 180 MEEPLE (edge) 12",
+    "PLACE TILE (id) 25 AT 77 76 ROTATION 180 MEEPLE (edge) 4",
+    "PLACE TILE (id) 25 AT 77 76 ROTATION 180 MEEPLE (edge) 8",
+    "PLACE TILE (id) 25 AT 77 76 ROTATION 180 MEEPLE (edge) 7",
+    "PLACE TILE (id) 25 AT 77 76 ROTATION 180 MEEPLE (edge) 5",
+    "PLACE TILE (id) 25 AT 77 76 ROTATION 180 CROCODILE",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 0",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 0 MEEPLE (edge) 0",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 0 MEEPLE (edge) 1",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 0 MEEPLE (edge) 2",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 0 MEEPLE (edge) 10",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 0 MEEPLE (edge) 12",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 0 MEEPLE (edge) 4",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 0 MEEPLE (edge) 8",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 0 MEEPLE (edge) 7",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 0 MEEPLE (edge) 5",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 0 CROCODILE",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 270",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 270 MEEPLE (edge) 0",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 270 MEEPLE (edge) 1",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 270 MEEPLE (edge) 2",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 270 MEEPLE (edge) 10",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 270 MEEPLE (edge) 12",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 270 MEEPLE (edge) 4",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 270 MEEPLE (edge) 8",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 270 MEEPLE (edge) 7",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 270 MEEPLE (edge) 5",
+    "PLACE TILE (id) 25 AT 76 77 ROTATION 270 CROCODILE",
+    "PLACE TILE (id) 25 AT 75 76 ROTATION 90",
+    "PLACE TILE (id) 25 AT 75 76 ROTATION 90 MEEPLE (edge) 0",
+    "PLACE TILE (id) 25 AT 75 76 ROTATION 90 MEEPLE (edge) 1",
+    "PLACE TILE (id) 25 AT 75 76 ROTATION 90 MEEPLE (edge) 2",
+    "PLACE TILE (id) 25 AT 75 76 ROTATION 90 MEEPLE (edge) 10",
+    "PLACE TILE (id) 25 AT 75 76 ROTATION 90 MEEPLE (edge) 12",
+    "PLACE TILE (id) 25 AT 75 76 ROTATION 90 MEEPLE (edge) 4",
+    "PLACE TILE (id) 25 AT 75 76 ROTATION 90 MEEPLE (edge) 8",
+    "PLACE TILE (id) 25 AT 75 76 ROTATION 90 MEEPLE (edge) 7",
+    "PLACE TILE (id) 25 AT 75 76 ROTATION 90 MEEPLE (edge) 5",
+    "PLACE TILE (id) 25 AT 75 76 ROTATION 90 CROCODILE" };
 
     for(unsigned int i = 0; i < validMoves1.size(); i++)
     {
@@ -275,38 +273,74 @@ TEST(BoardManagerTests, getValidMoves)
         EXPECT_EQ(actualValidMove, expectedValidMoves1[i]);
     }
 
+    EXPECT_FALSE(tile1.isPlaced());
+    BoardManager::makeMove(move1, 2);
+    EXPECT_TRUE(tile1.isPlaced());
+
+    Tile& tile2 = tiles[22][0]; // V
+    Coord coord2 = Coord(77, 75);
+    Move move2 = Move(tile2, coord2);
+
     std::vector<Move> validMoves2 = BoardManager::getValidMoves(tile2);
 
-    EXPECT_EQ(validMoves2.size(), (unsigned int)132);
-/*
-    for(unsigned int i = 0; i < validMoves2.size(); i++)
+    EXPECT_EQ(validMoves2.size(), (unsigned int)88);
+
+    ASSERT_EQ(tile1.getRotation(), 2);
+
+    /*for(unsigned int i = 0; i < validMoves2.size(); i++)
     {
         Move move = validMoves2[i];
-        EXPECT_EQ(&move.getTile(), &tile1);
-        EXPECT_EQ(move.getCoord().getX(), -1);
-        EXPECT_EQ(move.getCoord().getY(), -1);
-        EXPECT_EQ(move.getRotation(), -1);
-        EXPECT_EQ(move.getMeepleLocation(), -1);
-        EXPECT_EQ(move.getHasCrocodile(), false);
+
+        std::ostringstream oss;
+        oss << "PLACE TILE (id) " << (tile2.getId()) << " AT " << move.getCoord() << " ROTATION " << (move.getRotation() * 90);
+        
+        if(move.getMeepleLocation() >= 0)
+        {
+            oss << " MEEPLE (edge) " << move.getMeepleLocation();
+        }
+        if(move.getHasCrocodile())
+        {
+            oss << " CROCODILE";
+        }
+
+        std::string actualValidMove = oss.str();
+        std::cout << actualValidMove << std::endl;
+        //EXPECT_EQ(actualValidMove, expectedValidMoves1[i]);
     }*/
+
+    BoardManager::makeMove(move2, 1);
+
+    Tile& tile3 = tiles[11][0]; // K
+    Coord coord3 = Coord(77, 76);
+    Move move3 = Move(tile3, coord3, 2);
 
     std::vector<Move> validMoves3 = BoardManager::getValidMoves(tile3);
 
     EXPECT_EQ(validMoves3.size(), (unsigned int)88);
-/*
-    for(unsigned int i = 0; i < validMoves3.size(); i++)
-    {
-        // have arrays
-        Move move = validMoves3[i];
-        EXPECT_EQ(&move.getTile(), &tile1);
-        EXPECT_EQ(move.getCoord().getX(), -1);
-        EXPECT_EQ(move.getCoord().getY(), -1);
-        EXPECT_EQ(move.getRotation(), -1);
-        EXPECT_EQ(move.getMeepleLocation(), -1);
-        EXPECT_EQ(move.getHasCrocodile(), false);
-    }*/
 
-    //throw std::logic_error("Test incomplete, see comments");
+    /*for(unsigned int i = 0; i < validMoves3.size(); i++)
+    {
+        Move move = validMoves3[i];
+
+        std::ostringstream oss;
+        oss << "PLACE TILE (id) " << (tile3.getId()) << " AT " << move.getCoord() << " ROTATION " << (move.getRotation() * 90);
+        
+        if(move.getMeepleLocation() >= 0)
+        {
+            oss << " MEEPLE (edge) " << move.getMeepleLocation();
+        }
+        if(move.getHasCrocodile())
+        {
+            oss << " CROCODILE";
+        }
+
+        std::string actualValidMove = oss.str();
+        if(move.getMeepleLocation() == -1 && !move.getHasCrocodile())
+        {
+            std::cout << actualValidMove << std::endl;
+        }
+        //EXPECT_EQ(actualValidMove, expectedValidMoves1[i]);
+    }*/
 }
 
 // Should this also test the calls of Regions::addConection,addMeeple,addCroc, as applicable?

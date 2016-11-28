@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-Wall -std=c++14
+CFLAGS=-Wall -std=c++14 -Wextra -pedantic
 DCFLAGS=-g -D__testing
 DEPS=../Tiles/Tile.h ../Tiles/TerrainType.h ../Tiles/TileType.h ../Tiles/PreyType.h ../Tiles/TileStack.h Regions.h Rules.h
 CLEAN=*.o
