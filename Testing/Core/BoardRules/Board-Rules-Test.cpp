@@ -172,9 +172,9 @@ TEST(RulesTest, ScoreChurch) {
 	unsigned int currentTileID = currentTile->getId();
 	unsigned int tilesSurrounded = BoardManager::isSurrounded(currentTileID);
 
-	unsigned int actualScore = Rules::scoreChurch(tilesSurrounded, true);
+	unsigned int actualScore = GameRules::scoreChurch(tilesSurrounded, true);
 	ASSERT_EQ(actualScore, 0);
-	actualScore = Rules::scoreChurch(tilesSurrounded, false);
+	actualScore = GameRules::scoreChurch(tilesSurrounded, false);
 	ASSERT_EQ(actualScore,1);
 
 	for (int i = -1; i <= 1; i++)
@@ -197,7 +197,7 @@ TEST(RulesTest, ScoreChurch) {
 				currentTileID = currentTile->getId();
 				tilesSurrounded = BoardManager::isSurrounded(currentTileID);
 
-				actualScore = Rules::scoreChurch(tilesSurrounded, true);
+				actualScore = GameRules::scoreChurch(tilesSurrounded, true);
 
 				// just placed final boardering tile, actuallyScore set to true should return full value
 				if (i == 1 && j == 1)
@@ -210,7 +210,7 @@ TEST(RulesTest, ScoreChurch) {
 				{
 					ASSERT(actualScore == 0);
 				}
-				actualScore = Rules::scoreChurch(tilesSurrounded, false);
+				actualScore = GameRules::scoreChurch(tilesSurrounded, false);
 				ASSERT(actualScore == expectedScore);
 			}
 		}
@@ -232,9 +232,9 @@ TEST(RulesTest, ScoreCastle1) {
 	unsigned int currentTileID = currentTile->getId();
 	std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
-	unsigned int actualScore = Rules::scoreCastle(currentSet, true);
+	unsigned int actualScore = GameRules::scoreCastle(currentSet, true);
 	ASSERT_EQ(actualScore,0);
-	actualScore = Rules::scoreCastle(currentSet, false);
+	actualScore = GameRules::scoreCastle(currentSet, false);
 	ASSERT_EQ(actualScore,2);
 
 	// add another tile to extend the lake region
@@ -246,9 +246,9 @@ TEST(RulesTest, ScoreCastle1) {
 	currentTileID = currentTile->getId();
 	currentSet = Regions::getRegions(currentTileID);
 
-	actualScore = Rules::scoreCastle(currentSet, true);
+	actualScore = GameRules::scoreCastle(currentSet, true);
 	ASSERT_EQ(actualScore,12);
-	actualScore = Rules::scoreCastle(currentSet, false);
+	actualScore = GameRules::scoreCastle(currentSet, false);
 	ASSERT_EQ(actualScore,12);
 
 }
@@ -288,9 +288,9 @@ TEST(RulesTest, ScoreCastle2) {
 	unsigned int currentTileID = currentTile->getId();
 	std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
-	unsigned int actualScore = Rules::scoreCastle(currentSet, true);
+	unsigned int actualScore = GameRules::scoreCastle(currentSet, true);
 	ASSERT_EQ(actualScore,0);
-	actualScore = Rules::scoreCastle(currentSet, false);
+	actualScore = GameRules::scoreCastle(currentSet, false);
 	ASSERT_EQ(actualScore,10);
 	
 	currentTile = &(Tile::CreateTileN(1, startID, PreyType::None)[0]);
@@ -301,9 +301,9 @@ TEST(RulesTest, ScoreCastle2) {
 	currentTileID = currentTile->getId();
 	currentSet = Regions::getRegions(currentTileID);
 
-	actualScore = Rules::scoreCastle(currentSet, true);
+	actualScore = GameRules::scoreCastle(currentSet, true);
 	ASSERT_EQ(actualScore,24);
-	actualScore = Rules::scoreCastle(currentSet, false);
+	actualScore = GameRules::scoreCastle(currentSet, false);
 	ASSERT_EQ(actualScore,24);
 }
 
@@ -345,7 +345,7 @@ TEST(RulesTest, scoreRoad)
     std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
     // not sure what to pass through for bool actuallyScore
-    unsigned int returnScore = Rules::scoreRoad(currentSet);
+    unsigned int returnScore = GameRules::scoreRoad(currentSet);
 
     //completed road = 1 pt per tile
     unsigned int realScore = 4;
@@ -389,9 +389,9 @@ TEST(RulesTest, scoreGrassAndRoad)
     std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
     // get score for Grass in this set of 4 tiles that is placed together
-    unsigned int returnGrassScore = Rules::scoreGrass(currentSet, currentTileID, 10);
+    unsigned int returnGrassScore = GameRules::scoreGrass(currentSet, currentTileID, 10);
    // get score for the completed road  in this set of 4 tiles placed together
-    unsigned int returnRoadScore = Rules::ad(currentSet);
+    unsigned int returnRoadScore = GameRules::ad(currentSet);
     unsigned int realGrassScore = 5;
     unsigned int realRoadScore = 2;
 
@@ -457,7 +457,7 @@ TEST(RulesTest, scoreMoreGrass)
     unsigned int currentTileID = currentTile->getId();
     std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
-    unsigned int returnGrassScore = Rules::scoreGrass(currentSet, currentTileID, 10);
+    unsigned int returnGrassScore = GameRules::scoreGrass(currentSet, currentTileID, 10);
     unsigned int realGrassScore = 8; //5 pt for completed lake + 3 pts for completed den
 
     ASSERT_EQ(returnGrassScore, realGrassScore);
@@ -496,7 +496,7 @@ TEST(RulesTest, scoreMoreRoads)
 
     std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
-    unsigned int returnRoadScore = Rules::scoreRoad(currentSet);
+    unsigned int returnRoadScore = GameRules::scoreRoad(currentSet);
 
     unsigned int realRoadScore = 7;
 
@@ -536,7 +536,7 @@ TEST (RulesTest, scoreMoreMoreRoads)
 
     std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
-    unsigned int returnRoadScore = Rules::scoreRoad(currentSet);
+    unsigned int returnRoadScore = GameRules::scoreRoad(currentSet);
 
     unsigned int realRoadScore = 5;
 
@@ -597,7 +597,7 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
     unsigned int currentTileId = currentTile->getId();
     std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileId);
 
-    unsigned int returnRoadScore = Rules::scoreRoad(currentSet);
+    unsigned int returnRoadScore = GameRules::scoreRoad(currentSet);
 
     unsigned int realRoadScore = 6;
 
@@ -611,8 +611,8 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
     unsigned int currentTileID = currentTile->getId();
     std::shared_ptr<struct regionSet> *currentSet2 = Regions::getRegions(currentTileID);
 
-    unsigned int return returnRoadScore2 = Rules::scoreRoad(currentSet2);
-    unsigned int returnGrassScore = Rules::scoreGrass(currentSet2, currentTileID, 7);
+    unsigned int return returnRoadScore2 = GameRules::scoreRoad(currentSet2);
+    unsigned int returnGrassScore = GameRules::scoreGrass(currentSet2, currentTileID, 7);
     unsigned int realRoadScore2 = 5;
     unsigned int realGrassScore = 3;
     ASSERT_EQ(realRoadScore2, returnRoadScore2);
@@ -638,7 +638,7 @@ TEST(RulesTest, getCurrentScore) {
 	unsigned int edge = 4; // uncompleted city on right side of tile
 	unsigned int tilesSurrounded = BoardManager::isSurrounded(currentTileId);
 
-	unsigned int actualScore = Rules::getCurrentScore(currentSet, edge, currentTile, tilesSurrounded);
+	unsigned int actualScore = GameRules::getCurrentScore(currentSet, edge, currentTile, tilesSurrounded);
 	unsigned int expectedScore = 1; // uncompleted city on right side of tile
 
 	ASSERT_EQ(actualScore, expectedScore);
@@ -653,7 +653,7 @@ TEST(RulesTest, getCurrentScore) {
 	edge = 10; // test left side of tile
 	tilesSurrounded = BoardManager::isSurrounded(currentTileId);
 
-	actualScore = Rules::getCurrentScore(currentSet, edge, currentTile, tilesSurrounded);
+	actualScore = GameRules::getCurrentScore(currentSet, edge, currentTile, tilesSurrounded);
 	expectedScore = 8; // 8 points for a completed city adjacent to 1 unique prey
 
 	ASSERT_EQ(actualScore, expectedScore);
