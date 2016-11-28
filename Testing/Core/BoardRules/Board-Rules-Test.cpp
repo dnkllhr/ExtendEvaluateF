@@ -155,53 +155,55 @@ TEST(RegionTests, addConnection) {
 }
 
 TEST(RulesTest, ScoreChurch) {
-	Array<Array<Tile>> tiles = Tile::CreateTiles();
-	Board board;
-	// Church is worth 1 point regardless of surrounding tiles
+	unsigned int startID = 0;
+	Tile *currentTile;
+	Move *currentMove;
+	Coord *currentCoord;
+	const Tile **surroundingTiles;
+
 	unsigned int expectedScore = 1;
-	unsigned int actualScore;
 
-	// Place church tile in center
-	Coord center(76, 76);
-	Tile& churchTile = tiles[0][0];
-	Move churchMove(churchTile, center);
-	board.place(churchMove);
+	currentTile = &(Tile::CreateTileB(1, startID, PreyType::None)[0]);
+	currentTile->setRotation(0);
+	testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
+	currentTile->placeTile();
 
-	unsigned int tileID = churchTile.getID();
-	unsigned int tilesSurrounded = isSurrounded(tileID);
+	Coord *churchCoord = new Coord(72, 72);
 
-	// how should actuallyScore change the values returned?
-	actualScore = Rules::scoreChurch(tilesSurrounded, true);
+	unsigned int currentTileID = currentTile->getId();
+	unsigned int tilesSurrounded = isSurrounded(currentTileID);
+
+	unsigned int actualScore = Rules::scoreChurch(tilesSurrounded, true);
 	ASSERT(actualScore == 0);
 	actualScore = Rules::scoreChurch(tilesSurrounded, false);
 	ASSERT(actualScore == 1);
 
-	//place other tiles around churchTile
 	for (int i = -1; i <= 1; i++)
 	{
 		for (int j = -1; j <= 1; j++)
 		{
 			if (i == 0 && j == 0)
 			{
-				break; // avoid overwriting church tile
+				break; // avoid overwriting the church tile
 			}
 			else
 			{
-				Coord churchBoarder((center.getX() + i), (center.getY() + j));
-				Tile& boarderingTile = tiles[24][0]; // chose to surround with field tiles
-				Move boarderMove(boarderingTile, churchBoarder);
-				board.place(boarderMove);
+				// place field tiles around church tile
+				currentTile = &(Tile::CreateTileY(1, startID, PreyType::None)[0]);
+				currentTile->setRotation(0);
+				testingTilePlacement(&startID, (churchCoord->getx() + i), (churchCoord->getY() + j), currentTile, surroundingTiles);
+				currentTile->placeTile();
 
 				expectedScore++;
-				tilesSurrounded = isSurrounded(tileID);
+				currentTileID = currentTile->getId();
+				tilesSurrounded = isSurrounded(currentTileID);
 
-				// how should actuallyScore change values returned?
 				actualScore = Rules::scoreChurch(tilesSurrounded, true);
 
 				// just placed final boardering tile, actuallyScore set to true should return full value
 				if (i == 1 && j == 1)
 				{
-					ASSERT(actualScore == expectedScore)
+					ASSERT(actualScore == expectedScore);
 				}
 
 				// church isn't completely surrounded, actuallyScore set to true should return 0
