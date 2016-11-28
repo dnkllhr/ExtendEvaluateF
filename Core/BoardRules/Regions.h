@@ -37,7 +37,7 @@ class Regions
         static int addCroc(unsigned int playerNumber, unsigned int tileID);
         static unsigned int crocsAvailable(unsigned int playerNumber);
 
-#ifdef testing
+#ifdef __testing
         static void clearRegionTracker();
         static void clearOwnerMeeples();
 #endif

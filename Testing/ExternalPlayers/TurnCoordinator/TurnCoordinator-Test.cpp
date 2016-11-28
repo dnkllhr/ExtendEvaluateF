@@ -49,8 +49,8 @@ TEST(TurnCoordinator, convertInMove)
     msg->data.move.zone = 1;
 
     Move mv = TurnCoordinator::convertInMove(msg);    
-    ASSERT_EQ(mv.getCoord().getX(), msg->data.move.x);
-    ASSERT_EQ(mv.getCoord().getY(), msg->data.move.y);  
+    ASSERT_EQ((unsigned int)mv.getCoord().getX(), msg->data.move.x);
+    ASSERT_EQ((unsigned int)mv.getCoord().getY(), msg->data.move.y);  
     ASSERT_EQ(mv.getMeepleLocation(), 0);               //Output for converting zone to edges
     ASSERT_EQ(mv.getRotation(), msg->data.move.orientation); 
     ASSERT_FALSE(mv.getHasCrocodile()); 

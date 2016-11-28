@@ -1,6 +1,6 @@
 CC=g++
 CFLAGS=-Wall -std=c++14
-DCFLAGS=-g -Dtesting
+DCFLAGS=-g -D__testing
 DEPS=ProgramCoordinator.h ../ExternalPlayers/TurnCoordinator/TurnCoordinator.h
 CLEAN=*.o
 

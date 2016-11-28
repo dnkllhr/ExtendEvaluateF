@@ -41,7 +41,7 @@ class BoardManager {
 
 
     
-#ifndef testing
+#ifndef __testing
     private:
 #endif
 

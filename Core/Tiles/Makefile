@@ -1,6 +1,6 @@
 CC=g++
 CFLAGS=-Wall -std=c++14
-DCFLAGS=-g -Dtesting
+DCFLAGS=-g -D__testing
 DEPS=Tile.h TerrainType.h TileType.h PreyType.h TileStack.h
 CLEAN=*.o
 

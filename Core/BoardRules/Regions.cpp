@@ -404,7 +404,7 @@ unsigned int Regions::crocsAvailable(unsigned int playerNumber)
 }
 
 
-#ifdef testing
+#ifdef __testing
 
 void Regions::clearRegionTracker() {
     regionTracker = std::unordered_map<unsigned int, std::shared_ptr<struct regionSet> *>();

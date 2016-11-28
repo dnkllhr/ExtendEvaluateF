@@ -1,6 +1,6 @@
 CC=g++
 CFLAGS=-Wall -std=c++14
-DCFLAGS=-g -Dtesting
+DCFLAGS=-g -D__testing
 DEPS=FuzzyLogic.h AI.h
 CLEAN=*.o
 

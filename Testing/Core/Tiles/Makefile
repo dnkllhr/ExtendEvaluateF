@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-Wall -std=c++14 -g -Wextra -pthread -isystem ../../gtest/internal
+CFLAGS=-Wall -std=c++14 -g -D__testing -Wextra -pthread -isystem ../../gtest/internal
 DEPS=../../../Core/Tiles/*.h
 GTEST_HEADERS=../../gtest/*.h ../../gtest/internal/*.h
 GTEST_DIR=../..

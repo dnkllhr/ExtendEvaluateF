@@ -25,7 +25,8 @@ public:
     TurnCoordinator(int port);
     ~TurnCoordinator();
     static void startCoordinator();  //Infinite loop for receiving messages from external client
-#ifndef testing
+#ifdef __testing
+#else
 private:
 #endif
     static void receiveMessage();

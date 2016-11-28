@@ -35,7 +35,7 @@ class Board {
         // Returns a set of gridID's of loactions adjacent to the border of already placed tiles
         static const std::unordered_set<unsigned int>& getAvailableLocations();
 
-#ifndef testing
+#ifndef __testing
     private:
 #endif
         static Array<Array<Tile*>> board;
