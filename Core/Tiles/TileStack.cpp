@@ -13,9 +13,8 @@ TileStack::TileStack(unsigned int numOfPlayers) {
 }
 
 TileStack::~TileStack() {
-   /* delete[] queueArray;
+    delete[] queueArray;
     delete[] tileCounts;
-    */
 }
 
 Tile& TileStack::front() {

@@ -115,7 +115,7 @@ Tile::Tile() {
 }
 
 Tile::~Tile() {
-    /*if (this->edges != NULL) {
+    if (this->edges != NULL) {
         delete[] this->edges;
         this->edges = NULL;
     }
@@ -126,7 +126,7 @@ Tile::~Tile() {
     if (this->tileName != NULL) {
         delete this->tileName;
         this->tileName = NULL;
-    }*/
+    }
 }
 
 Tile::Tile(const Tile& other) : tileId(other.tileId), numberSides(other.numberSides), countPerSide(other.countPerSide), prey(other.prey), tileType(other.tileType), center(other.center), rotation(other.rotation), placed(other.placed) {
