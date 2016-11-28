@@ -174,6 +174,20 @@ void BoardManager::makeMove(const Move& move, unsigned int playerNumber)
     tileStack->pop(); // remove top Tile from list
 }
 
+
+void BoardManager::cannotPlaceTile(const Move& move, unsigned int playerNumber)
+{
+    //Code special cases.
+    if(!move.getPickupMeeple()) // if Move includes Meeple
+    {
+        Regions::addMeepleSpecial(playerNumber, move.getTile().getId());
+    }
+    else 
+    {
+        Regions::specialRemoveMeeple(playerNumber, move.getTile().getId());
+    }
+}
+
 unsigned int BoardManager::isSurrounded(int tileID)
 {
     unsigned int surrounded = 0;
@@ -204,18 +218,16 @@ struct moveResult BoardManager::tryMove(const Tile& tile)
     return Regions::tryMove(tile, Board::getBorderingTiles(tile));
 }
 
-void BoardManager::cannotPlaceTile()
-{
-    //Code special cases.
-}
 
 void BoardManager::inputTileStack(char stack[], int length)
 {
+    /*
     if(sizeof(*stack) != (length * 5 + 1))
     {
         throw std::logic_error("sizeof stack and anticipated stack size differ");
     }
-    // Build the Tile list
+    */
+    
     Array<Array<Tile>> tiles = Tile::CreateTiles();
 
     std::string currentTile;
@@ -233,8 +245,7 @@ void BoardManager::inputTileStack(char stack[], int length)
         }
         else
         {
-            throw std::logic_error("Could not find the function pointer for tile.");
+            throw std::logic_error("Could not find the index for tile.");
         }
-        //BoardManager::addTileToStack(currentTile);
     }
 }

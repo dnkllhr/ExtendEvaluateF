@@ -24,6 +24,7 @@ class Regions
         static std::shared_ptr<struct regionSet> * addConnection(const Tile& newTile, const Tile **  boarderingTiles, std::unordered_map<unsigned int, std::shared_ptr<struct regionSet> *> * tracker = NULL);
         static int addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned int edge);
         static int addMeepleSpecial(unsigned int playerNumber, unsigned int tileID);
+        static int specialRemoveMeeple(unsigned int playerNumber, unsigned int tileID);
         static int checkOwner(unsigned int tileID, unsigned int edge, std::unordered_map<unsigned int, std::shared_ptr<struct regionSet> *> * tracker = NULL);
         static std::shared_ptr<struct regionSet> * getRegions(unsigned int tileID);
         static int removeMeeple(unsigned int tileID, unsigned int edge);

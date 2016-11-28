@@ -260,6 +260,22 @@ int Regions::removeMeeple(unsigned int tileID, unsigned int edge)
     return 0;
 }
 
+int Regions::specialRemoveMeeple(unsigned int playerNumber, unsigned int tileID)
+{
+     for(i = (playerNumber -  1)*(MEEPLES_PER_PLAYER); i < ((playerNumber - 1)*(MEEPLES_PER_PLAYER) + (MEEPLES_PER_PLAYER)); i++)
+    {
+        if((ownerMeeples[i].inUse) && (ownerMeeples[i].tileID == tileID))    // Meeple on tileID
+        {
+            ownerMeeples[i].inUse = false;
+            ownerMeeples[i].ownedRegion = NULL;
+            Regions::availableMeeples[playerNumber - 1]++;
+            return 0; // success
+        }
+    }
+    throw std::logic_error("No meeple of player exist on the requested tileID");
+    return -1;
+}
+
 int Regions::checkOwner(unsigned int tileID, unsigned int edge, std::unordered_map<unsigned int, std::shared_ptr<struct regionSet> *> * tracker)
 {
     if (tracker == NULL) tracker = &regionTracker;
