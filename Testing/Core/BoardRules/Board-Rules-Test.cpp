@@ -627,3 +627,52 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
 
 }
 
+TEST(RulesTest, getCurrentScore) {
+	Array<Array<Tile>> tiles = Tile::CreateTiles();
+	unsigned int actualScore;
+	unsigned int expectedScore;
+	unsigned int edge; // get the current score for the structure on that edge
+	unsigned int tilesSurrounded;
+
+	// place an initial tile
+	const Tile *firstTile = tiles[3][0];
+	Coord *position1 = new Coord(72, 72);
+	Move *firstMove = new Move(firstTile, position1);
+	Board::place(firstMove);
+
+	unsigned int tileID1 = firstTile->getId();
+	std::shared_ptr<struct regionSet> newRegion(Regions::getRegions(tileID1)); // create new region for the first tile placed
+	tilesSurrounded = isSurrounded(tileID1);
+
+	edge = 1; // test top center of tile
+	expectedScore = 1; // uncompleted road on one tile
+	actualScore = GameRules::getCurrentScore(newRegion, edge, firstTile, tilesSurrounded);
+	ASSERT(actualScore == expectedScore);
+
+	edge = 4; // test right side of tile
+	expectedScore = 1; // uncompleted city on one tile
+	actualScore = GameRules::getCurrentScore(newRegion, edge, firstTile, tilesSurrounded);
+	ASSERT(actualScore == expectedScore);
+
+	// create and place a second tile
+	const Tile *secondTile = tiles[4][0];
+	secondTile->setRotation(2);
+	Coord *position2 = new Coord(73, 72);
+	Move *secondMove = new Move(secondTile, position2);
+	Board::place(secondMove);
+
+	unsigned int tileID2 = secondTile->getID();
+	Tile** surroundingTiles = Board::getBorderingTiles(secondTile);
+	Regions::addConnection(secondTile, surroundingTiles);
+	tilesSurrounded = isSurrounded(tileID2);
+
+	edge = 10; // test left side of new tile
+	expectedScore = 8; // 8 points for the completed city adjacent to 1 unique prey
+	actualScore = GameRules::getCurrentScore(newRegion, edge, secondTile, tilesSurrounded);
+	ASSERT(actualScore == expectedScore);
+
+	edge = 1; // test top of the new tile
+	expectedScore = 2; // 1 for the uncompleted road segment + 1 for being adjacent to 1 unique prey animal
+	actualScore = GameRules::getCurrentScore(newRegion, edge, secondTile, tilesSurrounded);
+	ASSERT(actualScore == expectedScore);
+}
