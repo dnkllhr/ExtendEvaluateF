@@ -11,7 +11,9 @@ class Move {
         unsigned int getRotation() const;
         int getMeepleLocation() const;
         bool getHasCrocodile() const;
+        bool getPlacesTile() const;
         bool getPickupMeeple() const;
+        bool getPlaceExtraMeeple() const;
 
         friend std::ostream &operator<<(std::ostream &out, Move move);
 
@@ -31,8 +33,10 @@ class Move {
         Move(Tile& tile, unsigned int x, unsigned int y, unsigned int rotation); // No meeple or crocodile
         Move(Tile& tile, unsigned int x, unsigned int y, unsigned int rotation, unsigned int meepleLocation); // Meeple
         Move(Tile& tile, unsigned int x, unsigned int y, unsigned int rotation, bool hasCrocodile); // Crocodile
-        //Special Case for no placabe tile
-        Move(Tile& tile, bool pickupMeeple);
+        
+        //Special Cases for no placeable tile
+        Move(bool throwaway); // passes
+        Move(Tile& tile, bool pickupMeeple); // pickup or place extra meeple
 
         Move()=delete;
 
@@ -42,6 +46,8 @@ class Move {
         unsigned int rotation;
         int meepleLocation; // -1 = no meeple/tiger
         bool hasCrocodile;
+
+        bool placesTile;
         bool pickupMeeple;
 };
 

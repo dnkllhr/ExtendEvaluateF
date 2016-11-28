@@ -31,12 +31,12 @@ const Array<Array<Tile*>>& Board::getBoard()
     return Board::board;
 }
 
-const Tile* Board::get(const Coord& coord)
+Tile* Board::get(const Coord& coord)
 {
     return board[coord.getX()][coord.getY()];
 }
 
-const Tile* Board::get(unsigned int tileID)
+Tile* Board::get(unsigned int tileID)
 {
     auto tileSearch = tileIDTracker.find(tileID);
     if(tileSearch != tileIDTracker.end())

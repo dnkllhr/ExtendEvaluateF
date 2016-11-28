@@ -17,9 +17,9 @@ class Board {
         // Returns the Board as a 2D Array of Tiles
         static const Array<Array<Tile*>>& getBoard();
         // Gets the Tile at the given Coord
-        static const Tile* get(const Coord& coord);
+        static Tile* get(const Coord& coord);
         //Gets the Tile for a given tileID
-        static const Tile* get(unsigned int tileID);
+        static Tile* get(unsigned int tileID);
         //Get all neighbors of a given Coord or place Tile
         static const Tile** getBorderingTiles(const Coord& coord);
         static const Tile** getBorderingTiles(const Tile& tile);

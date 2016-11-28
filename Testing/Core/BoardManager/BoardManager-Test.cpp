@@ -181,7 +181,7 @@ TEST(BoardManagerTests, getValidMoves)
     Coord coord1 = Coord(76, 75);
     const Move& move1 = Move(tile1, coord1, 2);
 
-    std::vector<Move> validMoves1 = BoardManager::getValidMoves(tile1);
+    std::vector<Move> validMoves1 = BoardManager::getValidMoves(tile1, 1);
 
     EXPECT_EQ(validMoves1.size(), (unsigned int)(6 * 11)); 
 
@@ -281,7 +281,7 @@ TEST(BoardManagerTests, getValidMoves)
     Coord coord2 = Coord(77, 75);
     Move move2 = Move(tile2, coord2);
 
-    std::vector<Move> validMoves2 = BoardManager::getValidMoves(tile2);
+    std::vector<Move> validMoves2 = BoardManager::getValidMoves(tile2, 2);
 
     EXPECT_EQ(validMoves2.size(), (unsigned int)88);
 
@@ -314,7 +314,7 @@ TEST(BoardManagerTests, getValidMoves)
     Coord coord3 = Coord(77, 76);
     Move move3 = Move(tile3, coord3, 2);
 
-    std::vector<Move> validMoves3 = BoardManager::getValidMoves(tile3);
+    std::vector<Move> validMoves3 = BoardManager::getValidMoves(tile3, 1);
 
     EXPECT_EQ(validMoves3.size(), (unsigned int)88);
 

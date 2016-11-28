@@ -7,7 +7,9 @@ Move& Move::operator=(const Move& other)
     this->rotation = other.rotation;
     this->meepleLocation = other.meepleLocation;
     this->hasCrocodile = other.hasCrocodile;
-    this->pickupMeeple = false;
+
+    this->placesTile = other.placesTile;
+    this->pickupMeeple = other.pickupMeeple;
 
     return *this;
 }
@@ -19,6 +21,8 @@ Move::Move(const Move& other)
     this->rotation = other.rotation;
     this->meepleLocation = other.meepleLocation;
     this->hasCrocodile = other.hasCrocodile;
+
+    this->placesTile = true;
     this->pickupMeeple = false;
 }
 
@@ -30,6 +34,8 @@ Move::Move(Tile& tile, const Coord& coord)  // No rotation, meeple, or crocodile
     this->rotation = 0;
     this->meepleLocation = -1;
     this->hasCrocodile = false;
+
+    this->placesTile = true;
     this->pickupMeeple = false;
 }
 
@@ -40,6 +46,8 @@ Move::Move(Tile& tile, const Coord& coord, unsigned int rotation) // No meeple o
     this->rotation = rotation;
     this->meepleLocation = -1;
     this->hasCrocodile = false;
+
+    this->placesTile = true;
     this->pickupMeeple = false;
 }
 
@@ -50,6 +58,8 @@ Move::Move(Tile& tile, const Coord& coord, unsigned int rotation, unsigned int m
     this->rotation = rotation;
     this->meepleLocation = meepleLocation;
     this->hasCrocodile = false;
+
+    this->placesTile = true;
     this->pickupMeeple = false;
 }
 
@@ -60,6 +70,8 @@ Move::Move(Tile& tile, const Coord& coord, unsigned int rotation, bool hasCrocod
     this->rotation = rotation;
     this->meepleLocation = -1;
     this->hasCrocodile = hasCrocodile;
+
+    this->placesTile = true;
     this->pickupMeeple = false;
 }
 
@@ -71,6 +83,8 @@ Move::Move(Tile& tile, unsigned int x, unsigned int y) // No rotation, meeple, o
     this->rotation = 0;
     this->meepleLocation = -1;
     this->hasCrocodile = false;
+
+    this->placesTile = true;
     this->pickupMeeple = false;
 }
 
@@ -81,6 +95,8 @@ Move::Move(Tile& tile, unsigned int x, unsigned int y, unsigned int rotation) //
     this->rotation = rotation;
     this->meepleLocation = -1;
     this->hasCrocodile = false;
+
+    this->placesTile = true;
     this->pickupMeeple = false;
 }
 
@@ -91,6 +107,8 @@ Move::Move(Tile& tile, unsigned int x, unsigned int y, unsigned int rotation, un
     this->rotation = rotation;
     this->meepleLocation = meepleLocation;
     this->hasCrocodile = false;
+
+    this->placesTile = true;
     this->pickupMeeple = false;
 }
 
@@ -101,13 +119,27 @@ Move::Move(Tile& tile, unsigned int x, unsigned int y, unsigned int rotation, bo
     this->rotation = rotation;
     this->meepleLocation = -1;
     this->hasCrocodile = hasCrocodile;
+
+    this->placesTile = true;
     this->pickupMeeple = false;
 }
 
-Move::Move(Tile& tile, bool currentPickupMeeple) // Meeple
+Move::Move(Tile& tile, bool pickupMeeple)// pickup or place extra meeple
 {
     this->tile = &tile;
-    this->pickupMeeple = currentPickupMeeple;
+    this->coord = nullptr;
+    this->rotation = 0;
+    this->meepleLocation = -1;
+    this->hasCrocodile = false;
+
+    this->placesTile = false;
+    this->pickupMeeple =  pickupMeeple;
+}
+
+Move::Move(bool throwaway) // passes
+{
+    this->placesTile = false;
+    this->pickupMeeple = false;
 }
 
 Move::~Move()
@@ -142,6 +174,14 @@ bool Move::getHasCrocodile() const {
     return this->hasCrocodile;
 }
 
+bool Move::getPlacesTile() const {
+    return this->placesTile;
+}
+
 bool Move::getPickupMeeple() const {
     return this->pickupMeeple;
+}
+
+bool Move::getPlaceExtraMeeple() const {
+    return !this->placesTile && !this->pickupMeeple;
 }
