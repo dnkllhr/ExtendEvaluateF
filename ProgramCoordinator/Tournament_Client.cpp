@@ -273,11 +273,11 @@ void moveProtocol(int sockfd)
     int currentlyActive = gamesActive;
     for(int i = 0; i < currentlyActive; i++){
       int movePid, x, y, orientation, zone;
+
+      //Server: GAME <gid> MOVE <#> PLAYER <pid> <move>
       bzero(buffer,256);
-      read(sockfd,buffer,255);  //Server: GAME <gid> MOVE <#> PLAYER <pid> <move>
-      char* forfeit;
-      forfeit = strstr(buffer,"FORFEITED");
-      // CHECKED MESSAGE FOR FORFEIT
+      read(sockfd,buffer,255);
+
       if(!forfeit)
       {
         std::istringstream brett (buffer);

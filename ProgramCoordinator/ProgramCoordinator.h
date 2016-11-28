@@ -25,7 +25,8 @@ struct tileStackMessage
 
 struct moveMessage
 {
-    unsigned int p1;            //Player flag
+    int pid;            //pid of Player
+    unsigned int p1;    //Player flag
     char tile[6];       //Tile Identifier
     bool placeable;     //Can you use tile?
     unsigned int x;              //X coordinate
@@ -35,7 +36,7 @@ struct moveMessage
     int zone;           //Zone for meeple if TIGER
 };
 
-struct whoAmIMessage 
+struct whoAmIMessage
 {
     unsigned int p1;            //Which player your are
 };
