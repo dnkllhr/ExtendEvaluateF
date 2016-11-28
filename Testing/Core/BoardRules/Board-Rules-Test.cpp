@@ -462,9 +462,9 @@ TEST(RulesTest, scoreMoreGrass)
 
 
     unsigned int currentTileID = currentTile->getTileId();
-    shared_ptr<struct regionSets> currentSet = getRegions(currentTileID);
+    shared_ptr<struct regionSet> currentSet = getRegions(currentTileID);
 
-    unsigned int returnGrassScore = scoreGrass(curentSet, currentTileID, 10);
+    unsigned int returnGrassScore = scoreGrass(currentSet, currentTileID, 10);
     int realGrassScore = 8; //5 pt for completed lake + 3 pts for completed den
 
     ASSERT_EQ(returnGrassScore, realGrassScore);
@@ -501,7 +501,7 @@ TEST(RulesTest, scoreMoreRoads)
 
     unsigned int currentTileID = currentTile->getTileId();
 
-    shared_ptr<struct regionSets> currentSet = getRegions(currentTileID);
+    shared_ptr<struct regionSet> currentSet = getRegions(currentTileID);
 
     unsigned int returnRoadScore = scoreRoad(currentSet);
 
@@ -541,7 +541,7 @@ TEST (RulesTest, scoreMoreMoreRoads)
 
     unsigned int currentTileID = currentTile->getTileId();
 
-    shared_ptr<struct regionSets> currentSet = getRegions(currentTileID);
+    shared_ptr<struct regionSet> currentSet = getRegions(currentTileID);
 
     unsigned int returnRoadScore = scoreRoad(currentSet);
 
@@ -602,7 +602,7 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
 
     //Testing road portion of this landscape
     unsigned int currentTileId = currentTile->getTileId();
-    shared_ptr<struct regionSets> currentSet = getRegions(currentTileId);
+    shared_ptr<struct regionSet> currentSet = getRegions(currentTileId);
 
     unsigned int returnRoadScore = scoreRoad(currentSet);
 
@@ -616,7 +616,7 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
     currentTile.placeTile();
 
     unsigned int currentTileID = currentTile->getTileId();
-    shared_ptr<struct regionSets> currentSet2 = getRegions(currentTileID);
+    shared_ptr<struct regionSet> currentSet2 = getRegions(currentTileID);
 
     unsigned int return returnRoadScore2 = scoreRoad(currentSet2);
     unsigned int returnGrassScore = scoreGrass(currentSet2, currentTileID, 7);
