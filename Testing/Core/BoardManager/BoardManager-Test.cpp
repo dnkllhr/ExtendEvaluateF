@@ -167,7 +167,7 @@ TEST(BoardManagerTests, getTileStack)
 
 TEST(BoardManagerTests, getValidMoves)
 {
-    /*BoardManager::gameInit();
+    BoardManager::gameInit();
 
     unsigned int tileIdCounter = 0;
 
@@ -181,19 +181,11 @@ TEST(BoardManagerTests, getValidMoves)
 
     Tile tile3 = Tile::CreateTileK(1, tileIdCounter, PreyType::None)[0];
     Coord coord3 = Coord(77, 76);
-    Move move3 = Move(tile3, coord3, 2);*/
+    Move move3 = Move(tile3, coord3, 2);
 
-/*********************************************************************
- * THIS SECTION STILL NEEDS EXPECTED VALUES MAPPED OUT INTO ARRAYS.  *
- * DEPENDING ON HOW COMPLEX IT GETS, I MAY NOT ACTUALLY DO ALL 3     *
- * GIVEN MOVES, OR MAY NOT CHECK ALL OF THE INDIVIDUAL POSSIBILITIES *
- *                                                                   *
- * RIGHT NOW "-1" GENERALLY = NEED TO COME UP WITH ARRAY OF VALUES   *
- *********************************************************************/
-/*
     std::vector<Move> validMoves1 = BoardManager::getValidMoves(tile1);
 
-    EXPECT_EQ(validMoves1.size(), 40); 
+    EXPECT_EQ(validMoves1.size(), 40); /*
 
     for(unsigned int i = 0; i < validMoves1.size(); i++)
     {
