@@ -94,6 +94,12 @@ Move::Move(Tile& tile, unsigned int x, unsigned int y, unsigned int rotation, bo
     this->hasCrocodile = hasCrocodile;
 }
 
+Move::Move(Tile& tile, bool currentPickupMeeple) // Meeple
+{
+    this->tile = &tile;
+    this->pickupMeeple = currentPickupMeeple;
+}
+
 Move::~Move()
 {
     delete this->coord;
@@ -124,4 +130,8 @@ int Move::getMeepleLocation() const {
 
 bool Move::getHasCrocodile() const {
     return this->hasCrocodile;
+}
+
+bool Move::getPickupMeeple() const {
+    return this->pickupMeeple;
 }
