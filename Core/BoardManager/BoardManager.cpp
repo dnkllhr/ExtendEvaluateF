@@ -177,7 +177,7 @@ void BoardManager::makeMove(const Move& move, unsigned int playerNumber)
     tile.setRotation(move.getRotation());
 
     const Tile ** borderingTiles = Board::getBorderingTiles(tile);
-    //Regions::addConnection(tile, borderingTiles);
+    Regions::addConnection(tile, borderingTiles);    
 
     if(move.getMeepleLocation() != -1) // if Move includes Meeple
     {
@@ -189,7 +189,7 @@ void BoardManager::makeMove(const Move& move, unsigned int playerNumber)
     }
 
     tile.placeTile(); // mark Tile as placed so it can no longer be rotated
-    tileStack->pop(); // remove top Tile from list
+    tileStack->pop(); // remove top Tile from listg
 }
 
 

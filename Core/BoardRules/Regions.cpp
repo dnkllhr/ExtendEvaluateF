@@ -8,6 +8,7 @@ unsigned int Regions::availableMeeples[2] = { MEEPLES_PER_PLAYER, MEEPLES_PER_PL
 struct croc Regions::ownerCrocs[] = {};
 unsigned int Regions::availableCrocs[2] = { CROCS_PER_PLAYER, CROCS_PER_PLAYER };
 
+#import <iostream>
 int Regions::addCroc(unsigned int playerNumber, unsigned int tileID)
 {
     unsigned int i;
@@ -17,6 +18,9 @@ int Regions::addCroc(unsigned int playerNumber, unsigned int tileID)
         if(!(ownerCrocs[i].inUse))
         {
             valid = true;
+// -- logically we should break and use this croc index i? --
+            break; 
+// ----------------------------------------------------------
         }
     }
     if(!valid)
@@ -28,17 +32,26 @@ int Regions::addCroc(unsigned int playerNumber, unsigned int tileID)
     {
         ownerCrocs[i].inUse = true;
         ownerCrocs[i].ownedRegions = (regionTracker.find(tileID))->second;
-        for(int i = 0; i < NUM_TILE_EDGES + 1; i++)
+        
+        for(int j = 0; j < NUM_TILE_EDGES + 1; j++)
         {
-            ownerCrocs[i].ownedRegions[i]->hasCroc = true;
+        	if(ownerCrocs[i].ownedRegions[j] == NULL)
+        	{
+        		std::cout << "ownerCrocs[" << i << "].ownedRegions[" << j <<"] is NULL" << std::endl;
+        	}
+        	else
+        	{
+        		ownerCrocs[i].ownedRegions[j]->hasCroc = true;
+        	}
         }
         Regions::availableCrocs[playerNumber - 1]--;
         return 0;
     }
+
     return -1;
 }
 
-
+#import <iostream>
 void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, unsigned int connectingTileID, unsigned int connectingEdge)
 {
     auto placedSearch = regionTracker.find(placedTileID);
@@ -63,9 +76,11 @@ void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, u
         std::shared_ptr<struct tileNode> iter = (placedSearch->second[placedEdge])->head;
         while(iter != NULL)
         {
+        	std::cout << iter << std::endl;
             regionTracker[(placedSearch->first)][placedEdge] = (connectingSearch->second[connectingEdge]);
             if (iter != iter->next && iter->next != (placedSearch->second[placedEdge])->head) iter = iter->next;
         }
+        std::cout << std::endl;
     }
 }
 
@@ -159,14 +174,19 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
                 node->edge = otherEdge;
                 node->preyCounts[static_cast<int>(newTile.getPrey())]++;
                 node->previous = newRegions[otherEdge]->tail;
-                newRegions[otherEdge]->tail->next = node;
+
+//------------- Making the below two assignments results in the endless loop ---------------
+
+                //newRegions[otherEdge]->tail->next = node;
                 newRegions[otherEdge]->tail = node;
+
+//-------------------------------------------------------------------------------------------
             }
             else {
-                mergeRegions(id, edge, id, otherEdge);
+                	mergeRegions(id, edge, id, otherEdge);
 
-                if (otherEdge % countPerSide == centerEdge)
-                    newRegions[edge]->edgesTillCompletion--;
+                	if (otherEdge % countPerSide == centerEdge)
+                    	newRegions[edge]->edgesTillCompletion--;
             }
         }
     }
