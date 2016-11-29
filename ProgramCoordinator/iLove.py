@@ -116,29 +116,28 @@ s.close
 
 
 
-'''
-
-CODY'S CODE FOR BULDING A MESSAGE
-
-
-<<<<<<< Updated upstream
-s.close
-=======
-tileStackString = s.recv(1024) #THE REMAINING <number_tiles> TILES ARE [ <tiles> ]
-print tileStackString
-tokenizedInput = tileStackString.split(' ')
-
-start = False
-buildMe = ""
+#
+#CODY'S CODE FOR BULDING A MESSAGE
+#
+#
+#<<<<<<< Updated upstream
+#s.close
+#=======
+#tileStackString = s.recv(1024) #THE REMAINING <number_tiles> TILES ARE [ <tiles> ]
+#print tileStackString
+#tokenizedInput = tileStackString.split(' ')
+#
+#start = False
+#buildMe = ""
 #Find the starting list of tiles
-for token in tokenizedInput:
-    if(token == '['):
-        start = True
-    else if(token == ']'):
-        start = False
-    if(start):
-        buildMe += token
-
-currentData = TILEMESSAGE(80, buildMe)
-msg = GAMEMESSAGE(0, currentData)
-...
+#for token in tokenizedInput:
+#    if(token == '['):
+#        start = True
+#    else if(token == ']'):
+#        start = False
+#    if(start):
+#        buildMe += token
+#
+#currentData = TILEMESSAGE(80, buildMe)
+#msg = GAMEMESSAGE(0, currentData)
+#...
