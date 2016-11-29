@@ -287,7 +287,7 @@ TEST(BoardManagerTests, getValidMoves)
 
     ASSERT_EQ(tile1.getRotation(), 2);
 
-    /*for(unsigned int i = 0; i < validMoves2.size(); i++)
+    for(unsigned int i = 0; i < validMoves2.size(); i++)
     {
         Move move = validMoves2[i];
 
@@ -306,13 +306,13 @@ TEST(BoardManagerTests, getValidMoves)
         std::string actualValidMove = oss.str();
         std::cout << actualValidMove << std::endl;
         //EXPECT_EQ(actualValidMove, expectedValidMoves1[i]);
-    }*/
+    }
 
     BoardManager::makeMove(move2, 2);
 
     Tile& tile3 = tiles[11][0]; // K
     Coord coord3 = Coord(77, 76);
-    Move move3 = Move(tile3, coord3, 2, (unsigned int) 10); // rotation = 2, meeple at edge 0
+    Move move3 = Move(tile3, coord3, 2, (unsigned int) 0); // rotation = 2, meeple at edge 0
 
     std::vector<Move> validMoves3 = BoardManager::getValidMoves(tile3, 1);
 
@@ -320,7 +320,7 @@ TEST(BoardManagerTests, getValidMoves)
 
     BoardManager::makeMove(move3, 1);
 
-    /*for(unsigned int i = 0; i < validMoves3.size(); i++)
+    for(unsigned int i = 0; i < validMoves3.size(); i++)
     {
         Move move = validMoves3[i];
 
@@ -342,7 +342,7 @@ TEST(BoardManagerTests, getValidMoves)
             std::cout << actualValidMove << std::endl;
         }
         //EXPECT_EQ(actualValidMove, expectedValidMoves1[i]);
-    }*/
+    }
 }
 
 // Should this also test the calls of Regions::addConection,addMeeple,addCroc, as applicable?

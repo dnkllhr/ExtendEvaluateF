@@ -73,7 +73,7 @@ bool GameRules::hasCroc(unsigned int tileID)
 
     for(int i = 0; i < NUM_TILE_EDGES + 1; i++)
     {
-        if(regions[i]->hasCroc)
+        if(regions[i] != NULL && regions[i]->hasCroc)
         {
             return true;
         }
