@@ -4,7 +4,7 @@
 #include "../Core/BoardRules/Rules.h"
 
 #include "gtest/gtest.h"
-
+/*
 void testingTilePlacement(unsigned int coordX, unsigned int coordY, Tile& currentTile, const Tile **surroundingTiles)
 {
     Coord *currentCoord = new Coord(coordX, coordY); //Center
@@ -13,6 +13,59 @@ void testingTilePlacement(unsigned int coordX, unsigned int coordY, Tile& curren
     surroundingTiles = Board::getBorderingTiles(currentTile);
     Regions::addConnection(currentTile, surroundingTiles);
 }
+*/
+
+
+TEST(RegionTests, mergeRegions) 
+{
+    std::shared_ptr<struct regionSet> r1 = std::shared_ptr<struct regionSet>(new regionSet);
+    std::shared_ptr<struct regionSet> r2 = std::shared_ptr<struct regionSet>(new regionSet);
+
+    r1->edgesTillCompletion = 4;
+    std::shared_ptr<struct tileNode> currentNode = std::shared_ptr<struct tileNode>(new tileNode);
+    r1->head = currentNode;
+
+    std::shared_ptr<struct regionSet > *regionArray = new std::shared_ptr< struct regionSet>[13];
+    for(int i = 0; i < 13; i++)
+    {
+        printf("TileNode %d at %X\n", i, currentNode.get());
+        currentNode->tileID = i;
+        currentNode->edge = i;
+        currentNode->next = std::shared_ptr<struct tileNode>(new tileNode);
+        currentNode = currentNode->next;
+
+        Regions::regionTracker[i] = regionArray;
+        regionArray[i] = r1;
+    }
+    r1->tail = currentNode;
+    currentNode->next = NULL;
+
+
+    r2->edgesTillCompletion = 2;
+    r2->head = currentNode;
+    regionArray = new std::shared_ptr< struct regionSet>[13];
+    for(int i = 0; i < 13; i++)
+    {
+        printf("TileNode %d at %X\n", i + 13, currentNode.get());
+        currentNode->tileID = i + 13;
+        currentNode->edge = i;
+        currentNode->next = std::shared_ptr<struct tileNode>(new tileNode);
+        currentNode = currentNode->next;
+
+        Regions::regionTracker[i + 13] = regionArray;
+        regionArray[i] = r2;
+    }
+    r2->tail = currentNode;
+    currentNode->next = NULL;
+
+    Regions::mergeRegions(2, 11, 7, 11);
+
+    ASSERT_NE(r1->head.get(), r2->head.get());
+    ASSERT_EQ(r1->tail.get(), r2->tail.get());
+    ASSERT_EQ(Regions::regionTracker[10], Regions::regionTracker[15]);
+
+}
+/*
 
 TEST(RegionTests, addConnection) {
     
@@ -704,4 +757,4 @@ TEST(RulesTest, validTilePlacement)
     Tile tile3 = Tile::CreateTileK(1, tileIdCounter, PreyType::None)[0];
     Coord coord3 = Coord(77, 76);
     Move move3 = Move(tile3, coord3, 2);*/
-}
+//}
