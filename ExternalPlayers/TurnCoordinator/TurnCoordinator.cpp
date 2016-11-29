@@ -1,40 +1,30 @@
 #include "TurnCoordinator.h"
-
-
-unsigned int TurnCoordinator::ourPlayerNumber = 0;
-unsigned int TurnCoordinator::otherPlayerNumber = 0;
-bool TurnCoordinator::AISetup = false;
-int TurnCoordinator::mySocket = 0;
-int TurnCoordinator::clientSocket = 0;
-struct sockaddr_in *TurnCoordinator::myAddr = NULL;
-struct sockaddr_in *TurnCoordinator::clientAddr = NULL;
-
 //Main functionality is to receive messages from the external game client and tell the AI when to take a turn.
 //It will also call the BoardManager to update opponent moves.
 
 TurnCoordinator::TurnCoordinator(int port)
 {
-    TurnCoordinator::AISetup = false;
-    TurnCoordinator::ourPlayerNumber = 0;
-    TurnCoordinator::otherPlayerNumber = 0;
-    TurnCoordinator::myAddr = new struct sockaddr_in;
-    TurnCoordinator::clientAddr = new struct sockaddr_in;
+    this->AISetup = false;
+    this->ourPlayerNumber = 0;
+    this->otherPlayerNumber = 0;
+    this->myAddr = new struct sockaddr_in;
+    this->clientAddr = new struct sockaddr_in;
     setupSocket(port);
 }
 
 TurnCoordinator::~TurnCoordinator()
 {
-    close(TurnCoordinator::clientSocket);
-    close(TurnCoordinator::mySocket);
+    close(this->clientSocket);
+    close(this->mySocket);
 }
 
 void TurnCoordinator::setupSocket(int portNumber)
 {
     /* First call to socket() function */
     struct hostent *server;
-    TurnCoordinator::mySocket = socket(AF_INET, SOCK_STREAM, 0);
+    this->mySocket = socket(AF_INET, SOCK_STREAM, 0);
    
-    if (TurnCoordinator::mySocket < 0) 
+    if (this->mySocket < 0) 
     {
         throw std::runtime_error("ERROR opening socket");
     }
@@ -45,14 +35,14 @@ void TurnCoordinator::setupSocket(int portNumber)
     }
    
     /* Initialize socket structure */
-    bzero((char *) TurnCoordinator::myAddr, sizeof(*TurnCoordinator::myAddr));
+    bzero((char *) this->myAddr, sizeof(*this->myAddr));
    
-    TurnCoordinator::myAddr->sin_family = AF_INET;
-    bcopy((char *)server->h_addr, (char *)&TurnCoordinator::clientAddr->sin_addr.s_addr, server->h_length);
-    TurnCoordinator::myAddr->sin_port = htons(portNumber);
+    this->myAddr->sin_family = AF_INET;
+    bcopy((char *)server->h_addr, (char *)&this->clientAddr->sin_addr.s_addr, server->h_length);
+    this->myAddr->sin_port = htons(portNumber);
    
    /* Now bind the host address using bind() call.*/
-    if (connect(TurnCoordinator::mySocket, (struct sockaddr *) TurnCoordinator::clientAddr, sizeof(TurnCoordinator::clientAddr)) < 0) 
+    if (connect(this->mySocket, (struct sockaddr *) this->clientAddr, sizeof(this->clientAddr)) < 0) 
     {
         throw std::runtime_error("ERROR connecting socket");
     }
@@ -60,12 +50,12 @@ void TurnCoordinator::setupSocket(int portNumber)
 
 void TurnCoordinator::setUpAI()
 {
-    if(TurnCoordinator::ourPlayerNumber == 0)
+    if(this->ourPlayerNumber == 0)
     {
         throw std::logic_error("Trying to setup the AI before you know which player it is.");
     }
-    AI::setPlayerNumber(TurnCoordinator::ourPlayerNumber);
-    TurnCoordinator::AISetup = true;
+    AI::setPlayerNumber(this->ourPlayerNumber);
+    this->AISetup = true;
 }
 
 int TurnCoordinator::convertEdgeToZone(int edge)
@@ -119,7 +109,7 @@ void TurnCoordinator::buildResponse(Move& move, gameMessage *gMsg)
     gMsg->messageType = 1;
     strcpy(gMsg->data.move.tile, (move.getTile().getTileName()).c_str());
 
-    gMsg->data.move.p1 = TurnCoordinator::ourPlayerNumber;
+    gMsg->data.move.p1 = ourPlayerNumber;
 
     gMsg->data.move.x = move.getCoord().getX();
     gMsg->data.move.y = move.getCoord().getY();
@@ -132,7 +122,7 @@ void TurnCoordinator::buildResponse(Move& move, gameMessage *gMsg)
     else if(move.getMeepleLocation() != -1)
     {
         gMsg->data.move.meepleType = 1; //Meeple Type
-        gMsg->data.move.zone = TurnCoordinator::convertEdgeToZone(move.getMeepleLocation());
+        gMsg->data.move.zone = convertEdgeToZone(move.getMeepleLocation());
     }
     else
     {
@@ -144,21 +134,21 @@ void TurnCoordinator::buildResponse(Move& move, gameMessage *gMsg)
 
 void TurnCoordinator::callAI()
 {
-    if(!TurnCoordinator::AISetup)
+    if(!this->AISetup)
     {
-        if(TurnCoordinator::ourPlayerNumber == 0)
+        if(this->ourPlayerNumber == 0)
         {
             throw std::logic_error("Trying to call the AI before you know which player it is.");
         }
-        TurnCoordinator::setUpAI();
+        setUpAI();
     }
     Move chosenMove = AI::chooseTurn(BoardManager::getTopTileStack());
-    BoardManager::makeMove(chosenMove, TurnCoordinator::ourPlayerNumber);
+    BoardManager::makeMove(chosenMove, this->ourPlayerNumber);
 
     gameMessage *msg = new gameMessage;
-    TurnCoordinator::buildResponse(chosenMove, msg);
+    buildResponse(chosenMove, msg);
 
-    int n = write(TurnCoordinator::clientSocket, (char *)(msg), sizeof(*msg));
+    int n = write(this->clientSocket, (char *)(msg), sizeof(*msg));
 
     if (n < 0) 
     {
@@ -248,16 +238,16 @@ void TurnCoordinator::handleMessage(gameMessage *msg)
             BoardManager::inputTileStack(msg->data.tile.tileStack, msg->data.tile.lengthOfStack);
             break;
         case 1:
-            if(msg->data.move.p1 != TurnCoordinator::ourPlayerNumber)
+            if(msg->data.move.p1 != this->ourPlayerNumber)
             {
-                Move *mv = &(TurnCoordinator::convertInMove(msg));
+                Move mv = convertInMove(msg);
                 if(!(msg->data.move.placeable) && !(msg->data.move.pass))
                 {
-                    BoardManager::cannotPlaceTile(*mv, TurnCoordinator::otherPlayerNumber);
+                    BoardManager::cannotPlaceTile(mv, this->otherPlayerNumber);
                 }
                 else if(!(msg->data.move.pass))
                 {
-                    BoardManager::makeMove(*mv, TurnCoordinator::otherPlayerNumber);
+                    BoardManager::makeMove(mv, this->otherPlayerNumber);
                 }
                 else
                 {
@@ -266,8 +256,8 @@ void TurnCoordinator::handleMessage(gameMessage *msg)
             }
             else if(msg->data.move.p1 == 3)
             {
-                Move *mv = &(TurnCoordinator::convertInMove(msg));
-                BoardManager::makeMove(*mv, TurnCoordinator::otherPlayerNumber);
+                Move mv = convertInMove(msg);
+                BoardManager::makeMove(mv, this->otherPlayerNumber);
             }
             else
             {
@@ -275,21 +265,21 @@ void TurnCoordinator::handleMessage(gameMessage *msg)
                 {
                     throw std::logic_error("Top of the tile stack and current tile move do not match");
                 }
-                TurnCoordinator::callAI();
+                callAI();
             }
             break;
         case 2:
             if(msg->data.who.p1 == 1)
             {
-                TurnCoordinator::ourPlayerNumber = 1;
-                TurnCoordinator::otherPlayerNumber = 2;
+                this->ourPlayerNumber = 1;
+                this->otherPlayerNumber = 2;
             }
             else
             {
-                TurnCoordinator::otherPlayerNumber = 1;
-                TurnCoordinator::ourPlayerNumber = 2;                
+                this->otherPlayerNumber = 1;
+                this->ourPlayerNumber = 2;                
             }
-            TurnCoordinator::setUpAI();
+            setUpAI();
             break;
         default:
             break;
@@ -301,7 +291,7 @@ void TurnCoordinator::handleMessage(gameMessage *msg)
 
 void TurnCoordinator::startCoordinator()
 {
-    TurnCoordinator::receiveMessage();
+    receiveMessage();
 }
 
 
@@ -314,14 +304,14 @@ void TurnCoordinator::receiveMessage()
 
     while(true)
     {
-        if (TurnCoordinator::clientSocket < 0) 
+        if (this->clientSocket < 0) 
         {
             throw std::runtime_error("ERROR on accept");
         }
 
         //Clear out any previous data
         bzero(buffer, sizeof(gameMessage));
-        n = read(TurnCoordinator::clientSocket, buffer, sizeof(gameMessage) - 1);
+        n = read(this->clientSocket, buffer, sizeof(gameMessage) - 1);
 
         if (n < 0) 
         {
@@ -329,6 +319,6 @@ void TurnCoordinator::receiveMessage()
         }
 
         //Handle message here
-        TurnCoordinator::handleMessage(msg);
+        handleMessage(msg);
     }
 }
