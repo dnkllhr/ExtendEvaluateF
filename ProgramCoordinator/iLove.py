@@ -32,7 +32,7 @@ def matchprotocol():
 	numTiles = stringData[14,16] #assumes number_tiles is a 2 digit number
 	print stringData
 	print s.recv(1024) #MATCH BEGINS IN <timeplan> SECONDS 
-	for x in xrange(numTiles):
+	for i in range(0, numTiles):
 		moveprotocol()
 	print s.recv(1024) #GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
 	print s.recv(1024) #GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
@@ -64,9 +64,8 @@ rounds = stringData[31,33] #assumes round is 2 digit number
 print stringData
 
 numRounds = int(rounds)
-for x in xrange(rounds):
+for i in range(0, numRounds):
 	roundprotocol()
-
 
 
 s.close
