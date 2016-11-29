@@ -60,7 +60,7 @@ TEST(RegionTests, mergeRegions)
     currentNode->next = NULL;
 
     unsigned int preMergeTotalEdges = r1->edgesTillCompletion + r2->edgesTillCompletion;
-
+    printf("r1 : %X r2 : %x", r1.get(),
     Regions::mergeRegions(13, 0, 0, 0);
 
     ASSERT_EQ(Regions::regionTracker[0][0], r2);
