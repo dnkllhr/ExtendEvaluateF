@@ -51,13 +51,20 @@ int Regions::addCroc(unsigned int playerNumber, unsigned int tileID)
     return -1;
 }
 
-#import <iostream>
+#include <iostream>
 void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, unsigned int connectingTileID, unsigned int connectingEdge)
 {
     auto placedSearch = regionTracker.find(placedTileID);
     auto connectingSearch = regionTracker.find(connectingTileID);
 
-    if (placedSearch == regionTracker.end() || connectingSearch == regionTracker.end()) throw std::logic_error("The placed or connecting tile can't be found in the regions.");
+
+    printf("Second head :%X First head : %X\n", ((connectingSearch->second[connectingEdge])->head).get(), ((placedSearch->second[placedEdge])->head).get());
+    printf("Second tail :%X First tail : %X\n", ((connectingSearch->second[connectingEdge])->tail).get(), ((placedSearch->second[placedEdge])->tail).get());
+
+    if (placedSearch == regionTracker.end() || connectingSearch == regionTracker.end())
+    {
+        throw std::logic_error("The placed or connecting tile can't be found in the regions.");
+    }
 
     if(placedSearch != regionTracker.end() && connectingSearch != regionTracker.end())
     {
@@ -69,16 +76,37 @@ void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, u
         (connectingSearch->second[connectingEdge])->edgesTillCompletion += (placedSearch->second[placedEdge])->edgesTillCompletion;
 
         //Take over the linked list.
+        printf("Second tail->next :%X First head : %X\n", ((connectingSearch->second[connectingEdge])->tail).get(), ((placedSearch->second[placedEdge])->head).get());
+
+
         ((connectingSearch->second[connectingEdge])->tail)->next         = (placedSearch->second[placedEdge])->head;
+
+
+        printf("Second tail->next :%X First head : %X\n", ((connectingSearch->second[connectingEdge])->tail).get(), ((placedSearch->second[placedEdge])->head).get());
+        printf("Second tail : %X First tail: %X\n", ((connectingSearch->second[connectingEdge])->tail).get(), ((placedSearch->second[placedEdge])->tail).get());
+
+
         (connectingSearch->second[connectingEdge])->tail                 = (placedSearch->second[placedEdge])->tail;
 
+
+        printf("Second tail : %X First tail: %X\n", ((connectingSearch->second[connectingEdge])->tail).get(), ((placedSearch->second[placedEdge])->tail).get());
+
         //Update Hash entries
-        std::shared_ptr<struct tileNode> iter = (placedSearch->second[placedEdge])->head;
+        std::shared_ptr<struct tileNode> iter = (connectingSearch->second[placedEdge])->head;
         while(iter != NULL)
         {
-            std::cout << iter << std::endl;
-            regionTracker[(placedSearch->first)][placedEdge] = (connectingSearch->second[connectingEdge]);
-            if (iter != iter->next && iter->next != (placedSearch->second[placedEdge])->head) iter = iter->next;
+            std::cout <<"Tile :" << iter->tileID << " at "  << iter << std::endl;
+            regionTracker[iter->tileID][iter->edge] = (connectingSearch->second[connectingEdge]);
+
+            if (iter != iter->next && iter->next != (connectingSearch->second[placedEdge])->head)
+            {
+                iter = iter->next;
+            } 
+            else
+            {
+                break;
+            }
+            //                            iter = iter->next;
         }
         std::cout << std::endl;
     }
