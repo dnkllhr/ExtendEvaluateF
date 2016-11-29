@@ -1,4 +1,4 @@
-#include "../Core/Board/Board.h"
+ #include "../Core/Board/Board.h"
 #include "../Core/BoardManager/Move.h"
 #include "../Core/BoardManager/Coord.h"
 #include "../Core/BoardManager/BoardManager.h"
@@ -177,7 +177,9 @@ TEST(BoardManagerTests, getValidMoves)
     Array<Array<Tile>> tiles = Tile::CreateTiles();
 
     Tile& tile1 = tiles[9][0];//Tile::CreateTileJ(1, tileIdCounter, PreyType::None)[0];
-    Coord coord1 = Coord(76, 75);
+    std::cout << Board::get(Coord(76,76))->getTileName() << std::endl;
+    std::cout << "Tile1 name :" << tile1.getTileName() << std::endl;
+    Coord coord1 = Coord(76, 77);
     const Move& move1 = Move(tile1, coord1, 2, (unsigned int) 1); // rotation = 2, meeple at edge 1
 
     std::vector<Move> validMoves1 = BoardManager::getValidMoves(tile1, 1);
@@ -277,7 +279,7 @@ TEST(BoardManagerTests, getValidMoves)
     EXPECT_TRUE(tile1.isPlaced());
 
     Tile& tile2 = tiles[22][0]; // V
-    Coord coord2 = Coord(77, 75);
+    Coord coord2 = Coord(75, 77);
     Move move2 = Move(tile2, coord2, 0, true); // rotation = 0, croc
 
     std::vector<Move> validMoves2 = BoardManager::getValidMoves(tile2, 2);
@@ -310,7 +312,7 @@ TEST(BoardManagerTests, getValidMoves)
     BoardManager::makeMove(move2, 2);
 
     Tile& tile3 = tiles[11][0]; // K
-    Coord coord3 = Coord(77, 76);
+    Coord coord3 = Coord(75, 76);
     Move move3 = Move(tile3, coord3, 2, (unsigned int) 0); // rotation = 2, meeple at edge 0
 
     std::vector<Move> validMoves3 = BoardManager::getValidMoves(tile3, 1);

@@ -92,7 +92,7 @@ void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, u
 
         (connectingSearch->second[connectingEdge])->tail                 = (placedSearch->second[placedEdge])->tail;
 
-        // Debug check to make sure we can iterate through all elements in the list
+        //Debug check to make sure we can iterate through all elements in the list
         std::shared_ptr<struct tileNode> tmpIter = (connectingSearch->second[connectingEdge])->head;
         while(tmpIter != NULL)
         {
@@ -100,7 +100,7 @@ void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, u
             tmpIter = tmpIter->next;
         }
         std::cout << "End!" << std::endl << std::endl;
-
+        
         //Update Hash entries
         std::shared_ptr<struct tileNode> iter = (placedSearch->second[placedEdge])->head;
         while(iter != NULL)
@@ -162,6 +162,9 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
 
         if (boarderingTiles[side] != NULL) {
             unsigned int boarderingId = boarderingTiles[side]->getId();
+
+            printf("Found tileID : %d at side %d\n", boarderingTiles[side]->getId(), edge);
+
             newRegions[edge] = (*tracker)[boarderingId][correspondingEdge];
 
             if (edge % countPerSide == centerEdge)
@@ -194,7 +197,7 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
             else if (newRegions[otherEdge] == newRegions[edge]) continue;
             else if (newRegions[otherEdge] == NULL) {
                 std::cout << "Extend Region with Edge: " << edge << " with Edge: " << otherEdge << std::endl;
-                std::cout << "Edge " << edge << " Type: " << newTile.getTerrainType(edge) << ". Edge " << otherEdge << " Type: " << newTile.getTerrainType(otherEdge) << std::endl;
+                std::cout << "Edge " << edge << " Type: " << newTile.getTerrainType(edge) << ". Edge " << otherEdge << " Type: " << newTile.getTerrainType(otherEdge) << std::endl << std::endl;
 
                 newRegions[otherEdge] = newRegions[edge];
 
@@ -212,7 +215,7 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
             }
             else {
                 std::cout << "Merge Edge: " << edge << " with Edge: " << otherEdge << std::endl;
-                std::cout << "Edge " << edge << " Type: " << (newTile.getTerrainType(edge)) << ". Edge " << otherEdge << " Type: " << (newTile.getTerrainType(otherEdge)) << std::endl;
+                std::cout << "Edge " << edge << " Type: " << (newTile.getTerrainType(edge)) << ". Edge " << otherEdge << " Type: " << (newTile.getTerrainType(otherEdge)) << std::endl << std::endl;
                 mergeRegions(id, edge, id, otherEdge);
             }
         }

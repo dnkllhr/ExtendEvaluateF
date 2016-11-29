@@ -43,7 +43,6 @@ class Regions
         static void clearRegionTracker();
         static void clearOwnerMeeples();
 #else
-
     private:
 #endif
         static std::shared_ptr<struct regionSet> createRegion(unsigned int tileID, unsigned int edge, TerrainType type);

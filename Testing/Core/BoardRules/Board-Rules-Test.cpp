@@ -26,7 +26,7 @@ TEST(RegionTests, mergeRegions)
     std::shared_ptr<struct regionSet > *regionArray = new std::shared_ptr< struct regionSet>[13];
     for(int i = 0; i < 13; i++)
     {
-        printf("TileNode %d at %X\n", i, currentNode.get());
+        //printf("TileNode %d at %X\n", i, currentNode.get());
         currentNode->tileID = i;
         currentNode->edge = i;
         if (i + 1 < 13)
@@ -46,7 +46,7 @@ TEST(RegionTests, mergeRegions)
     regionArray = new std::shared_ptr< struct regionSet>[13];
     for(int i = 0; i < 13; i++)
     {
-        printf("TileNode %d at %X\n", i + 13, currentNode.get());
+        //printf("TileNode %d at %X\n", i + 13, currentNode.get());
         currentNode->tileID = i + 13;
         currentNode->edge = i;
         if (i + 1 < 13)
@@ -61,7 +61,7 @@ TEST(RegionTests, mergeRegions)
     r2->tail = currentNode;
 
     unsigned int preMergeTotalEdges = r1->edgesTillCompletion + r2->edgesTillCompletion;
-    printf("r1 : %X r2 : %x\n", r1.get(), r2.get());
+    //printf("r1 : %X r2 : %x\n", r1.get(), r2.get());
     Regions::mergeRegions(0, 0, 13, 0);
 
     ASSERT_EQ(Regions::regionTracker[0][0], r2);
