@@ -19,7 +19,22 @@ buffer = "JOIN "+tournamentPassword
 s.send(buffer)
 print buffer
 
-print s.recv(1024)
+print s.recv(1024) #HELLO!
+
+buffer = "I AM " + username + password # space in between username and password?
+s.send(buffer)
+print buffer
+
+print s.recv(1024) #WELCOME <pid> PLEASE WAIT FOR THE NEXT CHALLENGE
+
+#CHALLENGE PROTOCOL
+#	**with back to back messages and too big of a buffer, may end up reading the start of the following message**
+print s.recv(1024) #NEW CHALLENGE <cid> YOU WILL PLAY <rounds> MATCH
+print s.recv(1024) #BEGIN ROUND <rid> OF <rounds>
+print s.recv(1024) #YOUR OPPONENT IS PLAYER <pid>
+print s.recv(1024) #STARTING TILE IS <tile> AT <x> <y> <orientation>
+print s.recv(1024) #THE REMAINING <number_tiles> TILES ARE [ <tiles> ]
+print s.recv(1024) #MATCH BEGINS IN <timeplan> SECONDS 
 
 
 s.close
