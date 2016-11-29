@@ -64,7 +64,7 @@ void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, u
         while(iter != NULL)
         {
             regionTracker[(placedSearch->first)][placedEdge] = (connectingSearch->second[connectingEdge]);
-            iter = iter->next;
+            if (iter != iter->next && iter->next != (placedSearch->second[placedEdge])->head) iter = iter->next;
         }
     }
 }
