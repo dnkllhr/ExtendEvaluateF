@@ -42,7 +42,8 @@ TEST(RegionTests, mergeRegions)
 
 
     r2->edgesTillCompletion = 2;
-    r2->head = currentNode;
+    r2->head = std::shared_ptr<struct tileNode>(new tileNode);
+    currentNode = r2->head;
     regionArray = new std::shared_ptr< struct regionSet>[13];
     for(int i = 0; i < 13; i++)
     {
@@ -52,17 +53,21 @@ TEST(RegionTests, mergeRegions)
         currentNode->next = std::shared_ptr<struct tileNode>(new tileNode);
         currentNode = currentNode->next;
 
-        Regions::regionTracker[i + 13] = regionArray;
+        Regions::regionTracker[i + 13] = regionArray;   
         regionArray[i] = r2;
     }
     r2->tail = currentNode;
     currentNode->next = NULL;
 
-    Regions::mergeRegions(2, 11, 7, 11);
+    unsigned int preMergeTotalEdges = r1->edgesTillCompletion + r2->edgesTillCompletion;
 
+    Regions::mergeRegions(13, 0, 0, 0);
+
+    ASSERT_EQ(Regions::regionTracker[0][0], r2);
+    ASSERT_EQ(Regions::regionTracker[13][0], r2);    
     ASSERT_NE(r1->head.get(), r2->head.get());
     ASSERT_EQ(r1->tail.get(), r2->tail.get());
-    ASSERT_EQ(Regions::regionTracker[10], Regions::regionTracker[15]);
+    ASSERT_EQ(r2->edgesTillCompletion, preMergeTotalEdges);
 
 }
 /*
