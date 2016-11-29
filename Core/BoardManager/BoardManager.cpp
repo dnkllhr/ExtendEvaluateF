@@ -116,7 +116,7 @@ std::vector<Move> BoardManager::getValidMoves(const Tile& tile, unsigned int pla
 {
     std::vector<Move> validMoves;
     std::unordered_set<unsigned int> availableLocations = Board::getAvailableLocations();
-    unsigned int daveTigerOrder[9] = { 0, 1, 2, 10, 12, 4, 8, 7, 5 };
+    const unsigned int daveTigerOrder[9] = { 0, 1, 2, 10, 12, 4, 8, 7, 5 };
 
     for(const int gridId : availableLocations)
     {

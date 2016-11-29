@@ -8,7 +8,23 @@ unsigned int Regions::availableMeeples[2] = { MEEPLES_PER_PLAYER, MEEPLES_PER_PL
 struct croc Regions::ownerCrocs[] = {};
 unsigned int Regions::availableCrocs[2] = { CROCS_PER_PLAYER, CROCS_PER_PLAYER };
 
-#import <iostream>
+#include <iostream>
+
+std::ostream& operator<<(std::ostream& os, TerrainType t)
+{
+    switch(t)
+    {
+        case TerrainType::Grass: os << "Grass";    break;
+        case TerrainType::Road: os << "Road"; break;
+        case TerrainType::Castle: os << "Castle";  break;
+        case TerrainType::Church: os << "Church";   break;
+        case TerrainType::Fork: os << "Fork";   break;
+        default: os << "Invalid TerrainType";
+    }
+
+    return os;
+}
+
 int Regions::addCroc(unsigned int playerNumber, unsigned int tileID)
 {
     unsigned int i;
@@ -52,15 +68,10 @@ int Regions::addCroc(unsigned int playerNumber, unsigned int tileID)
     return -1;
 }
 
-#include <iostream>
 void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, unsigned int connectingTileID, unsigned int connectingEdge)
 {
     auto placedSearch = regionTracker.find(placedTileID);
     auto connectingSearch = regionTracker.find(connectingTileID);
-
-
-    printf("Second head :%X First head : %X\n", ((connectingSearch->second[connectingEdge])->head).get(), ((placedSearch->second[placedEdge])->head).get());
-    printf("Second tail :%X First tail : %X\n", ((connectingSearch->second[connectingEdge])->tail).get(), ((placedSearch->second[placedEdge])->tail).get());
 
     if (placedSearch == regionTracker.end() || connectingSearch == regionTracker.end())
     {
@@ -77,27 +88,15 @@ void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, u
         (connectingSearch->second[connectingEdge])->edgesTillCompletion += (placedSearch->second[placedEdge])->edgesTillCompletion;
 
         //Take over the linked list.
-        printf("Second tail->next :%X First head : %X\n", ((connectingSearch->second[connectingEdge])->tail->next).get(), ((placedSearch->second[placedEdge])->head).get());
-
-
         ((connectingSearch->second[connectingEdge])->tail)->next         = (placedSearch->second[placedEdge])->head;
-
-
-        printf("Second tail->next :%X First head : %X\n", ((connectingSearch->second[connectingEdge])->tail).get(), ((placedSearch->second[placedEdge])->head).get());
-        printf("Second tail : %X First tail: %X\n", ((connectingSearch->second[connectingEdge])->tail).get(), ((placedSearch->second[placedEdge])->tail).get());
-
 
         (connectingSearch->second[connectingEdge])->tail                 = (placedSearch->second[placedEdge])->tail;
 
-
-        printf("Second tail : %X First tail: %X\n", ((connectingSearch->second[connectingEdge])->tail).get(), ((placedSearch->second[placedEdge])->tail).get());
-
         // Debug check to make sure we can iterate through all elements in the list
         std::shared_ptr<struct tileNode> tmpIter = (connectingSearch->second[connectingEdge])->head;
-        printf("Second head :%X First head : %X\n", ((connectingSearch->second[connectingEdge])->head).get(), ((placedSearch->second[placedEdge])->head).get());
         while(tmpIter != NULL)
         {
-            std::cout <<"Tile : " << tmpIter->tileID << " at "  << tmpIter << std::endl;
+            std::cout <<"Tile Id: " << tmpIter->tileID << " Edge: " << tmpIter->edge << " at "  << tmpIter << std::endl;
             tmpIter = tmpIter->next;
         }
         std::cout << "End!" << std::endl << std::endl;
@@ -114,6 +113,7 @@ void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, u
 }
 
 std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, const Tile ** allBoarderingTiles, std::unordered_map<unsigned int, std::shared_ptr<struct regionSet> *> * trackerToUse) {
+    std::cout << "Add Connection Tile: " << newTile.getId() << std::endl;
     unsigned int numOfSides = newTile.getNumberOfSides();
     unsigned int countPerSide = newTile.getCountPerSide();
     unsigned int totalEdges = numOfSides * countPerSide;
@@ -193,6 +193,9 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
             if (!newTile.isConnected(edge, otherEdge)) continue;
             else if (newRegions[otherEdge] == newRegions[edge]) continue;
             else if (newRegions[otherEdge] == NULL) {
+                std::cout << "Extend Region with Edge: " << edge << " with Edge: " << otherEdge << std::endl;
+                std::cout << "Edge " << edge << " Type: " << newTile.getTerrainType(edge) << ". Edge " << otherEdge << " Type: " << newTile.getTerrainType(otherEdge) << std::endl;
+
                 newRegions[otherEdge] = newRegions[edge];
 
                 if (otherEdge % countPerSide == centerEdge)
@@ -204,15 +207,13 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
                 node->preyCounts[static_cast<int>(newTile.getPrey())]++;
                 node->previous = newRegions[otherEdge]->tail;
 
-//------------- Making the below two assignments results in the endless loop ---------------
-
                 newRegions[otherEdge]->tail->next = node;
                 newRegions[otherEdge]->tail = node;
-
-//-------------------------------------------------------------------------------------------
             }
             else {
-                    mergeRegions(id, edge, id, otherEdge);
+                std::cout << "Merge Edge: " << edge << " with Edge: " << otherEdge << std::endl;
+                std::cout << "Edge " << edge << " Type: " << (newTile.getTerrainType(edge)) << ". Edge " << otherEdge << " Type: " << (newTile.getTerrainType(otherEdge)) << std::endl;
+                mergeRegions(id, edge, id, otherEdge);
             }
         }
     }
