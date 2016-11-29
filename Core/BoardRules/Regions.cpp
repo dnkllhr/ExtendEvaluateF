@@ -19,7 +19,7 @@ int Regions::addCroc(unsigned int playerNumber, unsigned int tileID)
         {
             valid = true;
 // -- logically we should break and use this croc index i? --
-            break; 
+            break;
 // ----------------------------------------------------------
         }
     }
@@ -32,7 +32,7 @@ int Regions::addCroc(unsigned int playerNumber, unsigned int tileID)
     {
         ownerCrocs[i].inUse = true;
         ownerCrocs[i].ownedRegions = (regionTracker.find(tileID))->second;
-        
+
         for(int j = 0; j < NUM_TILE_EDGES + 1; j++)
         {
             if(ownerCrocs[i].ownedRegions[j] == NULL)
@@ -45,13 +45,14 @@ int Regions::addCroc(unsigned int playerNumber, unsigned int tileID)
             }
         }
         Regions::availableCrocs[playerNumber - 1]--;
+
         return 0;
     }
 
     return -1;
 }
 
-#import <iostream>
+#include <iostream>
 void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, unsigned int connectingTileID, unsigned int connectingEdge)
 {
     auto placedSearch = regionTracker.find(placedTileID);
@@ -80,7 +81,7 @@ void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, u
             regionTracker[(placedSearch->first)][placedEdge] = (connectingSearch->second[connectingEdge]);
             if (iter != iter->next && iter->next != (placedSearch->second[placedEdge])->head) iter = iter->next;
         }
-        std::cout << std::endl;
+        std::cout << "End!" << std::endl << std::endl;
     }
 }
 
