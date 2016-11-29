@@ -167,7 +167,6 @@ TEST(BoardManagerTests, getTileStack)
 
 TEST(BoardManagerTests, getValidMoves)
 {
-    /*
     BoardManager::gameInit();
 
     unsigned int tileIdCounter = 100;
@@ -304,7 +303,7 @@ TEST(BoardManagerTests, getValidMoves)
         }
 
         std::string actualValidMove = oss.str();
-        std::cout << actualValidMove << std::endl;
+        //std::cout << actualValidMove << std::endl;
         //EXPECT_EQ(actualValidMove, expectedValidMoves1[i]);
     }
 
@@ -343,9 +342,6 @@ TEST(BoardManagerTests, getValidMoves)
         }
         //EXPECT_EQ(actualValidMove, expectedValidMoves1[i]);
     }
-    */
-
-    printf("WARNING  getValidMoves test commented out\n");
 }
 
 // Should this also test the calls of Regions::addConection,addMeeple,addCroc, as applicable?
