@@ -68,7 +68,7 @@ TEST(RegionTests, mergeRegions)
 /*
 
 TEST(RegionTests, addConnection) {
-    
+
     unsigned int startID = 0;
     Tile *currentTile;
     Move *currentMove;
@@ -187,157 +187,157 @@ TEST(RegionTests, addConnection) {
 }
 
 TEST(RulesTest, ScoreChurch) {
-	unsigned int startID = 0;
-	Tile *currentTile;
-	Move *currentMove;
-	Coord *currentCoord;
-	const Tile **surroundingTiles;
+    unsigned int startID = 0;
+    Tile *currentTile;
+    Move *currentMove;
+    Coord *currentCoord;
+    const Tile **surroundingTiles;
 
-	unsigned int expectedScore = 1;
+    unsigned int expectedScore = 1;
 
-	currentTile = &(Tile::CreateTileB(1, startID, PreyType::None)[0]);
-	currentTile->setRotation(0);
-	testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
-	currentTile->placeTile();
+    currentTile = &(Tile::CreateTileB(1, startID, PreyType::None)[0]);
+    currentTile->setRotation(0);
+    testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
+    currentTile->placeTile();
 
-	Coord *churchCoord = new Coord(72, 72);
+    Coord *churchCoord = new Coord(72, 72);
 
-	unsigned int currentTileID = currentTile->getId();
-	unsigned int tilesSurrounded = BoardManager::isSurrounded(currentTileID);
+    unsigned int currentTileID = currentTile->getId();
+    unsigned int tilesSurrounded = BoardManager::isSurrounded(currentTileID);
 
-	unsigned int actualScore = GameRules::scoreChurch(tilesSurrounded, true);
-	ASSERT_EQ(actualScore, 0);
-	actualScore = GameRules::scoreChurch(tilesSurrounded, false);
-	ASSERT_EQ(actualScore,1);
+    unsigned int actualScore = GameRules::scoreChurch(tilesSurrounded, true);
+    ASSERT_EQ(actualScore, 0);
+    actualScore = GameRules::scoreChurch(tilesSurrounded, false);
+    ASSERT_EQ(actualScore,1);
 
-	for (int i = -1; i <= 1; i++)
-	{
-		for (int j = -1; j <= 1; j++)
-		{
-			if (i == 0 && j == 0)
-			{
-				break; // avoid overwriting the church tile
-			}
-			else
-			{
-				// place field tiles around church tile
-				currentTile = &(Tile::CreateTileY(1, startID, PreyType::None)[0]);
-				currentTile->setRotation(0);
-				testingTilePlacement(&startID, (churchCoord->getX() + i), (churchCoord->getY() + j), currentTile, surroundingTiles);
-				currentTile->placeTile();
+    for (int i = -1; i <= 1; i++)
+    {
+        for (int j = -1; j <= 1; j++)
+        {
+            if (i == 0 && j == 0)
+            {
+                break; // avoid overwriting the church tile
+            }
+            else
+            {
+                // place field tiles around church tile
+                currentTile = &(Tile::CreateTileY(1, startID, PreyType::None)[0]);
+                currentTile->setRotation(0);
+                testingTilePlacement(&startID, (churchCoord->getX() + i), (churchCoord->getY() + j), currentTile, surroundingTiles);
+                currentTile->placeTile();
 
-				expectedScore++;
-				currentTileID = currentTile->getId();
-				tilesSurrounded = BoardManager::isSurrounded(currentTileID);
+                expectedScore++;
+                currentTileID = currentTile->getId();
+                tilesSurrounded = BoardManager::isSurrounded(currentTileID);
 
-				actualScore = GameRules::scoreChurch(tilesSurrounded, true);
+                actualScore = GameRules::scoreChurch(tilesSurrounded, true);
 
-				// just placed final boardering tile, actuallyScore set to true should return full value
-				if (i == 1 && j == 1)
-				{
-					ASSERT_EQ(actualScore,expectedScore);
-				}
+                // just placed final boardering tile, actuallyScore set to true should return full value
+                if (i == 1 && j == 1)
+                {
+                    ASSERT_EQ(actualScore,expectedScore);
+                }
 
-				// church isn't completely surrounded, actuallyScore set to true should return 0
-				else
-				{
-					ASSERT_EQ(actualScore,0);
-				}
-				actualScore = GameRules::scoreChurch(tilesSurrounded, false);
-				ASSERT_EQ(actualScore,expectedScore);
-			}
-		}
-	}
+                // church isn't completely surrounded, actuallyScore set to true should return 0
+                else
+                {
+                    ASSERT_EQ(actualScore,0);
+                }
+                actualScore = GameRules::scoreChurch(tilesSurrounded, false);
+                ASSERT_EQ(actualScore,expectedScore);
+            }
+        }
+    }
 }
 
 TEST(RulesTest, ScoreCastle1) {
-	unsigned int startID = 0;
-	Tile *currentTile;
-	Move *currentMove;
-	Coord *currentCoord;
-	const Tile **surroundingTiles;
+    unsigned int startID = 0;
+    Tile *currentTile;
+    Move *currentMove;
+    Coord *currentCoord;
+    const Tile **surroundingTiles;
 
-	currentTile = &(Tile::CreateTileD(1, startID, PreyType::Deer)[0]);
-	currentTile->setRotation(0);
-	testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
-	currentTile->placeTile();
+    currentTile = &(Tile::CreateTileD(1, startID, PreyType::Deer)[0]);
+    currentTile->setRotation(0);
+    testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
+    currentTile->placeTile();
 
-	unsigned int currentTileID = currentTile->getId();
-	std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
+    unsigned int currentTileID = currentTile->getId();
+    std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
-	unsigned int actualScore = GameRules::scoreCastle(*currentSet, true, false);
-	ASSERT_EQ(actualScore,0);
-	actualScore = GameRules::scoreCastle(*currentSet, false, false);
-	ASSERT_EQ(actualScore,2);
+    unsigned int actualScore = GameRules::scoreCastle(*currentSet, true, false);
+    ASSERT_EQ(actualScore,0);
+    actualScore = GameRules::scoreCastle(*currentSet, false, false);
+    ASSERT_EQ(actualScore,2);
 
-	// add another tile to extend the lake region
-	currentTile = &(Tile::CreateTileK(1, startID, PreyType::Boar)[0]);
-	currentTile->setRotation(2);
-	testingTilePlacement(&startID, 73, 72, currentTile, surroundingTiles);
-	currentTile->placeTile();
+    // add another tile to extend the lake region
+    currentTile = &(Tile::CreateTileK(1, startID, PreyType::Boar)[0]);
+    currentTile->setRotation(2);
+    testingTilePlacement(&startID, 73, 72, currentTile, surroundingTiles);
+    currentTile->placeTile();
 
-	currentTileID = currentTile->getId();
-	currentSet = Regions::getRegions(currentTileID);
+    currentTileID = currentTile->getId();
+    currentSet = Regions::getRegions(currentTileID);
 
-	actualScore = GameRules::scoreCastle(*currentSet, true, false);
-	ASSERT_EQ(actualScore,12);
-	actualScore = GameRules::scoreCastle(*currentSet, false, false);
-	ASSERT_EQ(actualScore,12);
+    actualScore = GameRules::scoreCastle(*currentSet, true, false);
+    ASSERT_EQ(actualScore,12);
+    actualScore = GameRules::scoreCastle(*currentSet, false, false);
+    ASSERT_EQ(actualScore,12);
 
 }
 
 TEST(RulesTest, ScoreCastle2) {
-	unsigned int startID = 0;
-	Tile *currentTile;
-	Move *currentMove;
-	Coord *currentCoord;
-	const Tile **surroundingTiles;
+    unsigned int startID = 0;
+    Tile *currentTile;
+    Move *currentMove;
+    Coord *currentCoord;
+    const Tile **surroundingTiles;
 
-	currentTile = &(Tile::CreateTileI(1, startID, PreyType::None)[0]);
-	currentTile->setRotation(0);
-	testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
-	currentTile->placeTile();
+    currentTile = &(Tile::CreateTileI(1, startID, PreyType::None)[0]);
+    currentTile->setRotation(0);
+    testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
+    currentTile->placeTile();
 
-	currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0]);
-	currentTile->setRotation(0);
-	testingTilePlacement(&startID, 71, 73, currentTile, surroundingTiles);
-	currentTile->placeTile();
+    currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0]);
+    currentTile->setRotation(0);
+    testingTilePlacement(&startID, 71, 73, currentTile, surroundingTiles);
+    currentTile->placeTile();
 
-	currentTile = &(Tile::CreateTileC(1, startID, PreyType::None)[0]);
-	currentTile->setRotation(0);
-	testingTilePlacement(&startID, 72, 73, currentTile, surroundingTiles);
-	currentTile->placeTile();
+    currentTile = &(Tile::CreateTileC(1, startID, PreyType::None)[0]);
+    currentTile->setRotation(0);
+    testingTilePlacement(&startID, 72, 73, currentTile, surroundingTiles);
+    currentTile->placeTile();
 
-	currentTile = &(Tile::CreateTileE(1, startID, PreyType::None)[0]);
-	currentTile->setRotation(0);
-	testingTilePlacement(&startID, 72, 74, currentTile, surroundingTiles);
-	currentTile->placeTile();
+    currentTile = &(Tile::CreateTileE(1, startID, PreyType::None)[0]);
+    currentTile->setRotation(0);
+    testingTilePlacement(&startID, 72, 74, currentTile, surroundingTiles);
+    currentTile->placeTile();
 
-	currentTile = &(Tile::CreateTileN(1, startID, PreyType::None)[0]);
-	currentTile->setRotation(3);
-	testingTilePlacement(&startID, 73, 73, currentTile, surroundingTiles);
-	currentTile->placeTile();
+    currentTile = &(Tile::CreateTileN(1, startID, PreyType::None)[0]);
+    currentTile->setRotation(3);
+    testingTilePlacement(&startID, 73, 73, currentTile, surroundingTiles);
+    currentTile->placeTile();
 
-	unsigned int currentTileID = currentTile->getId();
-	std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
+    unsigned int currentTileID = currentTile->getId();
+    std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
-	unsigned int actualScore = GameRules::scoreCastle(*currentSet, true, false);
-	ASSERT_EQ(actualScore,0);
-	actualScore = GameRules::scoreCastle(*currentSet, false, false);
-	ASSERT_EQ(actualScore,10);
-	
-	currentTile = &(Tile::CreateTileN(1, startID, PreyType::None)[0]);
-	currentTile->setRotation(2);
-	testingTilePlacement(&startID, 73, 73, currentTile, surroundingTiles);
-	currentTile->placeTile();
+    unsigned int actualScore = GameRules::scoreCastle(*currentSet, true, false);
+    ASSERT_EQ(actualScore,0);
+    actualScore = GameRules::scoreCastle(*currentSet, false, false);
+    ASSERT_EQ(actualScore,10);
+    
+    currentTile = &(Tile::CreateTileN(1, startID, PreyType::None)[0]);
+    currentTile->setRotation(2);
+    testingTilePlacement(&startID, 73, 73, currentTile, surroundingTiles);
+    currentTile->placeTile();
 
-	currentTileID = currentTile->getId();
-	currentSet = Regions::getRegions(currentTileID);
+    currentTileID = currentTile->getId();
+    currentSet = Regions::getRegions(currentTileID);
 
-	actualScore = GameRules::scoreCastle(*currentSet, true, false);
-	ASSERT_EQ(actualScore,24);
-	actualScore = GameRules::scoreCastle(*currentSet, false, false);
-	ASSERT_EQ(actualScore,24);
+    actualScore = GameRules::scoreCastle(*currentSet, true, false);
+    ASSERT_EQ(actualScore,24);
+    actualScore = GameRules::scoreCastle(*currentSet, false, false);
+    ASSERT_EQ(actualScore,24);
 }
 
 TEST(RulesTest, scoreRoad)
@@ -654,42 +654,42 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
 }
 
 TEST(RulesTest, getCurrentScore) {
-	unsigned int startID = 0;
-	Tile *currentTile;
-	Move *currentMove;
-	Coord *currentCoord;
-	const Tile **surroundingTiles;
+    unsigned int startID = 0;
+    Tile *currentTile;
+    Move *currentMove;
+    Coord *currentCoord;
+    const Tile **surroundingTiles;
 
-	currentTile = &(Tile::CreateTileD(1, startID, PreyType::None)[0]);
-	currentTile->setRotation(0);
-	testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
-	currentTile->placeTile();
+    currentTile = &(Tile::CreateTileD(1, startID, PreyType::None)[0]);
+    currentTile->setRotation(0);
+    testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
+    currentTile->placeTile();
 
-	unsigned int currentTileId = currentTile->getId();
-	std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileId);
+    unsigned int currentTileId = currentTile->getId();
+    std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileId);
 
-	unsigned int edge = 4; // uncompleted city on right side of tile
-	unsigned int tilesSurrounded = BoardManager::isSurrounded(currentTileId);
+    unsigned int edge = 4; // uncompleted city on right side of tile
+    unsigned int tilesSurrounded = BoardManager::isSurrounded(currentTileId);
 
-	unsigned int actualScore = GameRules::getCurrentScore(currentSet, edge, currentTile, tilesSurrounded);
-	unsigned int expectedScore = 1; // uncompleted city on right side of tile
+    unsigned int actualScore = GameRules::getCurrentScore(currentSet, edge, currentTile, tilesSurrounded);
+    unsigned int expectedScore = 1; // uncompleted city on right side of tile
 
-	ASSERT_EQ(actualScore, expectedScore);
+    ASSERT_EQ(actualScore, expectedScore);
 
-	currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0]);
-	currentTile->setRotation(2);
-	testingTilePlacement(&startID, 73, 72, currentTile, surroundingTiles);
-	currentTile->placeTile();
+    currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0]);
+    currentTile->setRotation(2);
+    testingTilePlacement(&startID, 73, 72, currentTile, surroundingTiles);
+    currentTile->placeTile();
 
-	currentTileId = currentTile->getId();
-	currentSet = Regions::getRegions(currentTileId);
-	edge = 10; // test left side of tile
-	tilesSurrounded = BoardManager::isSurrounded(currentTileId);
+    currentTileId = currentTile->getId();
+    currentSet = Regions::getRegions(currentTileId);
+    edge = 10; // test left side of tile
+    tilesSurrounded = BoardManager::isSurrounded(currentTileId);
 
-	actualScore = GameRules::getCurrentScore(currentSet, edge, currentTile, tilesSurrounded);
-	expectedScore = 8; // 8 points for a completed city adjacent to 1 unique prey
+    actualScore = GameRules::getCurrentScore(currentSet, edge, currentTile, tilesSurrounded);
+    expectedScore = 8; // 8 points for a completed city adjacent to 1 unique prey
 
-	ASSERT_EQ(actualScore, expectedScore);
+    ASSERT_EQ(actualScore, expectedScore);
 }
 
 TEST(RulesTest, validTilePlacement)

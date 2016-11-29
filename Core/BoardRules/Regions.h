@@ -70,8 +70,8 @@ struct tileNode
 {
     tileNode() {
         preyCounts = new unsigned int[NUM_PREY];
-        tileID = 0;
-        edge = 0;
+        tileID = -1;
+        edge = -1;
     };
 
     tileNode(const struct tileNode& other) : tileID(other.tileID), edge(other.edge) {
@@ -94,8 +94,8 @@ struct tileNode
         delete[] preyCounts;
     }
 
-    unsigned int tileID;
-    unsigned int edge;
+    int tileID;
+    int edge;
     unsigned int * preyCounts;
     std::shared_ptr<struct tileNode> previous;
     std::shared_ptr<struct tileNode> next;

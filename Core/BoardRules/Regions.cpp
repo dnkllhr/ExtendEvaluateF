@@ -94,20 +94,12 @@ void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, u
 
         //Update Hash entries
         std::shared_ptr<struct tileNode> iter = (connectingSearch->second[placedEdge])->head;
-        while(iter != NULL)
+        while(iter->tileID >= 0)
         {
             std::cout <<"Tile :" << iter->tileID << " at "  << iter << std::endl;
             regionTracker[iter->tileID][iter->edge] = (connectingSearch->second[connectingEdge]);
 
-            if (iter != iter->next && iter->next != (connectingSearch->second[placedEdge])->head)
-            {
-                iter = iter->next;
-            } 
-            else
-            {
-                break;
-            }
-            //                            iter = iter->next;
+            iter = iter->next;
         }
         std::cout << "End!" << std::endl << std::endl;
     }
