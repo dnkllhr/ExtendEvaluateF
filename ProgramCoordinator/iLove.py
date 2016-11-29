@@ -1,10 +1,40 @@
 #!/usr/bin/python           # This is client.py file
 import sys
 import socket               # Import socket module
+from ctypes import *
 
 s = socket.socket()         # Create a socket object
 host = sys.argv[1]          # Get local machine name
 port = int(sys.argv[2])     # Reserve a port for your service.
+
+class TILEMESSAGE(Structure):
+	_field_ = [	("length", c_int),
+				("tileStack", c_char * 401)]
+
+class MOVEMESSAGE(Structure):
+	_field_ = [	("pid", c_int),
+				("player", c_uint),
+				("tile", c_char * 6),
+				("placeable", c_byte),
+				("x", c_uint),
+				("y", c_uint),
+				("rotationClockwise", c_uint),
+				("meepleType", c_int),
+				("pickupMeeple", c_byte),
+				("passTurn", c_byte),
+				("meepleZone", c_int)]
+
+class WHOAMIMESSAGE(Structure):
+	_field_ = [("playerNumber", c_uint)]
+
+class DATAMESSAGE(Union):
+	_field_ = [	("tile", TILEMESSAGE),
+				("move", MOVEMESSAGE),
+				("who", WHOAMIMESSAGE)]
+
+class GAMEMESSAGE(Structure):
+	_field_ = [ ("type", c_int),
+				("data", DATAMESSAGE)]
 
 s.connect((host, port))
 print s.recv(1024)      #THIS IS SPARTA
@@ -69,3 +99,33 @@ for i in range(0, numRounds):
 
 
 s.close
+
+
+
+
+'''
+
+CODY'S CODE FOR BULDING A MESSAGE
+
+
+<<<<<<< Updated upstream
+s.close
+=======
+tileStackString = s.recv(1024) #THE REMAINING <number_tiles> TILES ARE [ <tiles> ]
+print tileStackString
+tokenizedInput = tileStackString.split(' ')
+
+start = False
+buildMe = ""
+#Find the starting list of tiles
+for token in tokenizedInput:
+    if(token == '['):
+        start = True
+    else if(token == ']'):
+        start = False
+    if(start):
+        buildMe += token
+
+currentData = TILEMESSAGE(80, buildMe)
+msg = GAMEMESSAGE(0, currentData)
+...
