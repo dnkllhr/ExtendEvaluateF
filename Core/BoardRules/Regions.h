@@ -72,6 +72,8 @@ struct tileNode
         preyCounts = new unsigned int[NUM_PREY];
         tileID = -1;
         edge = -1;
+        previous = std::shared_ptr<struct tileNode>(NULL);
+        next = std::shared_ptr<struct tileNode>(NULL);
     };
 
     tileNode(const struct tileNode& other) : tileID(other.tileID), edge(other.edge) {

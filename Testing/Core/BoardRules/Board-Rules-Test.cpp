@@ -4,7 +4,7 @@
 #include "../Core/BoardRules/Rules.h"
 
 #include "gtest/gtest.h"
-/*
+
 void testingTilePlacement(unsigned int coordX, unsigned int coordY, Tile& currentTile, const Tile **surroundingTiles)
 {
     Coord *currentCoord = new Coord(coordX, coordY); //Center
@@ -13,8 +13,6 @@ void testingTilePlacement(unsigned int coordX, unsigned int coordY, Tile& curren
     surroundingTiles = Board::getBorderingTiles(currentTile);
     Regions::addConnection(currentTile, surroundingTiles);
 }
-*/
-
 
 TEST(RegionTests, mergeRegions) 
 {
@@ -31,15 +29,16 @@ TEST(RegionTests, mergeRegions)
         printf("TileNode %d at %X\n", i, currentNode.get());
         currentNode->tileID = i;
         currentNode->edge = i;
-        currentNode->next = std::shared_ptr<struct tileNode>(new tileNode);
-        currentNode = currentNode->next;
+        if (i + 1 < 13)
+        {
+            currentNode->next = std::shared_ptr<struct tileNode>(new tileNode);
+            currentNode = currentNode->next;
+        }
 
         Regions::regionTracker[i] = regionArray;
         regionArray[i] = r1;
     }
     r1->tail = currentNode;
-    currentNode->next = NULL;
-
 
     r2->edgesTillCompletion = 2;
     r2->head = std::shared_ptr<struct tileNode>(new tileNode);
@@ -50,18 +49,20 @@ TEST(RegionTests, mergeRegions)
         printf("TileNode %d at %X\n", i + 13, currentNode.get());
         currentNode->tileID = i + 13;
         currentNode->edge = i;
-        currentNode->next = std::shared_ptr<struct tileNode>(new tileNode);
-        currentNode = currentNode->next;
+        if (i + 1 < 13)
+        {
+            currentNode->next = std::shared_ptr<struct tileNode>(new tileNode);
+            currentNode = currentNode->next;
+        }
 
         Regions::regionTracker[i + 13] = regionArray;   
         regionArray[i] = r2;
     }
     r2->tail = currentNode;
-    currentNode->next = NULL;
 
     unsigned int preMergeTotalEdges = r1->edgesTillCompletion + r2->edgesTillCompletion;
-    printf("r1 : %X r2 : %x", r1.get(),
-    Regions::mergeRegions(13, 0, 0, 0);
+    printf("r1 : %X r2 : %x\n", r1.get(), r2.get());
+    Regions::mergeRegions(0, 0, 13, 0);
 
     ASSERT_EQ(Regions::regionTracker[0][0], r2);
     ASSERT_EQ(Regions::regionTracker[13][0], r2);    
