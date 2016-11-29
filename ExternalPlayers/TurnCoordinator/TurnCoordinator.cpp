@@ -31,24 +31,30 @@ TurnCoordinator::~TurnCoordinator()
 void TurnCoordinator::setupSocket(int portNumber)
 {
     /* First call to socket() function */
+    struct hostent *server;
     TurnCoordinator::mySocket = socket(AF_INET, SOCK_STREAM, 0);
    
     if (TurnCoordinator::mySocket < 0) 
     {
         throw std::runtime_error("ERROR opening socket");
     }
+    server = gethostbyname("localhost");
+    if (server == NULL)
+    {
+        throw std::runtime_error("ERROR can't gethostbyname()");
+    }
    
     /* Initialize socket structure */
     bzero((char *) TurnCoordinator::myAddr, sizeof(*TurnCoordinator::myAddr));
    
     TurnCoordinator::myAddr->sin_family = AF_INET;
-    TurnCoordinator::myAddr->sin_addr.s_addr = INADDR_ANY;
+    bcopy((char *)server->h_addr, (char *)&TurnCoordinator::clientAddr->sin_addr.s_addr, server->h_length);
     TurnCoordinator::myAddr->sin_port = htons(portNumber);
    
    /* Now bind the host address using bind() call.*/
-    if (bind(TurnCoordinator::mySocket, (struct sockaddr *) TurnCoordinator::myAddr, sizeof(*TurnCoordinator::myAddr)) < 0) 
+    if (connect(TurnCoordinator::mySocket, (struct sockaddr *) TurnCoordinator::clientAddr, sizeof(TurnCoordinator::clientAddr)) < 0) 
     {
-        throw std::runtime_error("ERROR binding socket");
+        throw std::runtime_error("ERROR connecting socket");
     }
 }
 
@@ -107,9 +113,9 @@ int TurnCoordinator::convertEdgeToZone(int edge)
 }
 
 
-gameMessage TurnCoordinator::buildResponse(Move& move)
+void TurnCoordinator::buildResponse(Move& move, gameMessage *gMsg)
 {
-    gameMessage *gMsg = new gameMessage;
+    bzero(gMsg, sizeof(*gMsg));
     gMsg->messageType = 1;
     strcpy(gMsg->data.move.tile, (move.getTile().getTileName()).c_str());
 
@@ -133,8 +139,6 @@ gameMessage TurnCoordinator::buildResponse(Move& move)
         gMsg->data.move.meepleType = 0; //None type
     }
 
-
-    return *gMsg;
 }
 
 
@@ -151,9 +155,10 @@ void TurnCoordinator::callAI()
     Move chosenMove = AI::chooseTurn(BoardManager::getTopTileStack());
     BoardManager::makeMove(chosenMove, TurnCoordinator::ourPlayerNumber);
 
-    gameMessage msg = TurnCoordinator::buildResponse(chosenMove);
+    gameMessage *msg = new gameMessage;
+    TurnCoordinator::buildResponse(chosenMove, msg);
 
-    int n = write(TurnCoordinator::clientSocket, (char *)(&msg), sizeof(msg));
+    int n = write(TurnCoordinator::clientSocket, (char *)(msg), sizeof(*msg));
 
     if (n < 0) 
     {
@@ -291,21 +296,11 @@ void TurnCoordinator::handleMessage(gameMessage *msg)
     }
 }
 
+
+
+
 void TurnCoordinator::startCoordinator()
 {
-
-    int clilen;
-    struct sockaddr_in cli_addr;
-
-    //Wait for a connection
-    listen(TurnCoordinator::mySocket,5);
-    clilen = sizeof(cli_addr);
-
-    //Accept the new connection
-    TurnCoordinator::clientSocket = accept(TurnCoordinator::mySocket, (struct sockaddr *) &cli_addr,(socklen_t *) &clilen);
-
-    //Hanlde any game init stuff.
-
     TurnCoordinator::receiveMessage();
 }
 
