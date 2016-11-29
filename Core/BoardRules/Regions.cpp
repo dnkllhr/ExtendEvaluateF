@@ -35,14 +35,14 @@ int Regions::addCroc(unsigned int playerNumber, unsigned int tileID)
         
         for(int j = 0; j < NUM_TILE_EDGES + 1; j++)
         {
-        	if(ownerCrocs[i].ownedRegions[j] == NULL)
-        	{
-        		std::cout << "ownerCrocs[" << i << "].ownedRegions[" << j <<"] is NULL" << std::endl;
-        	}
-        	else
-        	{
-        		ownerCrocs[i].ownedRegions[j]->hasCroc = true;
-        	}
+            if(ownerCrocs[i].ownedRegions[j] == NULL)
+            {
+                std::cout << "ownerCrocs[" << i << "].ownedRegions[" << j <<"] is NULL" << std::endl;
+            }
+            else
+            {
+                ownerCrocs[i].ownedRegions[j]->hasCroc = true;
+            }
         }
         Regions::availableCrocs[playerNumber - 1]--;
         return 0;
@@ -76,7 +76,7 @@ void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, u
         std::shared_ptr<struct tileNode> iter = (placedSearch->second[placedEdge])->head;
         while(iter != NULL)
         {
-        	std::cout << iter << std::endl;
+            std::cout << iter << std::endl;
             regionTracker[(placedSearch->first)][placedEdge] = (connectingSearch->second[connectingEdge]);
             if (iter != iter->next && iter->next != (placedSearch->second[placedEdge])->head) iter = iter->next;
         }
@@ -136,7 +136,7 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
             newRegions[edge] = (*tracker)[boarderingId][correspondingEdge];
 
             if (edge % countPerSide == centerEdge)
-                newRegions[edge]->edgesTillCompletion--;
+                newRegions[edge]->edgesTillCompletion -= 2;
 
             std::shared_ptr<struct tileNode> node = std::shared_ptr<struct tileNode>(new struct tileNode());
             node->tileID = id;
@@ -177,16 +177,13 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
 
 //------------- Making the below two assignments results in the endless loop ---------------
 
-                //newRegions[otherEdge]->tail->next = node;
+                newRegions[otherEdge]->tail->next = node;
                 newRegions[otherEdge]->tail = node;
 
 //-------------------------------------------------------------------------------------------
             }
             else {
-                	mergeRegions(id, edge, id, otherEdge);
-
-                	if (otherEdge % countPerSide == centerEdge)
-                    	newRegions[edge]->edgesTillCompletion--;
+                    mergeRegions(id, edge, id, otherEdge);
             }
         }
     }
