@@ -6,6 +6,12 @@ from ctypes import *
 s = socket.socket()         # Create a socket object
 host = sys.argv[1]          # Get local machine name
 port = int(sys.argv[2])     # Reserve a port for your service.
+s.connect((host, port))     # Connect
+
+#Tournament Parameters
+tournamentPassword = sys.argv[3]
+username = sys.argv[4]
+password = sys.argv[5]
 
 class TILEMESSAGE(Structure):
 	_field_ = [	("length", c_int),
@@ -36,14 +42,6 @@ class GAMEMESSAGE(Structure):
 	_field_ = [ ("type", c_int),
 				("data", DATAMESSAGE)]
 
-s.connect((host, port))
-print s.recv(1024)      #THIS IS SPARTA
-
-#Tournament Parameters
-tournamentPassword = sys.argv[3]
-username = sys.argv[4]
-password = sys.argv[5]
-
 def roundprotol():
 	stringData = s.recv(1024) #BEGIN ROUND <rid> OF <rounds>
 	rid = stringData[12,14] #assumes rid is 2 digit number
@@ -61,41 +59,56 @@ def matchprotocol():
 	stringData = s.recv(1024) #THE REMAINING <number_tiles> TILES ARE [ <tiles> ]
 	numTiles = stringData[14,16] #assumes number_tiles is a 2 digit number
 	print stringData
-	print s.recv(1024) #MATCH BEGINS IN <timeplan> SECONDS 
+	print s.recv(1024) #MATCH BEGINS IN <timeplan> SECONDS
 	for i in range(0, numTiles):
 		moveprotocol()
 	print s.recv(1024) #GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
 	print s.recv(1024) #GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
 	return
 
-def moveprotocol():
-	
+#def moveprotocol():
+
 
 
 #AUTHENTICATION PROTOCOL
-buffer = "JOIN "+tournamentPassword
-s.send(buffer)
-print buffer
+def authenticationprotocol():
+    global s
+    global tournamentPassword
+    global username
+    global password
+    global pid
 
-print s.recv(1024) #HELLO!
+    print s.recv(1024) #This is SPARTA
 
-buffer = "I AM " + username + password # space in between username and password?
-s.send(buffer)
-print buffer
+    buffer = "JOIN "+tournamentPassword
+    s.send(buffer)  #JOIN <tournament password>
+    print buffer
 
-print s.recv(1024) #WELCOME <pid> PLEASE WAIT FOR THE NEXT CHALLENGE
+    print s.recv(1024) #HELLO!
 
-#CHALLENGE PROTOCOL
-#	**with back to back messages and too big of a buffer, may end up reading the start of the following message**
+    buffer = "I AM " + username + " " + password # space in between username and password?
+    s.send(buffer)
+    print buffer
 
-stringData = s.recv(1024)  #NEW CHALLENGE <cid> YOU WILL PLAY <rounds> MATCH
-cid = stringData[14,16] #assumes cid is 2 digit number
-rounds = stringData[31,33] #assumes round is 2 digit number
-print stringData
 
-numRounds = int(rounds)
-for i in range(0, numRounds):
-	roundprotocol()
+    print s.recv(1024) #WELCOME <pid> PLEASE WAIT FOR THE NEXT CHALLENGE
+    pid = buffer.split(" ")[1]
+    print pid
+
+def challengeprotocol():
+    buffer = s.recv(1024)  #NEW CHALLENGE <cid> YOU WILL PLAY <rounds> MATCH
+    cid = stringData[14,16] #assumes cid is 2 digit number
+    rounds = stringData[31,33] #assumes round is 2 digit number
+    print stringData
+
+    numRounds = int(rounds)
+    for i in range(0, numRounds):
+    	roundprotocol()
+
+######################################################################################
+
+authenticationprotocol()
+#challengeprotocol()
 
 
 s.close
