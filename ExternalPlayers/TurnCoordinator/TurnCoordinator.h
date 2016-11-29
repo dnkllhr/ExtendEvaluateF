@@ -37,7 +37,7 @@ private:
     static void setUpAI();
     static void setupSocket(int portNumber);
     static int convertEdgeToZone(int edge);
-    static gameMessage buildResponse(Move& move);
+    static void buildResponse(Move& move, gameMessage *gMsg);
     static Move& convertInMove(gameMessage *msg);
     static unsigned int ourPlayerNumber;
     static unsigned int otherPlayerNumber;
