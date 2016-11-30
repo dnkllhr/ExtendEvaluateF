@@ -217,6 +217,21 @@ TEST(RegionTests, addConnection) {
     }
 
     EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)),0); //Make sure the castle has three sides open.
+
+    Tile tileL = (Tile::CreateTileL(1, startID, PreyType::None)[0]); //No prey, starting tile
+    currentTile = &tileL;
+    //testingTilePlacement(&startID, 73, 71, currentTile, surroundingTiles);
+    BoardManager::makeMove(Move(*currentTile, Coord(77, 74), 3), 2);
+
+    for(int i = 0; i < 12; i++)
+    {
+        //Make sure everything has a region
+        EXPECT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
+
+    }
+
+    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)),0); //Make sure the road is completed
+    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 1)),0); //Make sure the castle is completed
 }
 
 TEST(RulesTest, ScoreChurch) {
