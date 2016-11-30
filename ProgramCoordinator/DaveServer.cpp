@@ -114,7 +114,7 @@ void Tournament_Protocol (int sock)
       for(int i = 1; i <= 5; i++){
 
           bzero(buffer,256);
-          sprintf(buffer,"MAKE YOUR MOVE IN GAME A WITHIN 1 SECOND: MOVE %d PLACE TILEX\r\n", i);
+          sprintf(buffer,"MAKE YOUR MOVE IN GAME A WITHIN 1 SECOND: MOVE %d PLACE JLJL-\r\n", i);
           write(sock,buffer,255);
 
           bzero(buffer,256);
