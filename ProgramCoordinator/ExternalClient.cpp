@@ -12,6 +12,7 @@
 #include "ProgramCoordinator.h"
 #include <vector>
 #include <thread>
+#include <condition_variable>
 #include <mutex>
 #include <unordered_map>
 
@@ -21,7 +22,7 @@ char* PASSWD;
 int pid;
 int portno;
 
-std::thread ** threads;
+std::\r\n ** \r\ns;
 
 gameMessage Msgs[2];
 bool ready[2];
@@ -40,7 +41,7 @@ std::string strAtIndex(std::string,int);
 struct gameMessage getMsg(int, bool=false);
 void setMsg (int , struct gameMessage, bool=false);
 int orientationFix(int);
-void gameThread(int, int);
+void game\r\n(int, int);
 
 
 int main(int argc, char *argv[])
@@ -181,6 +182,9 @@ void matchProtocol(int sockfd)
     printf("%s\n",buffer);
      oppPid = strAtIndex(buffer,4);
 
+     struct gameMessage whoAmI = new struct gameMessage;
+     //whoAmI -> data,
+
     //Server: STARTING TILE IS <tile> AT <x> <y> <orientation>
     bzero(buffer,256);
     read(sockfd,buffer,255);
@@ -191,6 +195,7 @@ void matchProtocol(int sockfd)
     orientation = stoi(strAtIndex(std::string(buffer),7));
 
     //PASS STARTING TILE TO INTERNAL SERVER
+\
 
     //Server: THE REMAINING <number_tiles> TILES ARE [ <tiles> ]
     bzero(buffer,256);
@@ -227,7 +232,7 @@ void matchProtocol(int sockfd)
     printf("%s\n",buffer);
     int timeplan = stoi(strAtIndex(std::string(buffer),3));
 
-    int portNumberThread1 = portno + 1;
+    int portNumber 1 = portno + 1;
     int portNumberThread2 = portno + 2;
 
     int sockfd1 = createSocket("localhost", portNumberThread1);
@@ -295,7 +300,7 @@ void moveProtocol(int sockfd)
     if(!newMsg.data.move.placeable)
         response = 0;
     else
-        response = meepleType;
+        response = newMsg-> data.move.meepleType;
 
     switch (response) {
         case 3:
