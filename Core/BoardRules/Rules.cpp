@@ -14,7 +14,7 @@ bool GameRules::validTilePlacement(const Tile& placed, const Tile ** boarderingT
     for (unsigned int edge = 0; edge < edgeCount; edge++) {
         unsigned int correspondingSide = ((edge / countPerSide) + (sides / 2)) % sides;
         unsigned int correspondingEdge = (countPerSide - (edge % countPerSide) - 1) + countPerSide * correspondingSide;
-        unsigned int boarderingTile = (2 * correspondingSide) + 1;
+        unsigned int boarderingTile = ((2 * correspondingSide) + 5) % 8;
 
         if (boarderingTiles[boarderingTile] == NULL) continue;
         if (placed.getTerrainType(edge) != boarderingTiles[boarderingTile]->getTerrainType(correspondingEdge)) return false;
