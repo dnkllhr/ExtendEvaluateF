@@ -181,7 +181,10 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
     for (unsigned int edge = 0; edge < totalEdges; edge++) {
         if (newRegions[edge] == NULL) {
             newRegions[edge] = createRegion(newTile, edge, newTile.getTerrainType(edge));
-            //printf("Tile %d edge %d edgesTillCompletion %d\n", id, edge, newRegions[edge]->edgesTillCompletion);
+
+            //printf("[NULL] Tile %d edge %d edgesTillCompletion %d\n", id, edge, newRegions[edge]->edgesTillCompletion);
+            //std::cout << "[NULL] Tile : " << newRegions[ed]
+
             newRegions[edge]->tail->preyCounts[static_cast<int>(newTile.getPrey())]++;
         }
 
@@ -216,7 +219,7 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
         }
     }
 
-    for (unsigned int edge = 0; edge < totalEdges; edge++) //std::cout << "Edges Till Completion for Tile " << id << " and Edge " << edge << ": " << (*tracker)[id][edge]->edgesTillCompletion << std::endl;
+    //for (unsigned int edge = 0; edge < totalEdges; edge++) std::cout << "Edges Till Completion for Tile " << id << " and Edge " << edge << ": " << (*tracker)[id][edge]->edgesTillCompletion << std::endl;
 
     return newRegions;
 }
