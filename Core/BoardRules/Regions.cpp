@@ -130,7 +130,7 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
     (*tracker)[id] = newRegions;
 
     if (newTile.getCenter() == TerrainType::Church) {
-        newRegions[totalEdges] = Regions::createRegion(id, totalEdges, newTile.getCenter());
+        newRegions[totalEdges] = Regions::createRegion(newTile, totalEdges, newTile.getCenter());
         newRegions[totalEdges]->edgesTillCompletion = 8;
     }
     else {
@@ -170,7 +170,7 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
             newRegions[edge] = (*tracker)[boarderingId][correspondingEdge];
 
             if (edge % countPerSide == centerEdge)
-                newRegions[edge]->edgesTillCompletion -= 2;
+                newRegions[edge]->edgesTillCompletion--;
 
             std::shared_ptr<struct tileNode> node = std::shared_ptr<struct tileNode>(new struct tileNode());
             node->tileID = id;
@@ -181,21 +181,19 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
             newRegions[edge]->tail = node;
         }
         else {
-           newRegions[edge] = NULL;
+            newRegions[edge] = NULL;
         }
     }
 
     for (unsigned int edge = 0; edge < totalEdges; edge++) {
         if (newRegions[edge] == NULL) {
-            newRegions[edge] = createRegion(id, edge, newTile.getTerrainType(edge));
+            newRegions[edge] = createRegion(newTile, edge, newTile.getTerrainType(edge));
             newRegions[edge]->tail->preyCounts[static_cast<int>(newTile.getPrey())]++;
-
-            if (edge % countPerSide == centerEdge)
-                newRegions[edge]->edgesTillCompletion++;
         }
 
         for (unsigned int otherEdge = edge + 1; otherEdge < totalEdges; otherEdge++) {
             if (!newTile.isConnected(edge, otherEdge)) continue;
+            // what about if we connect a region back to itself (completing a square road)?
             else if (newRegions[otherEdge] == newRegions[edge]) continue;
             else if (newRegions[otherEdge] == NULL) {
                 //std::cout << "Extend Region with Edge: " << edge << " with Edge: " << otherEdge << std::endl;
@@ -354,15 +352,26 @@ int Regions::checkOwner(unsigned int tileID, unsigned int edge, std::unordered_m
     return OWNER_NONE;
 }
 
-std::shared_ptr<struct regionSet> Regions::createRegion(unsigned int tileID, unsigned int edge, TerrainType type) {
+std::shared_ptr<struct regionSet> Regions::createRegion(const Tile& tile, unsigned int edge, TerrainType type) {
     std::shared_ptr<struct regionSet> newRegion = std::shared_ptr<struct regionSet>(new struct regionSet());
     std::shared_ptr<struct tileNode> node = std::shared_ptr<struct tileNode>(new struct tileNode());
 
-    node->tileID = tileID;
+    unsigned int numOfSides = newTile.getNumberOfSides();
+    unsigned int countPerSide = newTile.getCountPerSide();
+    unsigned int totalEdges = numOfSides * countPerSide;
+    unsigned int edgesTillCompletion = 0;
+    unsigned int centerEdge = countPerSide / 2;
+
+    for (unsigned int otherEdge = 0; otherEdge < totalEdges; otherEdge++) {
+        if (otherEdge % countPerSide == centerEdge && tile.isConnected(edge, otherEdge)) edgesTillCompletion++;
+    }
+
+    node->tileID = tile.getId();
     node->edge = edge;
     newRegion->type = type;
     newRegion->head = node;
     newRegion->tail = node;
+    newRegion->edgesTillCompletion = edgesTillCompletion;
     return newRegion;
 }
 
