@@ -140,7 +140,7 @@ const std::unordered_set<unsigned int>& Board::getAvailableLocations()
 {
     return availableLocations;
 }
-#import <iostream>
+
 const Coord& Board::getCoordinatesFromTileId(unsigned int tileID)
 {
     auto tileSearch = tileIDTracker.find(tileID);
@@ -150,7 +150,6 @@ const Coord& Board::getCoordinatesFromTileId(unsigned int tileID)
     }
     else
     {
-        std::cout << tileID << std::endl;
         throw std::invalid_argument("Invalid Tile ID");
     }
 }

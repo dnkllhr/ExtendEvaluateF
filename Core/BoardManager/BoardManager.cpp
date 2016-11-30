@@ -167,7 +167,6 @@ std::vector<Move> BoardManager::getValidMoves(const Tile& tile, unsigned int pla
 
     return validMoves;
 }
-#import <iostream>
 void BoardManager::makeMove(const Move& move, unsigned int playerNumber)
 {
     // if calling this method, it is assumed that this is a legal move
@@ -181,8 +180,7 @@ void BoardManager::makeMove(const Move& move, unsigned int playerNumber)
 
     if(move.getMeepleLocation() != -1) // if Move includes Meeple
     {
-        std::cout << "I'm placing a meepleleep at edge " << move.getMeepleLocation() << std::endl;
-        std::cout << Regions::addMeeple(playerNumber, tile.getId(), move.getMeepleLocation()) << std::endl; 
+        Regions::addMeeple(playerNumber, tile.getId(), move.getMeepleLocation());
     }
     else if(move.getHasCrocodile())
     {

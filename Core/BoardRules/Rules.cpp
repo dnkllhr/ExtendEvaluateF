@@ -37,10 +37,6 @@ bool GameRules::validMeeplePlacement(const Tile& placed, unsigned int edgeIndex)
 #import <iostream>
 Array<bool> GameRules::validMeeplePlacement(const Tile& toBePlaced, const Coord& location)
 {
-    std::cout << "------------------------------" << std::endl;
-    std::cout << "Tile " << toBePlaced << " at " << location << std::endl;
-    std::cout << "------------------------------" << std::endl;
-
     const unsigned int daveTigerOrder[9] = { 0, 1, 2, 10, 12, 4, 8, 7, 5 };
 
     Array<bool> isInvalid((unsigned int) 9);
@@ -107,13 +103,11 @@ Array<bool> GameRules::validMeeplePlacement(const Tile& toBePlaced, const Coord&
 
         if(!canPlaceMeeple[t])
         {
-            std::cout << "Can't place mepepepele at " << location << ", edge " << edgeIndex << std::endl;
             for(unsigned int tt = 0; tt < 9; tt++)
             {
                 if(daveTigerOrder[tt] == edgeIndex) continue;
                 if(toBePlaced.isConnected(edgeIndex, daveTigerOrder[tt]))
                 {
-                    std::cout << "Love pancakes, " << edgeIndex << " ruins " << daveTigerOrder[tt] << std::endl;
                     isInvalid[tt] = true;
                     canPlaceMeeple[tt] = false;
                 }
