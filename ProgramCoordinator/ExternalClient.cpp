@@ -12,9 +12,9 @@
 #include "ProgramCoordinator.h"
 #include <vector>
 #include <thread>
-#include <condition_variable>
 #include <mutex>
 #include <unordered_map>
+#include <condition_variable>
 
 char* TOURNAMENT_PASSWD;
 char* USERNAME;
@@ -41,7 +41,7 @@ std::string strAtIndex(std::string,int);
 struct gameMessage getMsg(int, bool=false);
 void setMsg (int , struct gameMessage, bool=false);
 int orientationFix(int);
-void game\r\n(int, int);
+void gameThread(int, int);
 
 
 int main(int argc, char *argv[])
@@ -183,7 +183,7 @@ void matchProtocol(int sockfd)
      oppPid = strAtIndex(buffer,4);
 
      struct gameMessage whoAmI = new struct gameMessage;
-     //whoAmI -> data,
+
 
     //Server: STARTING TILE IS <tile> AT <x> <y> <orientation>
     bzero(buffer,256);
@@ -232,7 +232,7 @@ void matchProtocol(int sockfd)
     printf("%s\n",buffer);
     int timeplan = stoi(strAtIndex(std::string(buffer),3));
 
-    int portNumber 1 = portno + 1;
+    int portNumberThread1 = portno + 1;
     int portNumberThread2 = portno + 2;
 
     int sockfd1 = createSocket("localhost", portNumberThread1);
