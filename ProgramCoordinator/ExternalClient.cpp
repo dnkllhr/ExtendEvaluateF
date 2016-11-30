@@ -281,6 +281,7 @@ void moveProtocol(int sockfd)
     bzero(buffer,256);
     read(sockfd,buffer,255);
     printf("%s\n",buffer);
+
     gid = strAtIndex(std::string(buffer),5);
     timeMove = stoi(strAtIndex(std::string(buffer),7));
     moveNum = stoi(strAtIndex(std::string(buffer),10));
@@ -385,18 +386,21 @@ void setMsg (int thread_num, struct gameMessage message, bool mainThread){
 
 void gameThread(int thread_num, int socketfd){
     //Instaniate game
+    std::cout<<"1";
     fork();
+    std::cout<<"2";
     execl(PATH_TO_GAME, std::to_string(thread_num == 0 ? portno+1 : portno+2).c_str());
-
+    std::cout<<"3";
     //process tile and place
 
     struct gameMessage tileStack = getMsg(thread_num);
     send(socketfd, (char*)(&tileStack), sizeof(tileStack), 0);
+    std::cout<<"4";
 
     //wait for starting tile
     struct gameMessage start = getMsg(thread_num);
     send(socketfd, (char*)(&start), sizeof(start), 0);
-
+    std::cout<<"5";
     //process tile stack
 
     while(true)

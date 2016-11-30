@@ -101,11 +101,11 @@ void Tournament_Protocol (int sock)
       write(sock,buffer,255);
 
       bzero(buffer,256);
-      sprintf(buffer,"STARTING TILE IS TJJT- AT 0 0 90\r\n");
+      sprintf(buffer,"STARTING TILE IS TLTJ- AT 0 0 0\r\n");
       write(sock,buffer,255);
 
       bzero(buffer,256);
-      sprintf(buffer,"THE REMAINING 5 TILES ARE [ eeeee rrrrr ttttt yyyyy zzzzz ]\r\n" );
+      sprintf(buffer,"THE REMAINING 6 TILES ARE [ TLTTP LJTJ- JLJL- JJTJX JLTTB TLLT- ]\r\n" );
       write(sock,buffer,255);
 
       bzero(buffer,256);
@@ -114,18 +114,18 @@ void Tournament_Protocol (int sock)
       for(int i = 1; i <= 5; i++){
 
           bzero(buffer,256);
-          sprintf(buffer,"MAKE YOUR MOVE IN GAME A WITHIN 1 SECOND: MOVE %d PLACE TILEX\r\n", i);
+          sprintf(buffer,"MAKE YOUR MOVE IN GAME A WITHIN 1 SECOND: MOVE %d PLACE JLJL-\r\n", i);
           write(sock,buffer,255);
 
           bzero(buffer,256);
           read(sock,buffer,255);
 
           bzero(buffer,256);
-          sprintf(buffer,"GAME A MOVE %i PLAYER 24601 PLACED TILEX AT 2 2 270 NONE\r\n", i);
+          sprintf(buffer,"GAME A MOVE %i PLAYER 24601 PLACED LJTJ- AT 2 2 270 NONE\r\n", i);
           write(sock,buffer,255);
 
           bzero(buffer,256);
-          sprintf(buffer,"GAME B MOVE %i PLAYER 12345 PLACED TILEX AT 2 25 90 NONE\r\n", i);
+          sprintf(buffer,"GAME B MOVE %i PLAYER 12345 PLACED LJTJ- AT 2 25 90 NONE\r\n", i);
           write(sock,buffer,255);
 
       }
