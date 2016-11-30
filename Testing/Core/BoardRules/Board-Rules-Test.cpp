@@ -75,7 +75,7 @@ TEST(RegionTests, mergeRegions)
 TEST(RegionTests, addConnection) {
 
     BoardManager::gameInit();
-    unsigned int startID = 10;
+    unsigned int startID = 18000;
     //Tile currentTile;
     //Move *currentMove;
     //Coord *currentCoord;
@@ -153,7 +153,7 @@ TEST(RegionTests, addConnection) {
         EXPECT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
     
-    std::cout << currentTile->getTileName() << std::endl;
+    //std::cout << currentTile->getTileName() << std::endl;
 
     EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)), 1); //Make sure the road has one side open.
 
@@ -183,10 +183,13 @@ TEST(RegionTests, addConnection) {
     }
     EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 12)),6); //Make sure the church has three sides open.
 
+    //printf("Seg fault yet?\n");
     Tile tileE = (Tile::CreateTileE(1, startID, PreyType::None)[0]); //No prey, starting tile
+    //printf("Nah\n");
     currentTile = &tileE;
     //testingTilePlacement(&startID, 71, 71, currentTile, surroundingTiles);
     BoardManager::makeMove(Move(*currentTile, Coord(75, 76), 2), 1);
+    //printf("Moves suck\n");
 
     for(int i = 0; i < 12; i++)
     {
@@ -194,12 +197,17 @@ TEST(RegionTests, addConnection) {
         EXPECT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
+    //printf("For loop is happy\n");
     EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 7)),2); //Make sure the castle has three sides open.
+    //printf("Keep going\n");
 
     Tile tileN = (Tile::CreateTileN(1, startID, PreyType::None)[0]); //No prey, starting tile
+
+    //printf("N is for no\n");
     currentTile = &tileN;
     //testingTilePlacement(&startID, 73, 71, currentTile, surroundingTiles);
     BoardManager::makeMove(Move(*currentTile, Coord(77, 76), 2), 1);
+    //printf("Make that move\n");
 
     for(int i = 0; i < 12; i++)
     {
