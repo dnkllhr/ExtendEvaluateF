@@ -55,7 +55,7 @@ int Regions::addCroc(unsigned int playerNumber, unsigned int tileID)
         {
             if(ownerCrocs[i].ownedRegions[j] == NULL)
             {
-                std::cout << "ownerCrocs[" << i << "].ownedRegions[" << j <<"] is NULL" << std::endl;
+                //std::cout << "ownerCrocs[" << i << "].ownedRegions[" << j <<"] is NULL" << std::endl;
             }
             else
             {
@@ -98,7 +98,7 @@ void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, u
         /*std::shared_ptr<struct tileNode> tmpIter = (connectingSearch->second[connectingEdge])->head;
         while(tmpIter != NULL)
         {
-            std::cout <<"Tile Id: " << tmpIter->tileID << " Edge: " << tmpIter->edge << " at "  << tmpIter << std::endl;
+            //std::cout <<"Tile Id: " << tmpIter->tileID << " Edge: " << tmpIter->edge << " at "  << tmpIter << std::endl;
             tmpIter = tmpIter->next;
         }
         std::cout << "End!" << std::endl << std::endl;
