@@ -22,7 +22,7 @@ class GameRules
     public:
         static bool validTilePlacement(const Tile& placed, const Tile ** boarderingTiles);
         static bool validMeeplePlacement(const Tile& placed, unsigned int edgeIndex);
-        static bool validMeeplePlacement(const Coord& location, unsigned int edgeIndex);
+        static Array<bool> validMeeplePlacement(const Tile& toBePlaced, const Coord& location);
         static bool validCrocPlacement(unsigned int tileID);
         static bool hasCroc(unsigned int tileID);
         static bool checkSideForCroc(unsigned int x, unsigned int y);
