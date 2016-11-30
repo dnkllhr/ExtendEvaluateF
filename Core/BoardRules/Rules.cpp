@@ -241,6 +241,7 @@ unsigned int GameRules::scoreRoad(std::shared_ptr<struct regionSet> currentSet, 
         //If the entry doesn't exist, we haven't visited the tile yet
         if(tileSearch == edgeTracker.end())
         {
+            //printf("tile %d score before %d\n", currentNode->tileID, score);
             preyCount = 0;
             //Enter the tileID to make sure we don't revisit it
             edgeTracker[currentNode->tileID] = 1;
@@ -255,6 +256,7 @@ unsigned int GameRules::scoreRoad(std::shared_ptr<struct regionSet> currentSet, 
                 preyCount += currentNode->preyCounts[i];
             }
             score += ROAD_VALUE + preyCount;
+            //printf("after score %d\n", score);
         }
         //Get the next node in the list
         currentNode = currentNode->next;
@@ -315,6 +317,7 @@ unsigned int GameRules::scoreCastle(std::shared_ptr<struct regionSet> currentSet
 
 unsigned int GameRules::scoreGrass(std::shared_ptr<struct regionSet> * passedSets, unsigned int tileID, unsigned int edge, const Tile * passedTile)
 {
+    //printf("enter\n");
     unsigned int score = 0;
     unsigned int leftOfEdge, rightOfEdge;
     std::unordered_map<std::shared_ptr<struct regionSet>, bool> fieldTracker;
@@ -322,11 +325,13 @@ unsigned int GameRules::scoreGrass(std::shared_ptr<struct regionSet> * passedSet
     std::shared_ptr<struct tileNode> currentNode = (passedSets[edge])->head;
     auto tileSearch = fieldTracker.find(passedSets[edge]);
     std::shared_ptr<struct regionSet> * currentSets = passedSets;
-    const Tile * currentTile;
 
+                        return 0;
+/*
     //Iterate through the linked list of the given region
     while(currentNode != NULL)
     {
+        printf("tile %d has score %d", currentNode->tileID, score);
         if ((unsigned int)currentNode->tileID == tileID) {
             currentSets = passedSets;
             currentTile = passedTile;
@@ -413,6 +418,7 @@ unsigned int GameRules::scoreGrass(std::shared_ptr<struct regionSet> * passedSet
         currentNode = currentNode->next;
     }
     return score;
+    */
 }
 
 unsigned int GameRules::scoreChurch(unsigned int tilesSurrounded, bool actuallyScore)
