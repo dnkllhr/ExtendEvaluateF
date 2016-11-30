@@ -57,6 +57,7 @@ int main(int argc, char *argv[])
 int sockfd = createSocket(hostname,portno);
 std::cout << sockfd <<std::endl;
 authenticationProtocol(sockfd);
+printf("left auth\n");
 challengeProtocol(sockfd);
 
 return 0;
@@ -111,7 +112,7 @@ void authenticationProtocol(int sockfd)
     bzero(buffer,256);
     out<<"I AM ";
     out<<USERNAME<<" "<<PASSWD;
-    std::cout<<out.str()<<std::endl;
+    std::cout<<out.str()<<std::endl;    
     write(sockfd,out.str().c_str(),out.gcount()+1);
     out.str("");
 
@@ -119,7 +120,9 @@ void authenticationProtocol(int sockfd)
     bzero(buffer,256);
     read(sockfd,buffer,255);
     printf("%s\n",buffer);
-     pid = strAtIndex(std::string(buffer),1);
+    printf("I did it.");
+    pid = strAtIndex(std::string(buffer),1);
+    printf("I did it.");
 }
 
 void challengeProtocol(int sockfd)

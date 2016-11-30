@@ -1,7 +1,10 @@
-#!/usr/bin/python           # This is client.py file
+#!/usr/bin/python3          
+# This is client.py file
 import sys
 import socket               # Import socket module
 from ctypes import *
+import os
+
 extra = ""
 active = True
 activeGames = 2;
@@ -17,42 +20,43 @@ username = sys.argv[4]
 password = sys.argv[5]
 
 class TILEMESSAGE(Structure):
-	_field_ = [	("length", c_int),
-				("tileStack", c_char * 401)]
+    _field_ = [ ("length", c_int),
+                ("tileStack", c_char * 401)]
 
 class MOVEMESSAGE(Structure):
-	_field_ = [	("pid", c_int),
-				("player", c_uint),
-				("tile", c_char * 6),
-				("placeable", c_byte),
-				("x", c_uint),
-				("y", c_uint),
-				("rotationClockwise", c_uint),
-				("meepleType", c_int),
-				("pickupMeeple", c_byte),
-				("passTurn", c_byte),
-				("meepleZone", c_int)]
+    _field_ = [ ("pid", c_int),
+                ("player", c_uint),
+                ("tile", c_char * 6),
+                ("placeable", c_byte),
+                ("x", c_uint),
+                ("y", c_uint),
+                ("rotationClockwise", c_uint),
+                ("meepleType", c_int),
+                ("pickupMeeple", c_byte),
+                ("passTurn", c_byte),
+                ("meepleZone", c_int)]
 
 class WHOAMIMESSAGE(Structure):
-	_field_ = [("playerNumber", c_uint)]
+    _field_ = [("playerNumber", c_uint)]
 
 class DATAMESSAGE(Union):
-	_field_ = [	("tile", TILEMESSAGE),
-				("move", MOVEMESSAGE),
-				("who", WHOAMIMESSAGE)]
+    _field_ = [ ("tile", TILEMESSAGE),
+                ("move", MOVEMESSAGE),
+                ("who", WHOAMIMESSAGE)]
 
 class GAMEMESSAGE(Structure):
-	_field_ = [ ("type", c_int),
-				("data", DATAMESSAGE)]
-
+    _field_ = [ ("type", c_int),
+                ("data", DATAMESSAGE)]
+'''
 def myRead(socket):
     global extra
     buffer = ""
     check = ""
-    while True:
+    valid = True
+    while valid:
         print "looping..."
         check = socket.recv(1)
-        print "past socket recv"
+#        print "past socket recv"
         print check
         if check == '\r':
             print 1
@@ -62,7 +66,53 @@ def myRead(socket):
             print 2
             buffer += check
             print buffer
-    
+        else:
+            print "NULL"
+            valid = False
+
+def myRead(socket):
+        chunks = []
+        bytes_recd = 0
+        print "entering"
+        while (bytes_recd < 512 and chunks[-1][-1] != '\n') :
+            chunk = socket.recv(min(512 - bytes_recd, 15))
+            print chunk
+            if chunk == b'':
+                raise RuntimeError("socket connection broken")
+            chunks.append(chunk)
+            bytes_recd = bytes_recd + len(chunk)
+        print b''.join(chunks) 
+        return b''.join(chunks)    
+'''
+
+def myRead(socket):
+    buffer = ""
+    print ('\r'.encode(encoding='UTF-8'))
+    buffer = socket.recv(4096)
+    string = ""
+    buffering = True
+    while buffering:
+        if ('\r'.encode(encoding='UTF-8')) in buffer:
+            string = buffer.decode(encoding='UTF-8').split("\n", 1)
+            print (string)
+            return string[0] + "\n"
+        else:
+            print ("why else?")
+            print (repr(buffer))
+            more = socket.recv(4096)
+            if not more:
+                buffering = False
+            else:
+                string += more.decode(encoding='UTF-8')
+    if buffer:
+        print (buffer)
+        return buffer
+
+
+
+
+
+
 
 #     buffer = socket.recv(513-sys.getsizeof(extra))
 #     rmjunk = buffer.split('\x00')
@@ -91,13 +141,13 @@ def roundprotocol():
     split = buffer.split(" ")
     rid = split[2]
     rounds = int(split[4])
-    print buffer
+    print (buffer)
 
     activeGames = 2
     matchprotocol()
 
     buffer = myRead(s) #Server: END OF ROUND <rid> OF <rounds>
-    print buffer
+    print (buffer)
 
     return
 
@@ -107,7 +157,7 @@ def matchprotocol():
     split = buffer.split(" ")
 
     opponentPid = split[4]
-    print buffer
+    print (buffer)
 
     buffer = myRead(s) #STARTING TILE IS <tile> AT <x> <y> <orientation>
     split = buffer.split(" ")
@@ -115,25 +165,25 @@ def matchprotocol():
     x = split[5]
     y = split[6]
     orientation = split[7]
-    print buffer
+    print (buffer)
 
 
-	# how to extract tileStack from line below?
+    # how to extract tileStack from line below?
     buffer = myRead(s) #THE REMAINING <number_tiles> TILES ARE [ <tiles> ]
-    print buffer
+    print (buffer)
     split = buffer.split(" ")
     numTiles = split[2]
     tiles = []
     for i in range(0,int(numTiles)):
         tiles.append(split[6+i])
 
-    print myRead(s) #MATCH BEGINS IN <timeplan> SECONDS
+    print (myRead(s)) #MATCH BEGINS IN <timeplan> SECONDS
 
     for i in range(0, int(numTiles)):
-		moveprotocol()
+        moveprotocol()
 
-    print myRead(s)#GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
-    print myRead(s)#GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
+    print (myRead(s))#GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
+    print (myRead(s))#GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
     return
 
 def moveprotocol():
@@ -142,7 +192,7 @@ def moveprotocol():
     global extra
 
     buffer = myRead(s);#Server: MAKE YOUR MOVE IN GAME <gid> WITHIN <timemove> SECOND: MOVE <#> PLACE <tile>
-    print buffer
+    print (buffer)
     split = buffer.split(" ")
     gid = split[5]
     moveNum = split[10]
@@ -153,7 +203,7 @@ def moveprotocol():
     #await response
 
     buffer = "GAME "+gid+" MOVE "+moveNum+" TILE "+tile+" UNPLACEABLE PASS";
-    print buffer
+    print (buffer)
     s.send(buffer)
 
     currentlyActive = activeGames
@@ -163,7 +213,7 @@ def moveprotocol():
         if split[6] == "FORFEITED":
             activeGames= activeGames - 1
         else:
-            print "LET GAME KNOW OF OPPONENTS MOVE"
+            print ("LET GAME KNOW OF OPPONENTS MOVE")
     return
 
 
@@ -175,21 +225,21 @@ def authenticationprotocol():
     global password
     global pid
 
-    print myRead(s) #This is SPARTA
+    print (myRead(s)) #This is SPARTA
 
     buffer = "JOIN "+tournamentPassword
     s.send(buffer)  #JOIN <tournament password>
-    print buffer
+    print (buffer)
 
-    print myRead(s) #HELLO!
+    print (myRead(s)) #HELLO!
 
     buffer = "I AM " + username + " " + password # space in between username and password?
     s.send(buffer)
-    print buffer
+    print (buffer)
 
 
     buffer = myRead(s) #WELCOME <pid> PLEASE WAIT FOR THE NEXT CHALLENGE
-    print buffer
+    print (buffer)
     pid = buffer.split(" ")[1]
 
 def challengeprotocol():
@@ -199,12 +249,12 @@ def challengeprotocol():
         split = buffer.split(" ")
         cid = split[2] #id of challenge, basically garbage
         rounds = split[6] #number of rounds
-        print split
+        print (split)
 
         numRounds = int(rounds)
 
         for i in range(0, numRounds):
-    	       roundprotocol()
+               roundprotocol()
 
         buffer = myRead(s) #END OF CHALLENGES or PLEASE WAIT
         split = buffer.split(" ")
