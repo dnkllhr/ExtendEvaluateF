@@ -51,16 +51,9 @@ int Regions::addCroc(unsigned int playerNumber, unsigned int tileID)
         ownerCrocs[i].inUse = true;
         ownerCrocs[i].ownedRegions = (regionTracker.find(tileID))->second;
 
-        for(int j = 0; j < NUM_TILE_EDGES + 1; j++)
+        for(int j = 0; j < NUM_TILE_EDGES; j++)
         {
-            if(ownerCrocs[i].ownedRegions[j] == NULL)
-            {
-                //std::cout << "ownerCrocs[" << i << "].ownedRegions[" << j <<"] is NULL" << std::endl;
-            }
-            else
-            {
-                ownerCrocs[i].ownedRegions[j]->hasCroc = true;
-            }
+            ownerCrocs[i].ownedRegions[j]->hasCroc = true;
         }
         Regions::availableCrocs[playerNumber - 1]--;
 
@@ -101,7 +94,7 @@ void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, u
             //std::cout <<"Tile Id: " << tmpIter->tileID << " Edge: " << tmpIter->edge << " at "  << tmpIter << std::endl;
             tmpIter = tmpIter->next;
         }
-        std::cout << "End!" << std::endl << std::endl;
+        //std::cout << "End!" << std::endl << std::endl;
         */
         //Update Hash entries
         std::shared_ptr<struct tileNode> iter = (placedSearch->second[placedEdge])->head;
@@ -188,7 +181,10 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
     for (unsigned int edge = 0; edge < totalEdges; edge++) {
         if (newRegions[edge] == NULL) {
             newRegions[edge] = createRegion(newTile, edge, newTile.getTerrainType(edge));
-            printf("current edge %d edgesTillCompletion %d\n", edge, newRegions[edge]->edgesTillCompletion);
+
+            //printf("[NULL] Tile %d edge %d edgesTillCompletion %d\n", id, edge, newRegions[edge]->edgesTillCompletion);
+            //std::cout << "[NULL] Tile : " << newRegions[ed]
+
             newRegions[edge]->tail->preyCounts[static_cast<int>(newTile.getPrey())]++;
         }
 
@@ -199,10 +195,11 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
             else if (newRegions[otherEdge] == NULL) {
                 //std::cout << "Extend Region with Edge: " << edge << " with Edge: " << otherEdge << std::endl;
                 //std::cout << "Edge " << edge << " Type: " << newTile.getTerrainType(edge) << ". Edge " << otherEdge << " Type: " << newTile.getTerrainType(otherEdge) << std::endl << std::endl;
+                unsigned int side = edge / countPerSide;
 
                 newRegions[otherEdge] = newRegions[edge];
 
-                if (otherEdge % countPerSide == centerEdge)
+                if (otherEdge % countPerSide == centerEdge && boarderingTiles[side] != NULL)
                     newRegions[otherEdge]->edgesTillCompletion++;
 
                 std::shared_ptr<struct tileNode> node = std::shared_ptr<struct tileNode>(new struct tileNode());
@@ -221,6 +218,8 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
             }
         }
     }
+
+    //for (unsigned int edge = 0; edge < totalEdges; edge++) std::cout << "Edges Till Completion for Tile " << id << " and Edge " << edge << ": " << (*tracker)[id][edge]->edgesTillCompletion << std::endl;
 
     return newRegions;
 }
@@ -248,9 +247,23 @@ int Regions::addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned 
         ownerMeeples[i].tileID = tileID;
         ownerMeeples[i].inUse = true;
         ownerMeeples[i].ownedRegion = tracker->find(tileID)->second[edge];
+        if(playerNumber == 1)
+        {
+            ownerMeeples[i].ownedRegion->player1Meeples++;
+        }
+        else if(playerNumber == 2)
+        {
+            ownerMeeples[i].ownedRegion->player2Meeples++;
+        }
+        else
+        {
+            throw std::invalid_argument(playerNumber + " is not a valid playerNumber");
+        }
+
         Regions::availableMeeples[playerNumber - 1]--;
         return 0;
     }
+    //std::cout << "Regions::checkOwner(" << tileID << ", " << edge << ") = " << Regions::checkOwner(tileID, edge) << std::endl;
     return -1;
 }
 
@@ -344,11 +357,14 @@ int Regions::checkOwner(unsigned int tileID, unsigned int edge, std::unordered_m
         {
             return OWNER_P1;
         }
+        else if((search->second[edge])->player1Meeples < (search->second[edge])->player2Meeples)
+        {
+            return OWNER_P2;
+        }
         else if((search->second[edge])->player1Meeples == (search->second[edge])->player2Meeples && ((search->second[edge])->player2Meeples) != 0)
         {
             return OWNER_TIE;
         }
-        return OWNER_P2;
     }
     return OWNER_NONE;
 }

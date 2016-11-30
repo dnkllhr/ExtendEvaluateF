@@ -132,13 +132,13 @@ std::vector<Move> BoardManager::getValidMoves(const Tile& tile, unsigned int pla
             {
                 validMoves.push_back(Move(tileCopy, Coord(location), rotation)); // no meeple or croc
 
+                Array<bool> validMeeplePlacements = GameRules::validMeeplePlacement(tileCopy, location);
+
                 for(unsigned int daveTigerIndex = 0; daveTigerIndex < 9; daveTigerIndex++)
                 {
-                    unsigned int edgeIndex = daveTigerOrder[daveTigerIndex];
-
-                    if(GameRules::validMeeplePlacement(location, edgeIndex))
+                    if(validMeeplePlacements[daveTigerIndex])//GameRules::validMeeplePlacement(location, edgeIndex))
                     {
-                        validMoves.push_back(Move(tileCopy, Coord(location), rotation, (unsigned int) edgeIndex));
+                        validMoves.push_back(Move(tileCopy, Coord(location), rotation, (unsigned int) daveTigerOrder[daveTigerIndex]));
                     }
                 }
 
@@ -167,7 +167,7 @@ std::vector<Move> BoardManager::getValidMoves(const Tile& tile, unsigned int pla
 
     return validMoves;
 }
-
+#import <iostream>
 void BoardManager::makeMove(const Move& move, unsigned int playerNumber)
 {
     // if calling this method, it is assumed that this is a legal move
@@ -181,7 +181,8 @@ void BoardManager::makeMove(const Move& move, unsigned int playerNumber)
 
     if(move.getMeepleLocation() != -1) // if Move includes Meeple
     {
-        Regions::addMeeple(playerNumber, tile.getId(), move.getMeepleLocation());
+        std::cout << "I'm placing a meepleleep at edge " << move.getMeepleLocation() << std::endl;
+        std::cout << Regions::addMeeple(playerNumber, tile.getId(), move.getMeepleLocation()) << std::endl; 
     }
     else if(move.getHasCrocodile())
     {
@@ -209,6 +210,7 @@ void BoardManager::cannotPlaceTile(const Move& move, unsigned int playerNumber)
 unsigned int BoardManager::isSurrounded(int tileID)
 {
     unsigned int surrounded = 0;
+    //printf("[surrounded] tileID %d\n", tileID);
     const Coord& coord = Board::getCoordinatesFromTileId(tileID);
     const Array<Array<Tile*>>& boardGrid = Board::getBoard();
     unsigned int xLocation = coord.getX();
@@ -245,15 +247,19 @@ void BoardManager::inputTileStack(char stack[], int length)
         throw std::logic_error("sizeof stack and anticipated stack size differ");
     }
     */
-    
+    //printf("Why\n");
+    Board::set();
+    //printf("Why not\n");
     Array<Array<Tile>> tiles = Tile::CreateTiles();
+    //printf("Hoopla\n");
 
     std::string currentTile;
     int offset;
-    for(int i = length - 6; i > 0; i -= 5)          //Skip over the null char and the first set of chars.
+    for(int i = (length*5) - 5; i >= 0; i -= 5)          //Skip over the null char and the first set of chars.
     {
-            
+        //printf("Trying to assign\n");
         currentTile.assign(stack + i, stack + i + 5);
+        //printf("Tile stack index : %d name %s\n", i, currentTile.c_str());
 
         auto iter = getTileFunctionFromName.find(currentTile);
         if (iter != getTileFunctionFromName.end())

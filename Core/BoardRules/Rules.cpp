@@ -34,32 +34,96 @@ bool GameRules::validMeeplePlacement(const Tile& placed, unsigned int edgeIndex)
 
     return ((!hasPlayer1) && (!hasPlayer2));
 }
-
-bool GameRules::validMeeplePlacement(const Coord& location, unsigned int edgeIndex)
+#import <iostream>
+Array<bool> GameRules::validMeeplePlacement(const Tile& toBePlaced, const Coord& location)
 {
-    unsigned int side = edgeIndex / NUM_TILE_EDGES_PER_SIDE;
-    unsigned int correspondingSide = (side + (NUM_TILE_SIDES / 2)) % NUM_TILE_SIDES;
-    unsigned int correspondingEdge = (NUM_TILE_EDGES_PER_SIDE - (edgeIndex % NUM_TILE_EDGES_PER_SIDE) - 1) + (NUM_TILE_EDGES_PER_SIDE * correspondingSide);
-    unsigned int newX = location.getX();
-    unsigned int newY = location.getY();
+    std::cout << "------------------------------" << std::endl;
+    std::cout << "Tile " << toBePlaced << " at " << location << std::endl;
+    std::cout << "------------------------------" << std::endl;
 
-    if (side == 0) newY += 1;
-    else if (side == 1) newX += 1;
-    else if (side == 2) newY += -1;
-    else if (side == 3) newX += -1;
+    const unsigned int daveTigerOrder[9] = { 0, 1, 2, 10, 12, 4, 8, 7, 5 };
 
-    Coord neighbor = Coord(newX, newY);
+    Array<bool> isInvalid((unsigned int) 9);
+    for(unsigned int i = 0; i < 9; i++) { isInvalid[i] = false; }
 
-    const Tile* neighborTile = Board::get(neighbor);
-    if (neighborTile == NULL) return true;
+    Array<bool> canPlaceMeeple((unsigned int) 9);
+    for(unsigned int i = 0; i < 9; i++) { canPlaceMeeple[i] = false; }
 
-    std::shared_ptr<struct regionSet> * regions = Regions::getRegions(neighborTile->getId());
-    if (regions == NULL) return true;
+    for(unsigned int t = 0; t < 9; t++)
+    {
+        if(isInvalid[t])
+        {
+            continue;
+        }
 
-    bool hasPlayer1 = regions[correspondingEdge]->player1Meeples > 0;
-    bool hasPlayer2 = regions[correspondingEdge]->player2Meeples > 0;
+        unsigned int edgeIndex = daveTigerOrder[t];
 
-    return ((!hasPlayer1) && (!hasPlayer2));
+        unsigned int side = edgeIndex / NUM_TILE_EDGES_PER_SIDE;
+        unsigned int correspondingSide = (side + (NUM_TILE_SIDES / 2)) % NUM_TILE_SIDES;
+        unsigned int correspondingEdge = (NUM_TILE_EDGES_PER_SIDE - (edgeIndex % NUM_TILE_EDGES_PER_SIDE) - 1) + (NUM_TILE_EDGES_PER_SIDE * correspondingSide);
+        unsigned int newX = location.getX();
+        unsigned int newY = location.getY();
+
+        if (side == 0) newY += 1;
+        else if (side == 1) newX += 1;
+        else if (side == 2) newY += -1;
+        else if (side == 3) newX += -1;
+
+        Coord neighbor = Coord(newX, newY);
+
+        const Tile* neighborTile = Board::get(neighbor);
+
+        if (neighborTile == NULL)
+        {
+            canPlaceMeeple[t] = true;
+            continue;
+        }
+
+        std::shared_ptr<struct regionSet> * regions = Regions::getRegions(neighborTile->getId());
+        if (regions == NULL)
+        {
+            canPlaceMeeple[t] = true;
+            continue;
+        }
+
+        //std::cout << "DAVE TIGER ORDER IS FUN " << edgeIndex << std::endl;
+
+        for(unsigned int i = 0; i < 12; i++)
+        {
+            if(regions[i]->player1Meeples > 0)
+            {
+                //std::cout << regions[i]->player1Meeples << " meeples for regions[" << i << "]->player1Meeples" << std::endl;
+            }
+            if(regions[i]->player2Meeples > 0)
+            {
+                //std::cout << regions[i]->player2Meeples << " meeples for regions[" << i << "]->player2Meeples" << std::endl;
+            }
+        }
+
+        //std::cout << location << " with " << edgeIndex << " neighbor (" << newX << ", " << newY << ")" << std::endl;
+        //std::cout << Regions::checkOwner(neighborTile->getId(), correspondingEdge) << std::endl;
+
+        canPlaceMeeple[t] = (Regions::checkOwner(neighborTile->getId(), correspondingEdge) == -2);
+
+        if(!canPlaceMeeple[t])
+        {
+            std::cout << "Can't place mepepepele at " << location << ", edge " << edgeIndex << std::endl;
+            for(unsigned int tt = 0; tt < 9; tt++)
+            {
+                if(daveTigerOrder[tt] == edgeIndex) continue;
+                if(toBePlaced.isConnected(edgeIndex, daveTigerOrder[tt]))
+                {
+                    std::cout << "Love pancakes, " << edgeIndex << " ruins " << daveTigerOrder[tt] << std::endl;
+                    isInvalid[tt] = true;
+                    canPlaceMeeple[tt] = false;
+                }
+            }
+        }
+    }
+
+    //std::cout << std::endl;
+    
+    return canPlaceMeeple;
 }
 
 bool GameRules::hasCroc(unsigned int tileID)
@@ -105,8 +169,10 @@ bool GameRules::validCrocPlacement(unsigned int tileID)
 
 bool GameRules::checkSideForCroc(unsigned int x, unsigned int y)
 {
-    Coord side = Coord(x,y);
-    unsigned int tileID = Board::getGridId(side);
+    Coord sideCoord = Coord(x,y);
+    Tile* sideTile = Board::get(sideCoord);
+    if(sideTile == nullptr) return false;
+    unsigned int tileID = sideTile->getId();
     return hasCroc(tileID);  //If the adjacent tile regions return valid move, no croc.
 }
 
@@ -115,7 +181,7 @@ bool GameRules::validCrocPlacement(const Tile& toPlace, const Coord& location)
     int currentX = location.getX();
     int currentY = location.getY();
 
-    bool valid;
+    bool valid = false;
     for(int i = 0; i < NUM_TILE_EDGES + 1; i++)
     {
         if(toPlace.getTerrainType(i) == TerrainType::Road || toPlace.getTerrainType(i) == TerrainType::Castle)
@@ -175,6 +241,7 @@ unsigned int GameRules::scoreRoad(std::shared_ptr<struct regionSet> currentSet, 
         //If the entry doesn't exist, we haven't visited the tile yet
         if(tileSearch == edgeTracker.end())
         {
+            //printf("tile %d score before %d\n", currentNode->tileID, score);
             preyCount = 0;
             //Enter the tileID to make sure we don't revisit it
             edgeTracker[currentNode->tileID] = 1;
@@ -189,6 +256,7 @@ unsigned int GameRules::scoreRoad(std::shared_ptr<struct regionSet> currentSet, 
                 preyCount += currentNode->preyCounts[i];
             }
             score += ROAD_VALUE + preyCount;
+            //printf("after score %d\n", score);
         }
         //Get the next node in the list
         currentNode = currentNode->next;
@@ -212,24 +280,26 @@ unsigned int GameRules::scoreCastle(std::shared_ptr<struct regionSet> currentSet
 
 
     //Iterate through the linked list of the region
-    while(currentNode != NULL)
+    while(currentNode != NULL && currentNode->tileID != -1)
     {
         //Search for an entry in the map
         tileSearch = edgeTracker.find(currentNode->tileID);
         //If the entry doesn't exist, we haven't visited the tile yet
         if(tileSearch == edgeTracker.end())
         {
+            //printf("before score %d\n", score);
             preyCount = 0;
             //Make sure we don't revisit the tileID
             edgeTracker[currentNode->tileID] = 1;
             for(int i = 0; i  < NUM_PREY; i++)
             {
+                //printf("tile preyCount value %d at %d\n", currentNode->preyCounts[i], i);
                 if(i == 3 && currentNode->preyCounts[i])
                 {
                     preyCount--; //eaten by a croc
                     continue;
                 }
-                if(currentNode->preyCounts[i])
+                if(currentNode->preyCounts[i] > 0)
                 {
                     preyCount++;
                 }
@@ -237,6 +307,7 @@ unsigned int GameRules::scoreCastle(std::shared_ptr<struct regionSet> currentSet
             //Scoring for castle-animal interaction
             if(!endOfGame) {score += CASTLE_VALUE * (1 + preyCount);}
             if(endOfGame) {score += 1 * (1 + preyCount);}
+            //printf("tileID %d preyCount %d score %d\n", currentNode->tileID, preyCount, score);
         }
         //Get the next node in the list
         currentNode = currentNode->next;
@@ -246,6 +317,7 @@ unsigned int GameRules::scoreCastle(std::shared_ptr<struct regionSet> currentSet
 
 unsigned int GameRules::scoreGrass(std::shared_ptr<struct regionSet> * passedSets, unsigned int tileID, unsigned int edge, const Tile * passedTile)
 {
+    //printf("enter\n");
     unsigned int score = 0;
     unsigned int leftOfEdge, rightOfEdge;
     std::unordered_map<std::shared_ptr<struct regionSet>, bool> fieldTracker;
@@ -253,11 +325,13 @@ unsigned int GameRules::scoreGrass(std::shared_ptr<struct regionSet> * passedSet
     std::shared_ptr<struct tileNode> currentNode = (passedSets[edge])->head;
     auto tileSearch = fieldTracker.find(passedSets[edge]);
     std::shared_ptr<struct regionSet> * currentSets = passedSets;
-    const Tile * currentTile;
 
+                        return 0;
+/*
     //Iterate through the linked list of the given region
     while(currentNode != NULL)
     {
+        printf("tile %d has score %d", currentNode->tileID, score);
         if ((unsigned int)currentNode->tileID == tileID) {
             currentSets = passedSets;
             currentTile = passedTile;
@@ -344,6 +418,7 @@ unsigned int GameRules::scoreGrass(std::shared_ptr<struct regionSet> * passedSet
         currentNode = currentNode->next;
     }
     return score;
+    */
 }
 
 unsigned int GameRules::scoreChurch(unsigned int tilesSurrounded, bool actuallyScore)

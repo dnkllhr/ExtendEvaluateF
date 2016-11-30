@@ -127,7 +127,7 @@ struct regionSet
 
     unsigned int player1Meeples;
     unsigned int player2Meeples;
-    unsigned int edgesTillCompletion;
+    int edgesTillCompletion;
     TerrainType type;
     std::shared_ptr<struct tileNode> head;
     std::shared_ptr<struct tileNode> tail;

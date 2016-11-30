@@ -600,18 +600,18 @@ Array<Tile> Tile::CreateTileN(unsigned int tileCount, unsigned int& startId, Pre
 
     newTile.center = TerrainType::Grass;
     newTile.edgeConnections = new unsigned int[(newTile.numberSides * newTile.countPerSide)] {
-        0b111000000111,
-        0b111000000111,
-        0b111000000111,
-        0b000111111000,
-        0b000111111000,
-        0b000111111000,
-        0b000111111000,
-        0b000111111000,
-        0b000111111000,
-        0b111000000111,
-        0b111000000111,
-        0b111000000111
+        0b000000111111,
+        0b000000111111,
+        0b000000111111,
+        0b000000111111,
+        0b000000111111,
+        0b000000111111,
+        0b111111000000,
+        0b111111000000,
+        0b111111000000,
+        0b111111000000,
+        0b111111000000,
+        0b111111000000
     };
 
     Array<Tile> newTiles(tileCount);
@@ -829,16 +829,16 @@ Array<Tile> Tile::CreateTileW(unsigned int tileCount, unsigned int& startId, Pre
     newTile.center = TerrainType::Fork;
     newTile.edgeConnections = new unsigned int[(newTile.numberSides * newTile.countPerSide)] {
         0b100000000001,
-        0b010010000010,
+        0b000000000010,
         0b000001111100,
         0b000001111100,
         0b000001111100,
         0b000001111100,
         0b000001111100,
-        0b010010000010,
+        0b000010000000,
         0b001100000000,
         0b001100000000,
-        0b010010000010,
+        0b010000000000,
         0b100000000001
     };
 
