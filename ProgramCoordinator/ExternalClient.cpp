@@ -383,7 +383,7 @@ void setMsg (int thread_num, struct gameMessage message, bool mainThread){
 void gameThread(int thread_num, int socketfd){
     //Instaniate game
     fork();
-    execl(PATH_TO_GAME, std::itoa(thread_num == 0 ? portno+1 : portno+2));
+    execl(PATH_TO_GAME, std::to_string(thread_num == 0 ? portno+1 : portno+2).c_str());
 
     //process tile and place
 
