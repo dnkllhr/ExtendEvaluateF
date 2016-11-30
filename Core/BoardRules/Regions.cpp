@@ -51,16 +51,9 @@ int Regions::addCroc(unsigned int playerNumber, unsigned int tileID)
         ownerCrocs[i].inUse = true;
         ownerCrocs[i].ownedRegions = (regionTracker.find(tileID))->second;
 
-        for(int j = 0; j < NUM_TILE_EDGES + 1; j++)
+        for(int j = 0; j < NUM_TILE_EDGES; j++)
         {
-            if(ownerCrocs[i].ownedRegions[j] == NULL)
-            {
-                //std::cout << "ownerCrocs[" << i << "].ownedRegions[" << j <<"] is NULL" << std::endl;
-            }
-            else
-            {
-                ownerCrocs[i].ownedRegions[j]->hasCroc = true;
-            }
+            ownerCrocs[i].ownedRegions[j]->hasCroc = true;
         }
         Regions::availableCrocs[playerNumber - 1]--;
 
@@ -101,7 +94,7 @@ void Regions::mergeRegions(unsigned int placedTileID, unsigned int placedEdge, u
             //std::cout <<"Tile Id: " << tmpIter->tileID << " Edge: " << tmpIter->edge << " at "  << tmpIter << std::endl;
             tmpIter = tmpIter->next;
         }
-        std::cout << "End!" << std::endl << std::endl;
+        //std::cout << "End!" << std::endl << std::endl;
         */
         //Update Hash entries
         std::shared_ptr<struct tileNode> iter = (placedSearch->second[placedEdge])->head;
@@ -188,7 +181,7 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
     for (unsigned int edge = 0; edge < totalEdges; edge++) {
         if (newRegions[edge] == NULL) {
             newRegions[edge] = createRegion(newTile, edge, newTile.getTerrainType(edge));
-            printf("Tile %d edge %d edgesTillCompletion %d\n", id, edge, newRegions[edge]->edgesTillCompletion);
+            //printf("Tile %d edge %d edgesTillCompletion %d\n", id, edge, newRegions[edge]->edgesTillCompletion);
             newRegions[edge]->tail->preyCounts[static_cast<int>(newTile.getPrey())]++;
         }
 
@@ -223,7 +216,7 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
         }
     }
 
-    for (unsigned int edge = 0; edge < totalEdges; edge++) std::cout << "Edges Till Completion for Tile " << id << " and Edge " << edge << ": " << (*tracker)[id][edge]->edgesTillCompletion << std::endl;
+    for (unsigned int edge = 0; edge < totalEdges; edge++) //std::cout << "Edges Till Completion for Tile " << id << " and Edge " << edge << ": " << (*tracker)[id][edge]->edgesTillCompletion << std::endl;
 
     return newRegions;
 }
@@ -267,7 +260,7 @@ int Regions::addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned 
         Regions::availableMeeples[playerNumber - 1]--;
         return 0;
     }
-    std::cout << "Regions::checkOwner(" << tileID << ", " << edge << ") = " << Regions::checkOwner(tileID, edge) << std::endl;
+    //std::cout << "Regions::checkOwner(" << tileID << ", " << edge << ") = " << Regions::checkOwner(tileID, edge) << std::endl;
     return -1;
 }
 
