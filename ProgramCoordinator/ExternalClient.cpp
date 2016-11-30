@@ -388,18 +388,18 @@ void gameThread(int thread_num, int socketfd){
     //process tile and place
 
     struct gameMessage tileStack = getMsg(thread_num);
-    socketfd.send((char*)(&tileStack));
+    send(socketfd, (char*)(&tileStack), sizeof(tileStack), 0);
 
     //wait for starting tile
     struct gameMessage start = getMsg(thread_num);
-    socketfd.send((char*)(&start));
+    send(socketfd, (char*)(&start), sizeof(start), 0);
 
     //process tile stack
 
     while(true)
     {
         struct gameMessage tileForMove = getMsg(thread_num);
-        socketfd.send((char*)(&tileForMove));
+    send(socketfd, (char*)(&tileForMove), sizeof(tileForMove), 0);
         struct gameMessage gameMove;
         read(socketfd, (char*)(&gameMove), sizeof(gameMove));
         setMsg(thread_num, gameMove);
