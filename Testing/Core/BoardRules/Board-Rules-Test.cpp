@@ -82,12 +82,14 @@ TEST(RegionTests, addConnection) {
     const Tile **surroundingTiles = NULL; //Init'd to NULL
 
     unsigned int centerID = Board::get(Coord(76,76))->getId();
+    /*
     printf("centerID : %d\n", centerID);
 
     for(int i = 0; i < 12; i++)
     {
         printf("edge : %d edgesTillCompletion : %d\n", i, Regions::regionTracker[centerID][i]->edgesTillCompletion);
     }
+    */
 
 
     EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(centerID, 1)), 2); //Make sure the road has two sides open.
@@ -96,6 +98,8 @@ TEST(RegionTests, addConnection) {
     Tile * currentTile = &tileW;
     //testingTilePlacement(&startID, 72, 73, currentTile, surroundingTiles);
 
+    BoardManager::makeMove(Move(*currentTile, Coord(76, 75)), 1);
+
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
@@ -103,12 +107,14 @@ TEST(RegionTests, addConnection) {
     }
 
     EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 1)), 1); //Make sure the top road has one side open.
-    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)), 1); //Make sure the right road has one side open.
+    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 7)), 1); //Make sure the right road has one side open.
     EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)), 1); //Make sure the left road has one side open.
 
     Tile tileT = (Tile::CreateTileT(1, startID, PreyType::None)[0]); //No prey, starting tile
     currentTile = &tileT;
     //testingTilePlacement(&startID, 72, 71, currentTile, surroundingTiles);
+    BoardManager::makeMove(Move(*currentTile, Coord(75, 75), 1), 1);
+
 
     for(int i = 0; i < 12; i++)
     {
@@ -116,12 +122,15 @@ TEST(RegionTests, addConnection) {
          EXPECT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
-    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 7)), 0); //Make sure the road has zero sides open.
-    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 1)), 3); //Make sure the castle has three sides open.
+    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)), 0); //Make sure the road has zero sides open.
+    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)), 3); //Make sure the castle has three sides open.
 
     Tile tileH = (Tile::CreateTileH(1, startID, PreyType::None)[0]); //No prey, starting tile
     currentTile = &tileH;
     //testingTilePlacement(&startID, 73, 72, currentTile, surroundingTiles);
+    BoardManager::makeMove(Move(*currentTile, Coord(77, 76)), 1);
+    //std::cout << currentTile->getTileName() << std::endl;
+
 
     for(int i = 0; i < 12; i++)
     {
@@ -130,24 +139,28 @@ TEST(RegionTests, addConnection) {
 
     }
 
-    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)),2); //Make sure the right castle has one side open.
-    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)),1); //Make sure the left castle has zero sides open.
+    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 1)),1); //Make sure the right castle has one side open.
+    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 7)),1); //Make sure the left castle has zero sides open.
 
     Tile tileV = (Tile::CreateTileV(1, startID, PreyType::None)[0]); //No prey, starting tile
     currentTile = &tileV;
     //testingTilePlacement(&startID, 73, 73, currentTile, surroundingTiles);
+    BoardManager::makeMove(Move(*currentTile, Coord(76, 74), 1), 1);
 
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
         EXPECT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
+    
+    std::cout << currentTile->getTileName() << std::endl;
 
-    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)), 1); //Make sure the road has one side open.
+    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)), 1); //Make sure the road has one side open.
 
     Tile tileA = (Tile::CreateTileA(1, startID, PreyType::None)[0]); //No prey, starting tile
     currentTile = &tileA;
     //testingTilePlacement(&startID, 71, 73, currentTile, surroundingTiles);
+    BoardManager::makeMove(Move(*currentTile, Coord(76, 77)), 1);
 
     for(int i = 0; i < 12; i++)
     {
@@ -155,12 +168,13 @@ TEST(RegionTests, addConnection) {
         EXPECT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
-    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)),0); //Make sure the road has one side open.
-    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 12)),5); //Make sure the church has fives sides open.
+    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 7)),0); //Make sure the road has one side open.
+    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 12)),7); //Make sure the church has fives sides open.
 
     Tile tileB = (Tile::CreateTileB(1, startID, PreyType::None)[0]); //No prey, starting tile
     currentTile = &tileB;
     //testingTilePlacement(&startID, 71, 72, currentTile, surroundingTiles);
+    BoardManager::makeMove(Move(*currentTile, Coord(77, 77)), 1);
 
     for(int i = 0; i < 12; i++)
     {
@@ -168,11 +182,12 @@ TEST(RegionTests, addConnection) {
         EXPECT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
-    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 12)),3); //Make sure the church has three sides open.
+    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 12)),6); //Make sure the church has three sides open.
 
     Tile tileE = (Tile::CreateTileE(1, startID, PreyType::None)[0]); //No prey, starting tile
     currentTile = &tileE;
     //testingTilePlacement(&startID, 71, 71, currentTile, surroundingTiles);
+    BoardManager::makeMove(Move(*currentTile, Coord(75, 76), 2), 1);
 
     for(int i = 0; i < 12; i++)
     {
@@ -180,11 +195,12 @@ TEST(RegionTests, addConnection) {
         EXPECT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
 
-    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)),3); //Make sure the castle has three sides open.
+    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 7)),2); //Make sure the castle has three sides open.
 
     Tile tileN = (Tile::CreateTileN(1, startID, PreyType::None)[0]); //No prey, starting tile
     currentTile = &tileN;
     //testingTilePlacement(&startID, 73, 71, currentTile, surroundingTiles);
+    BoardManager::makeMove(Move(*currentTile, Coord(77, 76), 2), 1);
 
     for(int i = 0; i < 12; i++)
     {
@@ -193,7 +209,7 @@ TEST(RegionTests, addConnection) {
 
     }
 
-    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)),3); //Make sure the castle has three sides open.
+    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)),0); //Make sure the castle has three sides open.
 }
 
 TEST(RulesTest, ScoreChurch) {
