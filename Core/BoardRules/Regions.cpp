@@ -199,8 +199,12 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
             else if (newRegions[otherEdge] == NULL) {
                 //std::cout << "Extend Region with Edge: " << edge << " with Edge: " << otherEdge << std::endl;
                 //std::cout << "Edge " << edge << " Type: " << newTile.getTerrainType(edge) << ". Edge " << otherEdge << " Type: " << newTile.getTerrainType(otherEdge) << std::endl << std::endl;
+                unsigned int side = edge / countPerSide;
 
                 newRegions[otherEdge] = newRegions[edge];
+
+                if (otherEdge % countPerSide == centerEdge && boarderingTiles[side] != NULL)
+                    newRegions[otherEdge]->edgesTillCompletion++;
 
                 std::shared_ptr<struct tileNode> node = std::shared_ptr<struct tileNode>(new struct tileNode());
                 node->tileID = id;
