@@ -182,7 +182,7 @@ void BoardManager::makeMove(const Move& move, unsigned int playerNumber)
     if(move.getMeepleLocation() != -1) // if Move includes Meeple
     {
         std::cout << "I'm placing a meepleleep at edge " << move.getMeepleLocation() << std::endl;
-        std::cout << Regions::addMeeple(playerNumber, tile.getId(), move.getMeepleLocation()) << std::endl;
+        std::cout << Regions::addMeeple(playerNumber, tile.getId(), move.getMeepleLocation()) << std::endl; 
     }
     else if(move.getHasCrocodile())
     {
@@ -210,6 +210,7 @@ void BoardManager::cannotPlaceTile(const Move& move, unsigned int playerNumber)
 unsigned int BoardManager::isSurrounded(int tileID)
 {
     unsigned int surrounded = 0;
+    //printf("[surrounded] tileID %d\n", tileID);
     const Coord& coord = Board::getCoordinatesFromTileId(tileID);
     const Array<Array<Tile*>>& boardGrid = Board::getBoard();
     unsigned int xLocation = coord.getX();

@@ -235,28 +235,31 @@ TEST(RegionTests, addConnection) {
 }
 
 TEST(RulesTest, ScoreChurch) {
-    unsigned int startID = 0;
+    unsigned int startID = 18000;
     Tile *currentTile;
     //Move *currentMove;
     //Coord *currentCoord;
     const Tile **surroundingTiles;
+    BoardManager::gameInit();
 
     unsigned int expectedScore = 1;
-
     currentTile = &(Tile::CreateTileB(1, startID, PreyType::None)[0]);
+
+    unsigned int currentTileID = currentTile->getId();
+    unsigned int centerChurchID = currentTileID;
     currentTile->setRotation(0);
-    testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
+    BoardManager::makeMove(Move(*currentTile, Coord(72, 72), 0), 2);
     currentTile->placeTile();
 
     Coord *churchCoord = new Coord(72, 72);
-
-    unsigned int currentTileID = currentTile->getId();
     unsigned int tilesSurrounded = BoardManager::isSurrounded(currentTileID);
 
+    //printf("Found %d tiles\n", tilesSurrounded);
     unsigned int actualScore = GameRules::scoreChurch(tilesSurrounded, true);
     EXPECT_EQ(actualScore, 0);
     actualScore = GameRules::scoreChurch(tilesSurrounded, false);
     EXPECT_EQ(actualScore,1);
+    //printf("scored\n");
 
     for (int i = -1; i <= 1; i++)
     {
@@ -264,19 +267,21 @@ TEST(RulesTest, ScoreChurch) {
         {
             if (i == 0 && j == 0)
             {
-                break; // avoid overwriting the church tile
+                continue; // avoid overwriting the church tile
             }
             else
             {
                 // place field tiles around church tile
                 currentTile = &(Tile::CreateTileY(1, startID, PreyType::None)[0]);
+                currentTileID = currentTile->getId();
                 currentTile->setRotation(0);
                 testingTilePlacement(&startID, (churchCoord->getX() + i), (churchCoord->getY() + j), currentTile, surroundingTiles);
                 currentTile->placeTile();
 
                 expectedScore++;
-                currentTileID = currentTile->getId();
-                tilesSurrounded = BoardManager::isSurrounded(currentTileID);
+                tilesSurrounded = BoardManager::isSurrounded(centerChurchID);
+                //printf("placed tile %d at %d %d, expected score %d, surrounded %d\n", currentTileID, churchCoord->getX() + i, churchCoord->getY() + j, expectedScore, tilesSurrounded);
+
 
                 actualScore = GameRules::scoreChurch(tilesSurrounded, true);
 
@@ -300,37 +305,45 @@ TEST(RulesTest, ScoreChurch) {
 
 TEST(RulesTest, ScoreCastle1) {
     unsigned int startID = 0;
+    BoardManager::gameInit();
     Tile *currentTile;
     //Move *currentMove;
     //Coord *currentCoord;
     const Tile **surroundingTiles;
 
     currentTile = &(Tile::CreateTileD(1, startID, PreyType::Deer)[0]);
+    unsigned int currentTileID = currentTile->getId();
     currentTile->setRotation(0);
     testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
     currentTile->placeTile();
+    printf("Where am i\n");
 
-    unsigned int currentTileID = currentTile->getId();
+    
     std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
+    printf("Where am i\n");
     unsigned int actualScore = GameRules::scoreCastle(*currentSet, true, false);
+    printf("Where am i\n");
     EXPECT_EQ(actualScore,0);
     actualScore = GameRules::scoreCastle(*currentSet, false, false);
     EXPECT_EQ(actualScore,2);
+    printf("Where am i\n");
 
     // add another tile to extend the lake region
     currentTile = &(Tile::CreateTileK(1, startID, PreyType::Boar)[0]);
+    currentTileID = currentTile->getId();
     currentTile->setRotation(2);
     testingTilePlacement(&startID, 73, 72, currentTile, surroundingTiles);
     currentTile->placeTile();
+    printf("Where am i\n");
 
-    currentTileID = currentTile->getId();
     currentSet = Regions::getRegions(currentTileID);
 
     actualScore = GameRules::scoreCastle(*currentSet, true, false);
     EXPECT_EQ(actualScore,12);
     actualScore = GameRules::scoreCastle(*currentSet, false, false);
     EXPECT_EQ(actualScore,12);
+    printf("Where am i\n");
 
 }
 

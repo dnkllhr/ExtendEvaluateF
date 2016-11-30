@@ -7,7 +7,7 @@ unsigned int AI::myPlayerNumber;
 #ifndef __testing
 Move AI::chooseTurn(const Tile& currentTile)
 {
-    std::vector<Move> moveList = BoardManager::getValidMoves((Tile&)currentTile);
+    std::vector<Move> moveList = BoardManager::getValidMoves((Tile&)currentTile, AI::myPlayerNumber);
 
     auto highestIndex = moveList.begin();
     float highestValue = 0;
