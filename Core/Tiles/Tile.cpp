@@ -829,16 +829,16 @@ Array<Tile> Tile::CreateTileW(unsigned int tileCount, unsigned int& startId, Pre
     newTile.center = TerrainType::Fork;
     newTile.edgeConnections = new unsigned int[(newTile.numberSides * newTile.countPerSide)] {
         0b100000000001,
-        0b010010000010,
+        0b000000000010,
         0b000001111100,
         0b000001111100,
         0b000001111100,
         0b000001111100,
         0b000001111100,
-        0b010010000010,
+        0b000010000000,
         0b001100000000,
         0b001100000000,
-        0b010010000010,
+        0b010000000000,
         0b100000000001
     };
 
