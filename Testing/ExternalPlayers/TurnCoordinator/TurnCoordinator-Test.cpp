@@ -7,51 +7,49 @@
 
 TEST(TurnCoordinator, convertEdgeToZone)
 {
-    /*
+    TurnCoordinator trn = TurnCoordinator(1);
     int returnValue;
-    returnValue = TurnCoordinator::convertEdgeToZone(0);
+    returnValue = trn.convertEdgeToZone(0);
     ASSERT_EQ(returnValue, 1);
 
-    returnValue = TurnCoordinator::convertEdgeToZone(1);
+    returnValue = trn.convertEdgeToZone(1);
     ASSERT_EQ(returnValue, 2);
 
-    returnValue = TurnCoordinator::convertEdgeToZone(2);
+    returnValue = trn.convertEdgeToZone(2);
     ASSERT_EQ(returnValue, 3);
 
-    returnValue = TurnCoordinator::convertEdgeToZone(3);
+    returnValue = trn.convertEdgeToZone(3);
     ASSERT_EQ(returnValue, 3);
 
-    returnValue = TurnCoordinator::convertEdgeToZone(4);
+    returnValue = trn.convertEdgeToZone(4);
     ASSERT_EQ(returnValue, 6);
 
-    returnValue = TurnCoordinator::convertEdgeToZone(5);
+    returnValue = trn.convertEdgeToZone(5);
     ASSERT_EQ(returnValue, 9);
 
-    returnValue = TurnCoordinator::convertEdgeToZone(6);
+    returnValue = trn.convertEdgeToZone(6);
     ASSERT_EQ(returnValue, 9);
 
-    returnValue = TurnCoordinator::convertEdgeToZone(7);
+    returnValue = trn.convertEdgeToZone(7);
     ASSERT_EQ(returnValue, 8);
 
-    returnValue = TurnCoordinator::convertEdgeToZone(8);
+    returnValue = trn.convertEdgeToZone(8);
     ASSERT_EQ(returnValue, 7);
 
-    returnValue = TurnCoordinator::convertEdgeToZone(9);
+    returnValue = trn.convertEdgeToZone(9);
     ASSERT_EQ(returnValue, 7);
 
-    returnValue = TurnCoordinator::convertEdgeToZone(10);
+    returnValue = trn.convertEdgeToZone(10);
     ASSERT_EQ(returnValue, 4);
 
-    returnValue = TurnCoordinator::convertEdgeToZone(11);
+    returnValue = trn.convertEdgeToZone(11);
     ASSERT_EQ(returnValue, 1);
 
-    returnValue = TurnCoordinator::convertEdgeToZone(12);
+    returnValue = trn.convertEdgeToZone(12);
     ASSERT_EQ(returnValue, 5);
-    */
-    printf("WARNING  TurnCoordinator test commented out\n");
 }
 
-//Move& TurnCoordinator::convertInMove(gameMessage *msg)
+//Move& trn.convertInMove(gameMessage *msg)
 /*
 struct moveMessage
 {
@@ -83,7 +81,7 @@ bool getPickupMeeple() const;
 
 TEST(TurnCoordinator, convertInMove)
 {
-    /*
+    TurnCoordinator trn = TurnCoordinator(1);
     BoardManager::gameInit();
     gameMessage *msg = new gameMessage;
     msg->messageType = 1;
@@ -109,7 +107,7 @@ TEST(TurnCoordinator, convertInMove)
     msg->data.move.zone = 1;
     //printf("<3\n");
 
-    Move mv = TurnCoordinator::convertInMove(msg);    
+    Move mv = trn.convertInMove(msg);    
     //printf("Where\n");
     ASSERT_EQ((unsigned int)mv.getCoord().getX(), msg->data.move.x);    
     //printf("Am\n");
@@ -120,18 +118,16 @@ TEST(TurnCoordinator, convertInMove)
     ASSERT_EQ(mv.getRotation(), msg->data.move.orientation);     
     //printf("Going\n");
     ASSERT_FALSE(mv.getHasCrocodile()); 
-    */
-    printf("WARNING  TurnCoordinator test commented out\n");
 }
 
 /*
-gameMessage TurnCoordinator::buildResponse(Move& move)
+gameMessage trn.buildResponse(Move& move)
 {
     gameMessage *gMsg = new gameMessage;
     gMsg->messageType = 1;
     strcpy(gMsg->data.move.tile, (move.getTile().getTileName()).c_str());
 
-    gMsg->data.move.p1 = TurnCoordinator::ourPlayerNumber;
+    gMsg->data.move.p1 = trn.ourPlayerNumber;
 
     gMsg->data.move.x = move.getCoord().getX();
     gMsg->data.move.y = move.getCoord().getY();
@@ -144,7 +140,7 @@ gameMessage TurnCoordinator::buildResponse(Move& move)
     else if(move.getMeepleLocation() != -1)
     {
         gMsg->data.move.meepleType = 1; //Meeple Type
-        gMsg->data.move.zone = TurnCoordinator::convertEdgeToZone(move.getMeepleLocation());
+        gMsg->data.move.zone = trn.convertEdgeToZone(move.getMeepleLocation());
     }
     else
     {
@@ -159,16 +155,15 @@ gameMessage TurnCoordinator::buildResponse(Move& move)
 
 TEST(TurnCoordinator, buildResponse)
 {
-    /*
+    TurnCoordinator trn = TurnCoordinator(1);
     BoardManager::gameInit();
     Move *mv = new Move(BoardManager::getTopTileStack(), 1, 2, 0, (unsigned int)4);
 
-    gameMessage gMsg = TurnCoordinator::buildResponse(*mv);
-    ASSERT_EQ(gMsg.messageType, 1);
-    ASSERT_EQ(gMsg.data.move.x, 1);
-    ASSERT_EQ(gMsg.data.move.y, 2);
-    ASSERT_EQ(gMsg.data.move.orientation, 0);
-    ASSERT_EQ(gMsg.data.move.zone, TurnCoordinator::convertEdgeToZone(4)); //Have to account for changing from edge 4 -> zone 6
-    */
-    printf("WARNING  TurnCoordinator test commented out\n");
+    gameMessage *gMsg = new gameMessage;
+    trn.buildResponse(*mv, gMsg);
+    ASSERT_EQ(gMsg->messageType, 1);
+    ASSERT_EQ(gMsg->data.move.x, 1);
+    ASSERT_EQ(gMsg->data.move.y, 2);
+    ASSERT_EQ(gMsg->data.move.orientation, 0);
+    ASSERT_EQ(gMsg->data.move.zone, trn.convertEdgeToZone(4)); //Have to account for changing from edge 4 -> zone 6
 }

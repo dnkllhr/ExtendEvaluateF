@@ -9,7 +9,9 @@ TurnCoordinator::TurnCoordinator(int port)
     this->otherPlayerNumber = 0;
     this->myAddr = new struct sockaddr_in;
     this->clientAddr = new struct sockaddr_in;
+#ifndef __testing
     setupSocket(port);
+#endif
 }
 
 TurnCoordinator::~TurnCoordinator()
