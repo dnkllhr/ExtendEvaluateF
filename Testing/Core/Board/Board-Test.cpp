@@ -113,8 +113,8 @@ TEST(BoardTests, getBorderingTiles)
 
     unsigned int i = 0;
 
-    int dx[8] = { 1, 0, -1, -1, -1, 0, 1, 1 }; 
-    int dy[8] = { -1, -1, -1, 0, 1, 1, 1, 0 };
+    int dx[8] = { -1, 0, 1, 1, 1, 0, -1, -1 }; 
+    int dy[8] = { 1, 1, 1, 0, -1, -1, -1, 0 };
 
     const Move& moveCenter = Move(tileCenter, 1, 1);
     const Move& move0 = Move(tile0, 1 + dx[i], 1 + dy[i]); i++;

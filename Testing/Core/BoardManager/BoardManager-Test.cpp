@@ -215,11 +215,6 @@ TEST(BoardManagerTests, getValidMoves)
 
     BoardManager::gameInit();
 
-    unsigned int tileIdCounter = 100;
-
-    TileStack* tileStack = BoardManager::getTileStack();
-    unsigned int initalSize = tileStack->getSize();
-
     Array<Array<Tile>> tiles = Tile::CreateTiles();
 
     Tile& tile1 = tiles[9][0];//Tile::CreateTileJ(1, tileIdCounter, PreyType::None)[0];
