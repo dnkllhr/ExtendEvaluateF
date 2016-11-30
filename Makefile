@@ -22,4 +22,4 @@ clean:
 	$(MAKE) -C ./ExternalPlayers -f Makefile clean
 	$(MAKE) -C ./ProgramCoordinator -f Makefile clean
 	$(MAKE) -C ./Testing -f Makefile clean
-	rm -rf Compiled/* GameInstance
+	rm -rf Compiled/* GameInstance ExternalClient
