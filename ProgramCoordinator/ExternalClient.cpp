@@ -400,7 +400,8 @@ void gameThread(int thread_num, int socketfd){
     {
         struct gameMessage tileForMove = getMsg(thread_num);
         socketfd.send((char*)(&tileForMove));
-        struct gameMessage gameMove = (char*)socketfd.read();
+        struct gameMessage gameMove;
+        read(socketfd, (char*)(&gameMove), sizeof(gameMove));
         setMsg(thread_num, gameMove);
     }
 }
