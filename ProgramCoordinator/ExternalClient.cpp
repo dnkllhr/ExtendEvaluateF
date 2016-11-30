@@ -182,7 +182,7 @@ void matchProtocol(int sockfd)
     printf("%s\n",buffer);
      oppPid = strAtIndex(buffer,4);
 
-     struct gameMessage whoAmI = new struct gameMessage;
+    struct gameMessage * whoAmI = new struct gameMessage;
 
 
     //Server: STARTING TILE IS <tile> AT <x> <y> <orientation>
@@ -300,7 +300,7 @@ void moveProtocol(int sockfd)
     if(!newMsg.data.move.placeable)
         response = 0;
     else
-        response = newMsg-> data.move.meepleType;
+        response = newMsg.data.move.meepleType;
 
     switch (response) {
         case 3:
@@ -362,7 +362,7 @@ std::string strAtIndex(std::string buffer, int index)
 
 gameMessage getMsg (int thread_num, bool mainThread) {
     std::lock_guard<std::mutex> guard(msg_mutex);
-    cvs[thread_num].wait(guard, [](){return (ready[thread_num] || mainThread);});
+    cvs[thread_num].wait(guard, [thread_num, mainThread](){return (ready[thread_num] || mainThread);});
 
     if (mainThread && !ready[thread_num - 1]) {
         gameMessage notValid;
@@ -373,33 +373,33 @@ gameMessage getMsg (int thread_num, bool mainThread) {
     return Msgs[thread_num-1];
 }
 
-void setMsg (int thread_num, struct gameMessage message){
+void setMsg (int thread_num, struct gameMessage message, bool mainThread){
     std::lock_guard<std::mutex> guard(msg_mutex);
         Msgs[thread_num] = message;
         ready[thread_num] = true;
-    cvs[thread_num].wait(guard, [](){return (ready[thread_num] || mainThread);});
+    cvs[thread_num].wait(guard, [thread_num](){return (ready[thread_num] || mainThread);});
 }
 
 void gameThread(int thread_num, int socketfd){
     //Instaniate game
     fork();
-    execl(PATH_TO_GAME, itos(thread_num == 0 ? portno+1 : portno+2));
+    execl(PATH_TO_GAME, itoa(thread_num == 0 ? portno+1 : portno+2));
 
     //process tile and place
 
     struct gameMessage tileStack = getMsg(thread_num);
-    sockfd.send((char*)tileStack);
+    sockfd.send((char*)(&tileStack));
 
     //wait for starting tile
     struct gameMessage start = getMsg(thread_num);
-    sockfd.send((char*)start);
+    sockfd.send((char*)(&start));
 
     //process tile stack
 
     while(true)
     {
         struct gameMessage tileForMove = getMsg(thread_num);
-        sockfd.send((char*)tileForMove);
+        sockfd.send((char*)(&tileForMove));
         struct gameMessage gameMove = (char*)sockfd.read();
         setMsg(thread_num, gameMove);
     }
