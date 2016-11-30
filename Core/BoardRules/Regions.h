@@ -45,7 +45,7 @@ class Regions
 #else
     private:
 #endif
-        static std::shared_ptr<struct regionSet> createRegion(unsigned int tileID, unsigned int edge, TerrainType type);
+        static std::shared_ptr<struct regionSet> createRegion(const Tile& tile, unsigned int edge, TerrainType type);
         static int countEdgesTillCompletion(unsigned int placedTileID);
         static void mergeRegions(unsigned int placedTileID, unsigned int placedEdge, unsigned int connectingTileID, unsigned int connectingEdge);
 

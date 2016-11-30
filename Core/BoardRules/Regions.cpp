@@ -357,8 +357,8 @@ std::shared_ptr<struct regionSet> Regions::createRegion(const Tile& tile, unsign
     std::shared_ptr<struct regionSet> newRegion = std::shared_ptr<struct regionSet>(new struct regionSet());
     std::shared_ptr<struct tileNode> node = std::shared_ptr<struct tileNode>(new struct tileNode());
 
-    unsigned int numOfSides = newTile.getNumberOfSides();
-    unsigned int countPerSide = newTile.getCountPerSide();
+    unsigned int numOfSides = tile.getNumberOfSides();
+    unsigned int countPerSide = tile.getCountPerSide();
     unsigned int totalEdges = numOfSides * countPerSide;
     unsigned int edgesTillCompletion = 0;
     unsigned int centerEdge = countPerSide / 2;
