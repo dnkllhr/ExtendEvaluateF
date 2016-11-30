@@ -300,7 +300,7 @@ TEST(BoardManagerTests, getValidMoves)
     EXPECT_FALSE(tile1.isPlaced());
     BoardManager::makeMove(move1, 1);
     EXPECT_TRUE(tile1.isPlaced());
-    EXPECT_EQ(tile1.getRotation(), 2);
+    EXPECT_EQ(tile1.getRotation(), (unsigned int)2);
 
     Tile& tile2 = tiles[22][0]; // V
     Coord coord2 = Coord(77, 75);
@@ -378,7 +378,7 @@ TEST(BoardManagerTests, getValidMoves)
     EXPECT_FALSE(tile2.isPlaced());
     BoardManager::makeMove(move2, 2);
     EXPECT_TRUE(tile2.isPlaced());
-    EXPECT_EQ(tile2.getRotation(), 0);
+    EXPECT_EQ(tile2.getRotation(), (unsigned int)0);
 
     Tile& tile3 = tiles[11][0]; // K
     Coord coord3 = Coord(77, 76);
@@ -448,7 +448,7 @@ TEST(BoardManagerTests, getValidMoves)
     EXPECT_FALSE(tile3.isPlaced());
     BoardManager::makeMove(move3, 1);
     EXPECT_TRUE(tile3.isPlaced());
-    EXPECT_EQ(tile3.getRotation(), 2);
+    EXPECT_EQ(tile3.getRotation(), (unsigned int)2);
 }
 
 // Should this also test the calls of Regions::addConection,addMeeple,addCroc, as applicable?

@@ -258,7 +258,7 @@ unsigned int GameRules::scoreGrass(std::shared_ptr<struct regionSet> * passedSet
     //Iterate through the linked list of the given region
     while(currentNode != NULL)
     {
-        if (currentNode->tileID == tileID) {
+        if ((unsigned int)currentNode->tileID == tileID) {
             currentSets = passedSets;
             currentTile = passedTile;
         }

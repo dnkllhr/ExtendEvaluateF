@@ -8,6 +8,7 @@ unsigned int Regions::availableMeeples[2] = { MEEPLES_PER_PLAYER, MEEPLES_PER_PL
 struct croc Regions::ownerCrocs[] = {};
 unsigned int Regions::availableCrocs[2] = { CROCS_PER_PLAYER, CROCS_PER_PLAYER };
 
+/***************** Temporary! *****************/
 #include <iostream>
 
 std::ostream& operator<<(std::ostream& os, TerrainType t)
@@ -24,6 +25,7 @@ std::ostream& operator<<(std::ostream& os, TerrainType t)
 
     return os;
 }
+/*************** End Temporary! ***************/
 
 int Regions::addCroc(unsigned int playerNumber, unsigned int tileID)
 {
@@ -135,7 +137,7 @@ std::shared_ptr<struct regionSet> * Regions::addConnection(const Tile& newTile, 
         newRegions[totalEdges] = NULL;
     }
 
-    const Tile* boarderingTiles[numOfSides];
+    const Tile* boarderingTiles[NUM_TILE_SIDES];
     unsigned int sideInc = 0;
     for (unsigned int currSide = 0; currSide < numOfSides * 2; currSide++) {
         if (allBoarderingTiles[currSide] != NULL) {

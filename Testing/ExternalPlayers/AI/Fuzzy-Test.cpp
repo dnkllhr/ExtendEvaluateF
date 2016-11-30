@@ -172,13 +172,13 @@ TEST(FuzzyTests, getResults)
 TEST(AITests, setPlayerNumber)
 {
     AI::setPlayerNumber(0);
-    EXPECT_EQ(AI::myPlayerNumber, 0);
+    EXPECT_EQ(AI::myPlayerNumber, (unsigned int)0);
 
     AI::setPlayerNumber(1);
-    EXPECT_EQ(AI::myPlayerNumber, 1);
+    EXPECT_EQ(AI::myPlayerNumber, (unsigned int)1);
 
     AI::setPlayerNumber(2);
-    EXPECT_EQ(AI::myPlayerNumber, 2);
+    EXPECT_EQ(AI::myPlayerNumber, (unsigned int)2);
 }
 
 TEST(AITests, chooseTurn)
