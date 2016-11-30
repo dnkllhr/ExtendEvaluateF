@@ -75,7 +75,7 @@ TEST(RegionTests, mergeRegions)
 TEST(RegionTests, addConnection) {
 
     BoardManager::gameInit();
-    unsigned int startID = 0;
+    unsigned int startID = 10;
     //Tile currentTile;
     //Move *currentMove;
     //Coord *currentCoord;
@@ -128,7 +128,7 @@ TEST(RegionTests, addConnection) {
     Tile tileH = (Tile::CreateTileH(1, startID, PreyType::None)[0]); //No prey, starting tile
     currentTile = &tileH;
     //testingTilePlacement(&startID, 73, 72, currentTile, surroundingTiles);
-    BoardManager::makeMove(Move(*currentTile, Coord(77, 76)), 1);
+    BoardManager::makeMove(Move(*currentTile, Coord(77, 75)), 1);
     //std::cout << currentTile->getTileName() << std::endl;
 
 
@@ -181,7 +181,6 @@ TEST(RegionTests, addConnection) {
         //Make sure everything has a region
         EXPECT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
     }
-
     EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 12)),6); //Make sure the church has three sides open.
 
     Tile tileE = (Tile::CreateTileE(1, startID, PreyType::None)[0]); //No prey, starting tile
