@@ -215,7 +215,7 @@ TEST(BoardManagerTests, getTileStack)
 
 TEST(BoardManagerTests, getValidMoves)
 {
-    ASSERT_EQ("getValidMoves is not running right now", "");
+    ASSERT_EQ("getValidMoves is producing intended outputs but the test itself hasn't been fully updated", "");
 
     BoardManager::gameInit();
 

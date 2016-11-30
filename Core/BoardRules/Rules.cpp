@@ -169,8 +169,10 @@ bool GameRules::validCrocPlacement(unsigned int tileID)
 
 bool GameRules::checkSideForCroc(unsigned int x, unsigned int y)
 {
-    Coord side = Coord(x,y);
-    unsigned int tileID = Board::getGridId(side);
+    Coord sideCoord = Coord(x,y);
+    Tile* sideTile = Board::get(sideCoord);
+    if(sideTile == nullptr) return false;
+    unsigned int tileID = sideTile->getId();
     return hasCroc(tileID);  //If the adjacent tile regions return valid move, no croc.
 }
 
@@ -179,7 +181,7 @@ bool GameRules::validCrocPlacement(const Tile& toPlace, const Coord& location)
     int currentX = location.getX();
     int currentY = location.getY();
 
-    bool valid;
+    bool valid = false;
     for(int i = 0; i < NUM_TILE_EDGES + 1; i++)
     {
         if(toPlace.getTerrainType(i) == TerrainType::Road || toPlace.getTerrainType(i) == TerrainType::Castle)
