@@ -22,7 +22,7 @@ char* PASSWD;
 int pid;
 int portno;
 
-std::\r\n ** \r\ns;
+std::thread ** threads;
 
 gameMessage Msgs[2];
 bool ready[2];
