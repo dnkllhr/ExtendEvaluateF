@@ -2,6 +2,9 @@
 import sys
 import socket               # Import socket module
 from ctypes import *
+extra = ""
+active = True
+activeGames = 2;
 
 s = socket.socket()         # Create a socket object
 host = sys.argv[1]          # Get local machine name
@@ -42,32 +45,127 @@ class GAMEMESSAGE(Structure):
 	_field_ = [ ("type", c_int),
 				("data", DATAMESSAGE)]
 
-def roundprotol():
-	stringData = s.recv(1024) #BEGIN ROUND <rid> OF <rounds>
-	rid = stringData[12,14] #assumes rid is 2 digit number
-	print stringData
-	matchprotocol()
-	return
+def myRead(socket):
+    global extra
+    buffer = ""
+    check = ""
+    while True:
+        print "looping..."
+        check = socket.recv(1)
+        print "past socket recv"
+        print check
+        if check == '\r':
+            print 1
+            print buffer
+            return buffer + '\r'
+        if check != '\x00':
+            print 2
+            buffer += check
+            print buffer
+
+
+#     buffer = socket.recv(513-sys.getsizeof(extra))
+#     rmjunk = buffer.split('\x00')
+#     rmjunk[0].rstrip('\x00')
+#     list = ''
+#
+#     for i in rmjunk:
+#         list += str(i)
+#
+#     buffer = extra + buffer
+#     list = buffer.split("\r",1)
+#
+#     if len(list) > 1:
+#         buffer = list[0]
+#         extra = list[1]
+# #    print "Line " + buffer + "\tExtra " + extra
+    return buffer
+
+
+def roundprotocol():
+    global s
+    global activeGames
+    global extra
+
+    buffer = myRead(s) #Server: BEGIN ROUND <rid> OF <rounds>
+    split = buffer.split(" ")
+    rid = split[2]
+    rounds = int(split[4])
+    print buffer
+
+    activeGames = 2
+    matchprotocol()
+
+    buffer = myRead(s) #Server: END OF ROUND <rid> OF <rounds>
+    print buffer
+
+    return
 
 def matchprotocol():
-	stringData = s.recv(1024) #YOUR OPPONENT IS PLAYER <pid>
-	opponentPid = stringData[24,26] #assumes pid is a 2 digit number
-	print stringData
-	print s.recv(1024) #STARTING TILE IS <tile> AT <x> <y> <orientation>
+    global s
+    buffer = myRead(s) #YOUR OPPONENT IS PLAYER <pid>
+    split = buffer.split(" ")
+
+    opponentPid = split[4]
+    print buffer
+
+    buffer = myRead(s) #STARTING TILE IS <tile> AT <x> <y> <orientation>
+    split = buffer.split(" ")
+    tile = split[3]
+    x = split[5]
+    y = split[6]
+    orientation = split[7]
+    print buffer
+
 
 	# how to extract tileStack from line below?
-	stringData = s.recv(1024) #THE REMAINING <number_tiles> TILES ARE [ <tiles> ]
-	numTiles = stringData[14,16] #assumes number_tiles is a 2 digit number
-	print stringData
-	print s.recv(1024) #MATCH BEGINS IN <timeplan> SECONDS
-	for i in range(0, numTiles):
+    buffer = myRead(s) #THE REMAINING <number_tiles> TILES ARE [ <tiles> ]
+    print buffer
+    split = buffer.split(" ")
+    numTiles = split[2]
+    tiles = []
+    for i in range(0,int(numTiles)):
+        tiles.append(split[6+i])
+    print tiles
+
+    print myRead(s) #MATCH BEGINS IN <timeplan> SECONDS
+
+    for i in range(0, int(numTiles)):
 		moveprotocol()
-	print s.recv(1024) #GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
-	print s.recv(1024) #GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
-	return
 
-#def moveprotocol():
+    print myRead(s)#GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
+    print myRead(s)#GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
+    return
 
+def moveprotocol():
+    global s
+    global activeGames
+    global extra
+
+    buffer = myRead(s);#Server: MAKE YOUR MOVE IN GAME <gid> WITHIN <timemove> SECOND: MOVE <#> PLACE <tile>
+    print buffer
+    split = buffer.split(" ")
+    gid = split[5]
+    moveNum = split[10]
+    tile = split[12]
+
+    #Creat Message object
+
+    #await response
+
+    buffer = "GAME "+gid+" MOVE "+moveNum+" TILE "+tile+" UNPLACEABLE PASS";
+    print buffer
+    s.send(buffer)
+
+    currentlyActive = activeGames
+    for i in range(0,currentlyActive):
+        buffer = myRead(s)
+        split = buffer.split(" ")
+        if split[6] == "FORFEITED":
+            activeGames= activeGames - 1
+        else:
+            print "LET GAME KNOW OF OPPONENTS MOVE"
+    return
 
 
 #AUTHENTICATION PROTOCOL
@@ -78,37 +176,47 @@ def authenticationprotocol():
     global password
     global pid
 
-    print s.recv(1024) #This is SPARTA
+    print myRead(s) #This is SPARTA
 
     buffer = "JOIN "+tournamentPassword
     s.send(buffer)  #JOIN <tournament password>
     print buffer
 
-    print s.recv(1024) #HELLO!
+    print myRead(s) #HELLO!
 
     buffer = "I AM " + username + " " + password # space in between username and password?
     s.send(buffer)
     print buffer
 
 
-    print s.recv(1024) #WELCOME <pid> PLEASE WAIT FOR THE NEXT CHALLENGE
+    buffer = myRead(s) #WELCOME <pid> PLEASE WAIT FOR THE NEXT CHALLENGE
+    print buffer
     pid = buffer.split(" ")[1]
     print pid
 
 def challengeprotocol():
-    buffer = s.recv(1024)  #NEW CHALLENGE <cid> YOU WILL PLAY <rounds> MATCH
-    cid = stringData[14,16] #assumes cid is 2 digit number
-    rounds = stringData[31,33] #assumes round is 2 digit number
-    print stringData
+    global active
+    while active:
+        buffer = myRead(s)  #NEW CHALLENGE <cid> YOU WILL PLAY <rounds> MATCH
+        split = buffer.split(" ")
+        cid = split[2] #id of challenge, basically garbage
+        rounds = split[6] #number of rounds
+        print buffer
 
-    numRounds = int(rounds)
-    for i in range(0, numRounds):
-    	roundprotocol()
+        numRounds = int(rounds)
+
+        for i in range(0, numRounds):
+    	       roundprotocol()
+
+        buffer = myRead(s) #END OF CHALLENGES or PLEASE WAIT
+        split = buffer.split(" ")
+        if split[0] == "END":
+            active = False
 
 ######################################################################################
 
 authenticationprotocol()
-#challengeprotocol()
+challengeprotocol()
 
 
 s.close
