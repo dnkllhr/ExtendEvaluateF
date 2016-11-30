@@ -383,24 +383,24 @@ void setMsg (int thread_num, struct gameMessage message, bool mainThread){
 void gameThread(int thread_num, int socketfd){
     //Instaniate game
     fork();
-    execl(PATH_TO_GAME, itoa(thread_num == 0 ? portno+1 : portno+2));
+    execl(PATH_TO_GAME, std::itoa(thread_num == 0 ? portno+1 : portno+2));
 
     //process tile and place
 
     struct gameMessage tileStack = getMsg(thread_num);
-    sockfd.send((char*)(&tileStack));
+    socketfd.send((char*)(&tileStack));
 
     //wait for starting tile
     struct gameMessage start = getMsg(thread_num);
-    sockfd.send((char*)(&start));
+    socketfd.send((char*)(&start));
 
     //process tile stack
 
     while(true)
     {
         struct gameMessage tileForMove = getMsg(thread_num);
-        sockfd.send((char*)(&tileForMove));
-        struct gameMessage gameMove = (char*)sockfd.read();
+        socketfd.send((char*)(&tileForMove));
+        struct gameMessage gameMove = (char*)socketfd.read();
         setMsg(thread_num, gameMove);
     }
 }
