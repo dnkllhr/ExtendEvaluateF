@@ -361,7 +361,7 @@ std::string strAtIndex(std::string buffer, int index)
 }
 
 gameMessage getMsg (int thread_num, bool mainThread) {
-    std::lock_guard<std::mutex> guard(msg_mutex);
+    std::unique_lock<std::mutex> guard(msg_mutex);
     cvs[thread_num].wait(guard, [thread_num, mainThread](){return (ready[thread_num] || mainThread);});
 
     if (mainThread && !ready[thread_num - 1]) {
@@ -374,10 +374,10 @@ gameMessage getMsg (int thread_num, bool mainThread) {
 }
 
 void setMsg (int thread_num, struct gameMessage message, bool mainThread){
-    std::lock_guard<std::mutex> guard(msg_mutex);
+    std::unique_lock<std::mutex> guard(msg_mutex);
         Msgs[thread_num] = message;
         ready[thread_num] = true;
-    cvs[thread_num].wait(guard, [thread_num](){return (ready[thread_num] || mainThread);});
+    cvs[thread_num].wait(guard, [thread_num, mainThread](){return (ready[thread_num] || mainThread);});
 }
 
 void gameThread(int thread_num, int socketfd){
