@@ -5,6 +5,36 @@
 #include "gtest/gtest.h"
 #define GRID_SIZE 153
 
+
+
+TEST(BoardManager, inputTileStack)
+{
+    char testingTileStack[31] = "JJTJXJLJL-TJTJ-JJJJ-LJTJ-LJJJ-";
+    //printf("TileStack %s\n", testingTileStack);
+    BoardManager::inputTileStack(testingTileStack, 6);
+
+    EXPECT_TRUE(BoardManager::tileStack->front().getTileName().compare("JJTJX"));
+    BoardManager::tileStack->pop();
+
+    EXPECT_TRUE(BoardManager::tileStack->front().getTileName().compare("JLJL-"));
+    BoardManager::tileStack->pop();
+
+    EXPECT_TRUE(BoardManager::tileStack->front().getTileName().compare("TJTJ-"));
+    BoardManager::tileStack->pop();
+
+    EXPECT_TRUE(BoardManager::tileStack->front().getTileName().compare("JJJJ-"));
+    BoardManager::tileStack->pop();
+
+    EXPECT_TRUE(BoardManager::tileStack->front().getTileName().compare("LJTJ-"));
+    BoardManager::tileStack->pop();
+
+    EXPECT_TRUE(BoardManager::tileStack->front().getTileName().compare("LJJJ-"));
+    BoardManager::tileStack->pop();
+
+}
+
+
+
 bool validMovesMatch(std::vector<Move>& actualValidMoves, Tile& tile, bool printAll, std::string expectedValidMoves[], unsigned int expectedValidMovesCount)
 {
     EXPECT_EQ(actualValidMoves.size(), expectedValidMovesCount); 

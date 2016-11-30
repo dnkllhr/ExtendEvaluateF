@@ -246,15 +246,19 @@ void BoardManager::inputTileStack(char stack[], int length)
         throw std::logic_error("sizeof stack and anticipated stack size differ");
     }
     */
-    
+    //printf("Why\n");
+    Board::set();
+    //printf("Why not\n");
     Array<Array<Tile>> tiles = Tile::CreateTiles();
+    //printf("Hoopla\n");
 
     std::string currentTile;
     int offset;
-    for(int i = length - 6; i > 0; i -= 5)          //Skip over the null char and the first set of chars.
+    for(int i = (length*5) - 5; i >= 0; i -= 5)          //Skip over the null char and the first set of chars.
     {
-            
+        //printf("Trying to assign\n");
         currentTile.assign(stack + i, stack + i + 5);
+        //printf("Tile stack index : %d name %s\n", i, currentTile.c_str());
 
         auto iter = getTileFunctionFromName.find(currentTile);
         if (iter != getTileFunctionFromName.end())
