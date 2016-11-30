@@ -278,24 +278,26 @@ unsigned int GameRules::scoreCastle(std::shared_ptr<struct regionSet> currentSet
 
 
     //Iterate through the linked list of the region
-    while(currentNode != NULL)
+    while(currentNode != NULL && currentNode->tileID != -1)
     {
         //Search for an entry in the map
         tileSearch = edgeTracker.find(currentNode->tileID);
         //If the entry doesn't exist, we haven't visited the tile yet
         if(tileSearch == edgeTracker.end())
         {
+            //printf("before score %d\n", score);
             preyCount = 0;
             //Make sure we don't revisit the tileID
             edgeTracker[currentNode->tileID] = 1;
             for(int i = 0; i  < NUM_PREY; i++)
             {
+                //printf("tile preyCount value %d at %d\n", currentNode->preyCounts[i], i);
                 if(i == 3 && currentNode->preyCounts[i])
                 {
                     preyCount--; //eaten by a croc
                     continue;
                 }
-                if(currentNode->preyCounts[i])
+                if(currentNode->preyCounts[i] > 0)
                 {
                     preyCount++;
                 }
@@ -303,6 +305,7 @@ unsigned int GameRules::scoreCastle(std::shared_ptr<struct regionSet> currentSet
             //Scoring for castle-animal interaction
             if(!endOfGame) {score += CASTLE_VALUE * (1 + preyCount);}
             if(endOfGame) {score += 1 * (1 + preyCount);}
+            //printf("tileID %d preyCount %d score %d\n", currentNode->tileID, preyCount, score);
         }
         //Get the next node in the list
         currentNode = currentNode->next;

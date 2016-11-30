@@ -311,39 +311,81 @@ TEST(RulesTest, ScoreCastle1) {
     //Coord *currentCoord;
     const Tile **surroundingTiles;
 
-    currentTile = &(Tile::CreateTileD(1, startID, PreyType::Deer)[0]);
+    /*currentTile = &(Tile::CreateTileD(1, startID, PreyType::Deer)[0]);
     unsigned int currentTileID = currentTile->getId();
     currentTile->setRotation(0);
     testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
     currentTile->placeTile();
-    printf("Where am i\n");
 
-    
-    std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
+    */
+    std::shared_ptr<struct regionSet> currentSet = std::shared_ptr<struct regionSet>(new regionSet);
+    std::shared_ptr<struct tileNode> currentTileNode = std::shared_ptr<struct tileNode>(new tileNode);
+    currentSet->head = currentTileNode;
 
-    printf("Where am i\n");
-    unsigned int actualScore = GameRules::scoreCastle(*currentSet, true, false);
-    printf("Where am i\n");
+    for(int i = 0; i < 5; i++)
+    {
+        for(int j = 0; j < NUM_PREY; j++)
+        {
+            currentTileNode->preyCounts[j] = 0;
+        }
+        currentTileNode->tileID = i;
+        currentTileNode->edge = i;
+        if(i+1 < 5)
+        {
+            currentTileNode->next = std::shared_ptr<struct tileNode>(new tileNode);
+            currentTileNode = currentTileNode->next;
+        }
+    }
+    currentSet->tail = currentTileNode;
+    currentTileNode->next = NULL;
+
+    currentSet->edgesTillCompletion = 1;
+
+
+
+    unsigned int actualScore = GameRules::scoreCastle(currentSet, true, false);
+    //printf("Where am i\n");
     EXPECT_EQ(actualScore,0);
-    actualScore = GameRules::scoreCastle(*currentSet, false, false);
-    EXPECT_EQ(actualScore,2);
-    printf("Where am i\n");
+    actualScore = GameRules::scoreCastle(currentSet, false, false);
+    EXPECT_EQ(actualScore,10);
+    //printf("Where am i\n");
 
     // add another tile to extend the lake region
-    currentTile = &(Tile::CreateTileK(1, startID, PreyType::Boar)[0]);
+    /*currentTile = &(Tile::CreateTileK(1, startID, PreyType::Boar)[0]);
     currentTileID = currentTile->getId();
     currentTile->setRotation(2);
     testingTilePlacement(&startID, 73, 72, currentTile, surroundingTiles);
     currentTile->placeTile();
     printf("Where am i\n");
+    */
+    //currentSet = Regions::getRegions(currentTileID);
 
-    currentSet = Regions::getRegions(currentTileID);
+    //printf("\nADDING NEW TILE NODES\n");
 
-    actualScore = GameRules::scoreCastle(*currentSet, true, false);
-    EXPECT_EQ(actualScore,12);
-    actualScore = GameRules::scoreCastle(*currentSet, false, false);
-    EXPECT_EQ(actualScore,12);
-    printf("Where am i\n");
+    currentTileNode->next = std::shared_ptr<struct tileNode>(new tileNode);
+    currentTileNode = currentTileNode->next;
+    for(int i = 0; i < 5; i++)
+    {
+        for(int j = 0; j < NUM_PREY; j++)
+        {
+            currentTileNode->preyCounts[j] = 0;
+        }
+        currentTileNode->preyCounts[0] = 1;
+        currentTileNode->tileID = i+5;
+        currentTileNode->edge = i;
+        currentTileNode->next = std::shared_ptr<struct tileNode>(new tileNode);
+        currentTileNode = currentTileNode->next;
+    }
+    currentSet->tail = currentTileNode;
+    currentTileNode->next = NULL;
+
+    currentSet->edgesTillCompletion = 0;
+
+    actualScore = GameRules::scoreCastle(currentSet, true, false);
+    EXPECT_EQ(actualScore,30);
+    actualScore = GameRules::scoreCastle(currentSet, false, false);
+    EXPECT_EQ(actualScore,30);
+    //printf("Where am i\n");
 
 }
 
