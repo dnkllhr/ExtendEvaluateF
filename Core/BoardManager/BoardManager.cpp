@@ -132,13 +132,13 @@ std::vector<Move> BoardManager::getValidMoves(const Tile& tile, unsigned int pla
             {
                 validMoves.push_back(Move(tileCopy, Coord(location), rotation)); // no meeple or croc
 
+                Array<bool> validMeeplePlacements = GameRules::validMeeplePlacement(tileCopy, location);
+
                 for(unsigned int daveTigerIndex = 0; daveTigerIndex < 9; daveTigerIndex++)
                 {
-                    unsigned int edgeIndex = daveTigerOrder[daveTigerIndex];
-
-                    if(GameRules::validMeeplePlacement(location, edgeIndex))
+                    if(validMeeplePlacements[daveTigerIndex])//GameRules::validMeeplePlacement(location, edgeIndex))
                     {
-                        validMoves.push_back(Move(tileCopy, Coord(location), rotation, (unsigned int) edgeIndex));
+                        validMoves.push_back(Move(tileCopy, Coord(location), rotation, (unsigned int) daveTigerOrder[daveTigerIndex]));
                     }
                 }
 
@@ -167,7 +167,7 @@ std::vector<Move> BoardManager::getValidMoves(const Tile& tile, unsigned int pla
 
     return validMoves;
 }
-
+#import <iostream>
 void BoardManager::makeMove(const Move& move, unsigned int playerNumber)
 {
     // if calling this method, it is assumed that this is a legal move
@@ -181,7 +181,8 @@ void BoardManager::makeMove(const Move& move, unsigned int playerNumber)
 
     if(move.getMeepleLocation() != -1) // if Move includes Meeple
     {
-        Regions::addMeeple(playerNumber, tile.getId(), move.getMeepleLocation());
+        std::cout << "I'm placing a meepleleep at edge " << move.getMeepleLocation() << std::endl;
+        std::cout << Regions::addMeeple(playerNumber, tile.getId(), move.getMeepleLocation()) << std::endl;
     }
     else if(move.getHasCrocodile())
     {

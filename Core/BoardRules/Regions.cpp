@@ -251,9 +251,23 @@ int Regions::addMeeple(unsigned int playerNumber, unsigned int tileID, unsigned 
         ownerMeeples[i].tileID = tileID;
         ownerMeeples[i].inUse = true;
         ownerMeeples[i].ownedRegion = tracker->find(tileID)->second[edge];
+        if(playerNumber == 1)
+        {
+            ownerMeeples[i].ownedRegion->player1Meeples++;
+        }
+        else if(playerNumber == 2)
+        {
+            ownerMeeples[i].ownedRegion->player2Meeples++;
+        }
+        else
+        {
+            throw std::invalid_argument(playerNumber + " is not a valid playerNumber");
+        }
+
         Regions::availableMeeples[playerNumber - 1]--;
         return 0;
     }
+    std::cout << "Regions::checkOwner(" << tileID << ", " << edge << ") = " << Regions::checkOwner(tileID, edge) << std::endl;
     return -1;
 }
 
@@ -347,11 +361,14 @@ int Regions::checkOwner(unsigned int tileID, unsigned int edge, std::unordered_m
         {
             return OWNER_P1;
         }
+        else if((search->second[edge])->player1Meeples < (search->second[edge])->player2Meeples)
+        {
+            return OWNER_P2;
+        }
         else if((search->second[edge])->player1Meeples == (search->second[edge])->player2Meeples && ((search->second[edge])->player2Meeples) != 0)
         {
             return OWNER_TIE;
         }
-        return OWNER_P2;
     }
     return OWNER_NONE;
 }
