@@ -62,7 +62,7 @@ def myRead(socket):
             print 2
             buffer += check
             print buffer
-
+    
 
 #     buffer = socket.recv(513-sys.getsizeof(extra))
 #     rmjunk = buffer.split('\x00')
@@ -79,7 +79,7 @@ def myRead(socket):
 #         buffer = list[0]
 #         extra = list[1]
 # #    print "Line " + buffer + "\tExtra " + extra
-    return buffer
+
 
 
 def roundprotocol():
@@ -126,7 +126,6 @@ def matchprotocol():
     tiles = []
     for i in range(0,int(numTiles)):
         tiles.append(split[6+i])
-    print tiles
 
     print myRead(s) #MATCH BEGINS IN <timeplan> SECONDS
 
@@ -192,7 +191,6 @@ def authenticationprotocol():
     buffer = myRead(s) #WELCOME <pid> PLEASE WAIT FOR THE NEXT CHALLENGE
     print buffer
     pid = buffer.split(" ")[1]
-    print pid
 
 def challengeprotocol():
     global active
@@ -201,7 +199,7 @@ def challengeprotocol():
         split = buffer.split(" ")
         cid = split[2] #id of challenge, basically garbage
         rounds = split[6] #number of rounds
-        print buffer
+        print split
 
         numRounds = int(rounds)
 

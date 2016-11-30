@@ -11,11 +11,24 @@
 #include <iostream>
 #include "ProgramCoordinator.h"
 #include <vector>
+#include <thread>
+#include <mutex>
+#include <unordered_map>
 
 char* TOURNAMENT_PASSWD;
 char* USERNAME;
 char* PASSWD;
 int pid;
+int portno;
+
+std::thread ** threads;
+
+gameMessage Msgs[2];
+bool ready[2];
+std::mutex msg_mutex;
+std::condition_variable cvs[2];
+
+std::unordered_map<std::string, int> socketMap;
 
 int createSocket(std::string, int);
 void authenticationProtocol(int);
@@ -24,6 +37,10 @@ void roundProtocol(int);
 void matchProtocol(int);
 void moveProtocol(int);
 std::string strAtIndex(std::string,int);
+struct gameMessage getMsg(int, bool=false);
+void setMsg (int , struct gameMessage, bool=false);
+int orientationFix(int);
+void gameThread(int, int);
 
 
 int main(int argc, char *argv[])
@@ -33,7 +50,7 @@ int main(int argc, char *argv[])
     PASSWD = argv[5];
 
     std::string hostname (argv[1]);
-    int portno = atoi(argv[2]);
+    portno = atoi(argv[2]);
 
 //SOCKET GOOD TO GO
 int sockfd = createSocket(hostname,portno);
@@ -164,8 +181,6 @@ void matchProtocol(int sockfd)
     printf("%s\n",buffer);
      oppPid = strAtIndex(buffer,4);
 
-    //Create Game Instances
-
     //Server: STARTING TILE IS <tile> AT <x> <y> <orientation>
     bzero(buffer,256);
     read(sockfd,buffer,255);
@@ -199,23 +214,37 @@ void matchProtocol(int sockfd)
     out.str("");
 
     //Custom Move
-    msg -> data.move.p1 = 3;
-    strcpy(msg -> data.move.tile, tile.c_str());
-    msg -> data.move.x = 0;
-    msg -> data.move.y = 0;
-    msg -> data.move.orientation = (unsigned int)orientation;
-
+    struct gameMessage * move = new struct gameMessage;
+    move -> data.move.p1 = 3;
+    strcpy(move -> data.move.tile, tile.c_str());
+    move -> data.move.x = 76;
+    move -> data.move.y = 76;
+    move -> data.move.orientation = (unsigned int)orientationFix(orientation);
 
     //Server: MATCH BEGINS IN <timeplan> SECONDS
     bzero(buffer,256);
     read(sockfd,buffer,255);
     printf("%s\n",buffer);
-    x = stoi(strAtIndex(std::string(buffer),3));
+    int timeplan = stoi(strAtIndex(std::string(buffer),3));
 
+    int portNumberThread1 = portno + 1;
+    int portNumberThread2 = portno + 2;
 
-//    moveProtocol
-    for(int i = 1; i <= number_tiles; i++)
-    moveProtocol(sockfd);
+    int sockfd1 = createSocket("localhost", portNumberThread1);
+    int sockfd2 = createSocket("localhost", portNumberThread2);
+
+    /* Begin new threads here!! */
+    threads = new std::thread*[2];
+    threads[0] = new std::thread(gameThread, 0, sockfd1);
+    threads[1] = new std::thread(gameThread, 1, sockfd2);
+
+    setMsg(0, *msg, true);
+    setMsg(1, *msg);
+    setMsg(0, *move, true);
+    setMsg(1, *move);
+
+    for (int i = 0; i < number_tiles; i++)
+        moveProtocol(sockfd);
 
     //Server: GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
     bzero(buffer,256);
@@ -228,6 +257,7 @@ void matchProtocol(int sockfd)
     printf("%s\n",buffer);
 }
 
+// pass msg and move to threads
 void moveProtocol(int sockfd)
 {
     char buffer[256];
@@ -251,26 +281,34 @@ void moveProtocol(int sockfd)
     //Create Move Message and Pass to INTERNAL Server
     strcpy(msg -> data.move.tile, tile.c_str());
 
-
-
+    setMsg(socketMap[gid], *msg);
     //Await response
-
+    struct gameMessage newMsg = getMsg(socketMap[gid]);
+    newMsg.data.move.x -= 76;
+    newMsg.data.move.y -= 76;
+    int orient = orientationFix(newMsg.data.move.orientation);
+    int zone = newMsg.data.move.zone;
     //Respond to Tournament Server With Move
     int response;
     bzero(buffer,256);
 
+    if(!newMsg.data.move.placeable)
+        response = 0;
+    else
+        response = meepleType;
+
     switch (response) {
-        case 0:
+        case 3:
             out<<"GAME "<<gid<<" MOVE "<<moveNum<<" TILE "<< tile <<" UNPLACEABLE PASS";
             break;
+        case 0:
+            out<<"GAME "<<gid<<" MOVE "<<moveNum<<" PLACE "<< tile <<" AT "<<newMsg.data.move.x <<" "<<newMsg.data.move.y<<" "<<orient<<" NONE";
+            break;
         case 1:
-            out<<"GAME "<<gid<<" MOVE "<<moveNum<<" PLACE "<< tile <<" AT <x> <y> <orientation> NONE";
+            out<<"GAME "<<gid<<" MOVE "<<moveNum<<" PLACE <tile> AT "<<newMsg.data.move.x <<" "<<newMsg.data.move.y<<" "<<orient<<" TIGER "<<zone;
             break;
         case 2:
-            out<<"GAME "<<gid<<" MOVE "<<moveNum<<" PLACE <tile> AT <x> <y> <orientation> TIGER";
-            break;
-        case 3:
-            out<<"GAME "<<gid<<" MOVE "<<moveNum<<" PLACE "<< tile <<" AT <x> <y> <orientation> CROCODILE";
+            out<<"GAME "<<gid<<" MOVE "<<moveNum<<" PLACE "<< tile <<" AT "<<newMsg.data.move.x <<" "<<newMsg.data.move.y<<" "<<orient<<" CROCODILE";
             break;
     }
 
@@ -290,7 +328,7 @@ void moveProtocol(int sockfd)
       if(strAtIndex(std::string(buffer),6).compare("FORFEITED") == 0) //Game FORFEITED
       {
           gamesActive--;
-          //Let Game Know of Forfeit
+          // stop forfeited match
       }
       else
       {
@@ -315,4 +353,69 @@ std::string strAtIndex(std::string buffer, int index)
     while(getline(in, s, ' '))
       strings.push_back(s);
      return strings[index];
+}
+
+gameMessage getMsg (int thread_num, bool mainThread) {
+    std::lock_guard<std::mutex> guard(msg_mutex);
+    cvs[thread_num].wait(guard, [](){return (ready[thread_num] || mainThread);});
+
+    if (mainThread && !ready[thread_num - 1]) {
+        gameMessage notValid;
+        notValid.messageType = -1;
+        return notValid;
+    }
+
+    return Msgs[thread_num-1];
+}
+
+void setMsg (int thread_num, struct gameMessage message){
+    std::lock_guard<std::mutex> guard(msg_mutex);
+        Msgs[thread_num] = message;
+        ready[thread_num] = true;
+    cvs[thread_num].wait(guard, [](){return (ready[thread_num] || mainThread);});
+}
+
+void gameThread(int thread_num, int socketfd){
+    //Instaniate game
+    fork();
+    execl(PATH_TO_GAME, itos(thread_num == 0 ? portno+1 : portno+2));
+
+    //process tile and place
+
+    struct gameMessage tileStack = getMsg(thread_num);
+    sockfd.send((char*)tileStack);
+
+    //wait for starting tile
+    struct gameMessage start = getMsg(thread_num);
+    sockfd.send((char*)start);
+
+    //process tile stack
+
+    while(true)
+    {
+        struct gameMessage tileForMove = getMsg(thread_num);
+        sockfd.send((char*)tileForMove);
+        struct gameMessage gameMove = (char*)sockfd.read();
+        setMsg(thread_num, gameMove);
+    }
+}
+
+int orientationFix(int orientation)
+{
+    switch (orientation) {
+        case 1:
+            return 270; break;
+        case 2:
+            return 180; break;
+        case 3:
+            return 90; break;
+        case 90:
+            return 3; break;
+        case 180:
+            return 2; break;
+        case 270:
+            return 1; break;
+        default:
+            return orientation;
+    }
 }
