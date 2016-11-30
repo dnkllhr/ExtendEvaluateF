@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-Wall -std=c++14 -pthread
+CFLAGS=-Wall -std=c++14 -pthread -lpthread
 DCFLAGS=-g -D__testing
 DEPS=ProgramCoordinator.h ../ExternalPlayers/TurnCoordinator/TurnCoordinator.h
 CLEAN=*.o ExternalClient
