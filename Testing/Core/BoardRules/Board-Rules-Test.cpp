@@ -114,7 +114,7 @@ TEST(RegionTests, addConnection) {
     currentTile = &tileT;
     //testingTilePlacement(&startID, 72, 73, currentTile, surroundingTiles);
 
-    BoardManager::makeMove(Move(*currentTile, Coord(76, 75), 1), 1);
+    BoardManager::makeMove(Move(*currentTile, Coord(75, 75), 1), 1);
 
     for(int i = 0; i < 12; i++)
     {
@@ -659,6 +659,7 @@ TEST(RulesTest, scoreGrass)
                                 EXPECT_EQ(returnGrassScore, 0);
 }
 
+/*
 TEST(RulesTest, scoreMoreRoads)
 {
     //Testing incomplete road with prey animals
@@ -699,7 +700,6 @@ TEST(RulesTest, scoreMoreRoads)
     EXPECT_EQ(realRoadScore, returnRoadScore);
 }
 
-/*
 
 TEST (RulesTest, scoreMoreMoreRoads)
 {
@@ -913,6 +913,7 @@ TEST(RulesTest, validTilePlacement)
     if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(down))) { std::cout <<  "2 "; }
     tile.setRotation(3);
     if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(down))) { std::cout <<  "3 "; }
+    std::cout << std::endl;
 
     /*
     Tile tile2 = Tile::CreateTileV(1, tileIdCounter, PreyType::None)[0];
