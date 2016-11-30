@@ -5,13 +5,13 @@
 
 #include "gtest/gtest.h"
 
-void testingTilePlacement(unsigned int coordX, unsigned int coordY, Tile& currentTile, const Tile **surroundingTiles)
+void testingTilePlacement(unsigned int *startID, unsigned int coordX, unsigned int coordY, Tile* currentTile, const Tile **surroundingTiles)
 {
     Coord *currentCoord = new Coord(coordX, coordY); //Center
-    Move *currentMove = new Move(currentTile, *currentCoord);
+    Move *currentMove = new Move(*currentTile, *currentCoord);
     Board::place(*currentMove);
-    surroundingTiles = Board::getBorderingTiles(currentTile);
-    Regions::addConnection(currentTile, surroundingTiles);
+    surroundingTiles = Board::getBorderingTiles(*currentTile);
+    Regions::addConnection(*currentTile, surroundingTiles);
 }
 
 TEST(RegionTests, mergeRegions) 
@@ -64,139 +64,151 @@ TEST(RegionTests, mergeRegions)
     //printf("r1 : %X r2 : %x\n", r1.get(), r2.get());
     Regions::mergeRegions(0, 0, 13, 0);
 
-    ASSERT_EQ(Regions::regionTracker[0][0], r2);
-    ASSERT_EQ(Regions::regionTracker[13][0], r2);    
-    ASSERT_NE(r1->head.get(), r2->head.get());
-    ASSERT_EQ(r1->tail.get(), r2->tail.get());
-    ASSERT_EQ(r2->edgesTillCompletion, preMergeTotalEdges);
+    EXPECT_EQ(Regions::regionTracker[0][0], r2);
+    EXPECT_EQ(Regions::regionTracker[13][0], r2);    
+    EXPECT_NE(r1->head.get(), r2->head.get());
+    EXPECT_EQ(r1->tail.get(), r2->tail.get());
+    EXPECT_EQ(r2->edgesTillCompletion, preMergeTotalEdges);
 
 }
-/*
 
 TEST(RegionTests, addConnection) {
 
     unsigned int startID = 0;
-    Tile *currentTile;
-    Move *currentMove;
-    Coord *currentCoord;
-    const Tile **surroundingTiles; //Init'd to NULL
+    //Tile currentTile;
+    //Move *currentMove;
+    //Coord *currentCoord;
+    const Tile **surroundingTiles = NULL; //Init'd to NULL
+
+    unsigned int centerID = Board::get(Coord(76,76))->getId();
+    printf("centerID : %d\n", centerID);
+
+    for(int i = 0; i < 13; i++)
+    {
+        printf("edge : %d edgesTillCompletion : %d\n", i, Regions::regionTracker[centerID][i]->edgesTillCompletion);
+    }
 
 
-    currentTile = &BoardManager::getTopTileStack(); //No prey, starting tile
-    testingTilePlacement(2, 2, *currentTile, surroundingTiles);
+    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(centerID, 1)), 2); //Make sure the road has two sides open.
+
+
+    Tile currentTile = BoardManager::getTopTileStack(); //No prey, starting tile
+    unsigned int placeHolder = 0;
+    BoardManager::makeMove(Move(currentTile, (unsigned int)2, (unsigned int)2, (unsigned int)0), 1);
+    //testingTilePlacement(&placeHolder, 2, 2, currentTile, surroundingTiles);
 
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
         //printf("Round %d\n", i);
-        ASSERT_TRUE(Regions::checkRegionExistence((*currentTile).getId(),i));
+        EXPECT_TRUE(Regions::checkRegionExistence((currentTile).getId(),i));
         //printf("Passed\n"); 
     }
 
-     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 1)), 2); //Make sure the road has two sides open.
-     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)), 1); //Make sure the castle has one side open.
+     EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile.getId(), 1)), 2); //Make sure the road has two sides open.
+     EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile.getId(), 4)), 1); //Make sure the castle has one side open.
 
-    currentTile = &(Tile::CreateTileW(1, startID, PreyType::None)[0]); //No prey, starting tile
-    testingTilePlacement(&startID, 72, 73, currentTile, surroundingTiles);
-
-    for(int i = 0; i < 12; i++)
-    {
-        //Make sure everything has a region
-         ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
-    }
-
-     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 1)), 1); //Make sure the top road has one side open.
-     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)), 1); //Make sure the right road has one side open.
-     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)), 1); //Make sure the left road has one side open.
-
-    currentTile = &(Tile::CreateTileT(1, startID, PreyType::None)[0]); //No prey, starting tile
-    testingTilePlacement(&startID, 72, 71, currentTile, surroundingTiles);
+    currentTile = (Tile::CreateTileW(1, startID, PreyType::None)[0]); //No prey, starting tile
+    //testingTilePlacement(&startID, 72, 73, currentTile, surroundingTiles);
 
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-         ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
+         EXPECT_TRUE(Regions::checkRegionExistence(currentTile.getId(),i));
     }
 
-    ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 7)), 0); //Make sure the road has zero sides open.
-    ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 1)), 3); //Make sure the castle has three sides open.
+     EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile.getId(), 1)), 1); //Make sure the top road has one side open.
+     EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile.getId(), 4)), 1); //Make sure the right road has one side open.
+     EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile.getId(), 10)), 1); //Make sure the left road has one side open.
 
-    currentTile = &(Tile::CreateTileH(1, startID, PreyType::None)[0]); //No prey, starting tile
-    testingTilePlacement(&startID, 73, 72, currentTile, surroundingTiles);
+    currentTile = (Tile::CreateTileT(1, startID, PreyType::None)[0]); //No prey, starting tile
+    //testingTilePlacement(&startID, 72, 71, currentTile, surroundingTiles);
 
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-         ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
-
+         EXPECT_TRUE(Regions::checkRegionExistence(currentTile.getId(),i));
     }
 
-     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)),2); //Make sure the right castle has one side open.
-     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)),1); //Make sure the left castle has zero sides open.
+    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile.getId(), 7)), 0); //Make sure the road has zero sides open.
+    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile.getId(), 1)), 3); //Make sure the castle has three sides open.
 
-    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]); //No prey, starting tile
-    testingTilePlacement(&startID, 73, 73, currentTile, surroundingTiles);
+    currentTile = (Tile::CreateTileH(1, startID, PreyType::None)[0]); //No prey, starting tile
+    //testingTilePlacement(&startID, 73, 72, currentTile, surroundingTiles);
 
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-        ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
+         EXPECT_TRUE(Regions::checkRegionExistence(currentTile.getId(),i));
+
     }
 
-     ASSERT((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)) == 1); //Make sure the road has one side open.
+     EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile.getId(), 4)),2); //Make sure the right castle has one side open.
+     EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile.getId(), 10)),1); //Make sure the left castle has zero sides open.
 
-    currentTile = &(Tile::CreateTileA(1, startID, PreyType::None)[0]); //No prey, starting tile
-    testingTilePlacement(&startID, 71, 73, currentTile, surroundingTiles);
+    currentTile = (Tile::CreateTileV(1, startID, PreyType::None)[0]); //No prey, starting tile
+    //testingTilePlacement(&startID, 73, 73, currentTile, surroundingTiles);
 
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-         ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
+        EXPECT_TRUE(Regions::checkRegionExistence(currentTile.getId(),i));
     }
 
-     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)),0); //Make sure the road has one side open.
-     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 12)),5); //Make sure the church has fives sides open.
+    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile.getId(), 10)), 1); //Make sure the road has one side open.
 
-    currentTile = &(Tile::CreateTileB(1, startID, PreyType::None)[0]); //No prey, starting tile
-    testingTilePlacement(&startID, 71, 72, currentTile, surroundingTiles);
+    currentTile = (Tile::CreateTileA(1, startID, PreyType::None)[0]); //No prey, starting tile
+    //testingTilePlacement(&startID, 71, 73, currentTile, surroundingTiles);
 
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-         ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
+         EXPECT_TRUE(Regions::checkRegionExistence(currentTile.getId(),i));
     }
 
-     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 12)),3); //Make sure the church has three sides open.
+     EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile.getId(), 4)),0); //Make sure the road has one side open.
+     EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile.getId(), 12)),5); //Make sure the church has fives sides open.
 
-    currentTile = &(Tile::CreateTileE(1, startID, PreyType::None)[0]); //No prey, starting tile
-    testingTilePlacement(&startID, 71, 71, currentTile, surroundingTiles);
+    currentTile = (Tile::CreateTileB(1, startID, PreyType::None)[0]); //No prey, starting tile
+    //testingTilePlacement(&startID, 71, 72, currentTile, surroundingTiles);
 
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-        ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
+         EXPECT_TRUE(Regions::checkRegionExistence(currentTile.getId(),i));
     }
 
-     ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 4)),3); //Make sure the castle has three sides open.
+     EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile.getId(), 12)),3); //Make sure the church has three sides open.
 
-    currentTile = &(Tile::CreateTileN(1, startID, PreyType::None)[0]); //No prey, starting tile
-    testingTilePlacement(&startID, 73, 71, currentTile, surroundingTiles);
+    currentTile = (Tile::CreateTileE(1, startID, PreyType::None)[0]); //No prey, starting tile
+    //testingTilePlacement(&startID, 71, 71, currentTile, surroundingTiles);
 
     for(int i = 0; i < 12; i++)
     {
         //Make sure everything has a region
-        ASSERT_TRUE(Regions::checkRegionExistence(currentTile->getId(),i));
+        EXPECT_TRUE(Regions::checkRegionExistence(currentTile.getId(),i));
+    }
+
+     EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile.getId(), 4)),3); //Make sure the castle has three sides open.
+
+    currentTile = (Tile::CreateTileN(1, startID, PreyType::None)[0]); //No prey, starting tile
+    //testingTilePlacement(&startID, 73, 71, currentTile, surroundingTiles);
+
+    for(int i = 0; i < 12; i++)
+    {
+        //Make sure everything has a region
+        EXPECT_TRUE(Regions::checkRegionExistence(currentTile.getId(),i));
 
     }
 
-    ASSERT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile->getId(), 10)),3); //Make sure the castle has three sides open.
+    EXPECT_EQ((Regions::checkRegionEdgesTillCompletion(currentTile.getId(), 10)),3); //Make sure the castle has three sides open.
 }
 
 TEST(RulesTest, ScoreChurch) {
     unsigned int startID = 0;
     Tile *currentTile;
-    Move *currentMove;
-    Coord *currentCoord;
+    //Move *currentMove;
+    //Coord *currentCoord;
     const Tile **surroundingTiles;
 
     unsigned int expectedScore = 1;
@@ -212,9 +224,9 @@ TEST(RulesTest, ScoreChurch) {
     unsigned int tilesSurrounded = BoardManager::isSurrounded(currentTileID);
 
     unsigned int actualScore = GameRules::scoreChurch(tilesSurrounded, true);
-    ASSERT_EQ(actualScore, 0);
+    EXPECT_EQ(actualScore, 0);
     actualScore = GameRules::scoreChurch(tilesSurrounded, false);
-    ASSERT_EQ(actualScore,1);
+    EXPECT_EQ(actualScore,1);
 
     for (int i = -1; i <= 1; i++)
     {
@@ -241,16 +253,16 @@ TEST(RulesTest, ScoreChurch) {
                 // just placed final boardering tile, actuallyScore set to true should return full value
                 if (i == 1 && j == 1)
                 {
-                    ASSERT_EQ(actualScore,expectedScore);
+                    EXPECT_EQ(actualScore,expectedScore);
                 }
 
                 // church isn't completely surrounded, actuallyScore set to true should return 0
                 else
                 {
-                    ASSERT_EQ(actualScore,0);
+                    EXPECT_EQ(actualScore,0);
                 }
                 actualScore = GameRules::scoreChurch(tilesSurrounded, false);
-                ASSERT_EQ(actualScore,expectedScore);
+                EXPECT_EQ(actualScore,expectedScore);
             }
         }
     }
@@ -259,8 +271,8 @@ TEST(RulesTest, ScoreChurch) {
 TEST(RulesTest, ScoreCastle1) {
     unsigned int startID = 0;
     Tile *currentTile;
-    Move *currentMove;
-    Coord *currentCoord;
+    //Move *currentMove;
+    //Coord *currentCoord;
     const Tile **surroundingTiles;
 
     currentTile = &(Tile::CreateTileD(1, startID, PreyType::Deer)[0]);
@@ -272,9 +284,9 @@ TEST(RulesTest, ScoreCastle1) {
     std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
     unsigned int actualScore = GameRules::scoreCastle(*currentSet, true, false);
-    ASSERT_EQ(actualScore,0);
+    EXPECT_EQ(actualScore,0);
     actualScore = GameRules::scoreCastle(*currentSet, false, false);
-    ASSERT_EQ(actualScore,2);
+    EXPECT_EQ(actualScore,2);
 
     // add another tile to extend the lake region
     currentTile = &(Tile::CreateTileK(1, startID, PreyType::Boar)[0]);
@@ -286,17 +298,17 @@ TEST(RulesTest, ScoreCastle1) {
     currentSet = Regions::getRegions(currentTileID);
 
     actualScore = GameRules::scoreCastle(*currentSet, true, false);
-    ASSERT_EQ(actualScore,12);
+    EXPECT_EQ(actualScore,12);
     actualScore = GameRules::scoreCastle(*currentSet, false, false);
-    ASSERT_EQ(actualScore,12);
+    EXPECT_EQ(actualScore,12);
 
 }
 
 TEST(RulesTest, ScoreCastle2) {
     unsigned int startID = 0;
     Tile *currentTile;
-    Move *currentMove;
-    Coord *currentCoord;
+    //Move *currentMove;
+    //Coord *currentCoord;
     const Tile **surroundingTiles;
 
     currentTile = &(Tile::CreateTileI(1, startID, PreyType::None)[0]);
@@ -328,9 +340,9 @@ TEST(RulesTest, ScoreCastle2) {
     std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
 
     unsigned int actualScore = GameRules::scoreCastle(*currentSet, true, false);
-    ASSERT_EQ(actualScore,0);
+    EXPECT_EQ(actualScore,0);
     actualScore = GameRules::scoreCastle(*currentSet, false, false);
-    ASSERT_EQ(actualScore,10);
+    EXPECT_EQ(actualScore,10);
     
     currentTile = &(Tile::CreateTileN(1, startID, PreyType::None)[0]);
     currentTile->setRotation(2);
@@ -341,9 +353,9 @@ TEST(RulesTest, ScoreCastle2) {
     currentSet = Regions::getRegions(currentTileID);
 
     actualScore = GameRules::scoreCastle(*currentSet, true, false);
-    ASSERT_EQ(actualScore,24);
+    EXPECT_EQ(actualScore,24);
     actualScore = GameRules::scoreCastle(*currentSet, false, false);
-    ASSERT_EQ(actualScore,24);
+    EXPECT_EQ(actualScore,24);
 }
 
 TEST(RulesTest, scoreRoad)
@@ -351,8 +363,8 @@ TEST(RulesTest, scoreRoad)
     //Testing a completed road that forms a perfect square. Starts and ends on the same tile.
     unsigned int startID = 0;
     Tile *currentTile;
-    Move *currentMove;
-    Coord *currentCoord;
+    //Move *currentMove;
+    //Coord *currentCoord;
     const Tile **surroundingTiles;
 
     // test four 'v' tiles placed so that road is closed square. No prey so should be awarded 4 points.
@@ -389,7 +401,7 @@ TEST(RulesTest, scoreRoad)
     //completed road = 1 pt per tile
     unsigned int realScore = 4;
 
-    ASSERT_EQ(realScore, returnScore);
+    EXPECT_EQ(realScore, returnScore);
 
 }
 
@@ -399,8 +411,8 @@ TEST(RulesTest, scoreGrassAndRoad)
     //Testing complete road that starts with den and ends with castle
     unsigned int startID = 0;
     Tile *currentTile;
-    Move *currentMove;
-    Coord *currentCoord;
+    //Move *currentMove;
+    //Coord *currentCoord;
     const Tile **surroundingTiles;
 
     //this creates a complete castle, so grass should be 5 pts
@@ -434,8 +446,8 @@ TEST(RulesTest, scoreGrassAndRoad)
     unsigned int realGrassScore = 5;
     unsigned int realRoadScore = 2;
 
-    ASSERT_EQ(realGrassScore, returnGrassScore);
-    ASSERT_EQ(realRoadScore, returnRoadScore);
+    EXPECT_EQ(realGrassScore, returnGrassScore);
+    EXPECT_EQ(realRoadScore, returnRoadScore);
 }
 
 TEST(RulesTest, scoreMoreGrass)
@@ -443,8 +455,8 @@ TEST(RulesTest, scoreMoreGrass)
     //Testing grass next to completed den and completed lake
     unsigned int startID = 0;
     Tile *currentTile;
-    Move *currentMove;
-    Coord *currentCoord;
+    //Move *currentMove;
+    //Coord *currentCoord;
     const Tile **surroundingTiles;
 
     currentTile = &(Tile::CreateTileB(1, startID, PreyType::None)[0]);
@@ -499,7 +511,7 @@ TEST(RulesTest, scoreMoreGrass)
     unsigned int returnGrassScore = GameRules::scoreGrass(currentSet, currentTileID, 10);
     unsigned int realGrassScore = 8; //5 pt for completed lake + 3 pts for completed den
 
-    ASSERT_EQ(returnGrassScore, realGrassScore);
+    EXPECT_EQ(returnGrassScore, realGrassScore);
 }
 
 TEST(RulesTest, scoreMoreRoads)
@@ -507,8 +519,8 @@ TEST(RulesTest, scoreMoreRoads)
     //Testing incomplete road with prey animals
     unsigned int startID = 0;
     Tile *currentTile;
-    Move *currentMove;
-    Coord *currentCoord;
+    //Move *currentMove;
+    //Coord *currentCoord;
     const Tile **surroundingTiles;
 
     currentTile = &(Tile::CreateTileZ(1, startID, PreyType::Deer)[0]);
@@ -539,7 +551,7 @@ TEST(RulesTest, scoreMoreRoads)
 
     unsigned int realRoadScore = 7;
 
-    ASSERT_EQ(realRoadScore, returnRoadScore);
+    EXPECT_EQ(realRoadScore, returnRoadScore);
 }
 
 TEST (RulesTest, scoreMoreMoreRoads)
@@ -547,8 +559,8 @@ TEST (RulesTest, scoreMoreMoreRoads)
     //Testing complete road that starts with den and ends with den and has prey animals
     unsigned int startID = 0;
     Tile *currentTile;
-    Move *currentMove;
-    Coord *currentCoord;
+    //Move *currentMove;
+    //Coord *currentCoord;
     const Tile **surroundingTiles;
 
     currentTile = &(Tile::CreateTileA(1, startID, PreyType::None)[0]);
@@ -579,7 +591,7 @@ TEST (RulesTest, scoreMoreMoreRoads)
 
     unsigned int realRoadScore = 5;
 
-    ASSERT_EQ(realRoadScore, returnRoadScore);
+    EXPECT_EQ(realRoadScore, returnRoadScore);
 }
 
 TEST(RulesTest, scoreGrassWithJustCompleteDen)
@@ -588,8 +600,8 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
     //Testing two different incomplete sets of roads
     unsigned int startID = 0;
     Tile *currentTile;
-    Move *currentMove;
-    Coord *currentCoord;
+    //Move *currentMove;
+    //Coord *currentCoord;
     const Tile **surroundingTiles;
 
     currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0]);
@@ -627,7 +639,7 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
     testingTilePlacement(&startID, 74,70, currentTile, surroundingTiles);
     currentTile->placeTile();
 
-    currentTile = &(Tile::CreateTileD(1, startId, PreyType::Deer)[0]);
+    currentTile = &(Tile::CreateTileD(1, startID, PreyType::Deer)[0]);
     currentTile->setRotation(0);
     testingTilePlacement(&startID, 74,71, currentTile, surroundingTiles);
     currentTile->placeTile();
@@ -640,7 +652,7 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
 
     unsigned int realRoadScore = 6;
 
-    ASSERT_EQ(realRoadScore, returnRoadScore);
+    EXPECT_EQ(realRoadScore, returnRoadScore);
 
     currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]);
     currentTile->setRotation(1);
@@ -654,16 +666,16 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
     unsigned int returnGrassScore = GameRules::scoreGrass(currentSet2, currentTileID, 7);
     unsigned int realRoadScore2 = 5;
     unsigned int realGrassScore = 3;
-    ASSERT_EQ(realRoadScore2, returnRoadScore2);
-    ASSERT_EQ(realGrassScore, returnGrassScore);
+    EXPECT_EQ(realRoadScore2, returnRoadScore2);
+    EXPECT_EQ(realGrassScore, returnGrassScore);
 
 }
 
 TEST(RulesTest, getCurrentScore) {
     unsigned int startID = 0;
     Tile *currentTile;
-    Move *currentMove;
-    Coord *currentCoord;
+    //Move *currentMove;
+    //Coord *currentCoord;
     const Tile **surroundingTiles;
 
     currentTile = &(Tile::CreateTileD(1, startID, PreyType::None)[0]);
@@ -680,7 +692,7 @@ TEST(RulesTest, getCurrentScore) {
     unsigned int actualScore = GameRules::getCurrentScore(currentSet, edge, currentTile, tilesSurrounded);
     unsigned int expectedScore = 1; // uncompleted city on right side of tile
 
-    ASSERT_EQ(actualScore, expectedScore);
+    EXPECT_EQ(actualScore, expectedScore);
 
     currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0]);
     currentTile->setRotation(2);
@@ -695,7 +707,7 @@ TEST(RulesTest, getCurrentScore) {
     actualScore = GameRules::getCurrentScore(currentSet, edge, currentTile, tilesSurrounded);
     expectedScore = 8; // 8 points for a completed city adjacent to 1 unique prey
 
-    ASSERT_EQ(actualScore, expectedScore);
+    EXPECT_EQ(actualScore, expectedScore);
 }
 
 TEST(RulesTest, validTilePlacement)
@@ -763,4 +775,4 @@ TEST(RulesTest, validTilePlacement)
     Tile tile3 = Tile::CreateTileK(1, tileIdCounter, PreyType::None)[0];
     Coord coord3 = Coord(77, 76);
     Move move3 = Move(tile3, coord3, 2);*/
-//}
+}
