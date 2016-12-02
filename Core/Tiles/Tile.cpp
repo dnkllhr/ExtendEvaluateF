@@ -85,6 +85,7 @@ std::string Tile::getTileName() const {
     else if (this->prey == PreyType::Buffalo) name += "B";
     else if (this->prey == PreyType::Boar) name += "P";
     else if (this->prey == PreyType::Croc) name += "C";
+    else if (name.size() == 4) name += "-";
 
     return name;
 }
