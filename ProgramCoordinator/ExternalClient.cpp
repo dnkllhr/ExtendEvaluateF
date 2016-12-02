@@ -339,7 +339,7 @@ void moveProtocol(int sockfd)
     newMsg.data.move.y -= 76;
     int orient = orientationFix(newMsg.data.move.orientation);
     int zone = newMsg.data.move.zone;
-    //Respond to Tournament Server With Move
+
     int response;
     bzero(buffer,256);
 
@@ -388,8 +388,9 @@ void moveProtocol(int sockfd)
         else
         {
             //Let Game Know of the opponents move (not a Forfeit)
-
-
+            bzero(msg, sizeof(gameMessage));
+            // fill message
+            setMsg(socketMap[gid], *msg);
         }
 
       }
@@ -460,30 +461,28 @@ void gameThread(int thread_num){
     send(mySocket, (char*)(&start), sizeof(start), 0);
     //process tile stack
 
-    struct gameMessage * gameMove = new gameMessage();
     while(!isEnded(thread_num))
     {
         std::cout << "Get tile for move. " << thread_num << std::endl;
+        // gets the tile we need to place from the game server
         struct gameMessage tileForMove = getMsg(thread_num);
+        //check if the game is over
         if (isEnded(thread_num)) return;
         std::cout << "received and sending message!" << std::endl;
+        // send the tile we need to place to the game/AI
         send(mySocket, (char*)(&tileForMove), sizeof(gameMessage), 0);
         bzero(&tileForMove, sizeof(gameMessage));
-        int qn = read(mySocket, (char*)&tileForMove, sizeof(gameMessage) - 1);
+        int qn = read(mySocket, (char*)&tileForMove, sizeof(gameMessage));
 
-        char c;
-        printf("Chars : ");
-        for(int i = 0; i < sizeof(gameMessage); i ++)
-        {
-            c = tileForMove.data.move.tile[i];
-            i++;
-            printf("%c ", c);
-        }
-        //std::cout << "Response Tile: " << gameMove->data.move.tile << std::endl;
         printf("Response with length %d tile %s received\n", qn, tileForMove.data.move.tile);
         std::cout << "Reading and setting message!" << std::endl;
+        // send our move back to the game server
         setMsg(2, tileForMove);
         std::cout << "Game not over yet!" << std::endl;
+
+        // send opponents move to game/AI
+        tileForMove = getMsg(thread_num);
+        send(mySocket, (char*)(&tileForMove), sizeof(gameMessage), 0);
     }
 }
 

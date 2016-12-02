@@ -134,12 +134,14 @@ Move::Move(Tile& tile, bool pickupMeeple)// pickup or place extra meeple
 
     this->placesTile = false;
     this->pickupMeeple =  pickupMeeple;
+    this->placesExtraMeeple = !pickupMeeple;
 }
 
 Move::Move(bool throwaway) // passes
 {
     this->placesTile = false;
     this->pickupMeeple = false;
+    this->placesExtraMeeple = false;
 }
 
 Move::~Move()
@@ -182,6 +184,6 @@ bool Move::getPickupMeeple() const {
     return this->pickupMeeple;
 }
 
-bool Move::getPlaceExtraMeeple() const {
-    return !this->placesTile && !this->pickupMeeple;
+bool Move::getPlacesExtraMeeple() const {
+    return this->placesExtraMeeple;
 }

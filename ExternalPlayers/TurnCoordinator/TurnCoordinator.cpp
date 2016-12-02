@@ -103,15 +103,9 @@ int TurnCoordinator::convertEdgeToZone(int edge)
 
 void TurnCoordinator::buildResponse(Move& move, gameMessage *gMsg)
 {
-    //printf("Entered buildResponse\n");
     bzero(gMsg, sizeof(*gMsg));
-    //printf("zeroed\n");
     gMsg->messageType = 1;
-    ///printf("about to copy\n");
-    const char *name = move.getTile().getTileName().c_str();
-    //printf("move.getTile().getTileName() : %s\n", move.getTile().getTileName().c_str());
-    std::copy(name, name + 6, gMsg->data.move.tile);
-    printf("Tile Name: %s\n", gMsg->data.move.tile);
+    strcpy(gMsg->data.move.tile, move.getTile().getTileName().c_str());
 
     gMsg->data.move.p1 = ourPlayerNumber;
 
@@ -326,27 +320,17 @@ void TurnCoordinator::receiveMessage()
         else if (n == 1) continue;
 
         //Handle message here
-        if (i == 0) printf("Length: %d, Content: %s\n", n, buffer->data.tile.tileStack);
+        if (i < 2) printf("Length: %d, Content: %s\n", n, buffer->data.tile.tileStack);
         else {
             printf("Length %d, Content: %s\n", n, buffer->data.move.tile);
 
             bzero(buffer, sizeof(gameMessage));
             Move mv((Tile&)BoardManager::getTopTileStack(), 76, 77);
-            printf("Entering buildResponse\n");
             TurnCoordinator::buildResponse(mv, buffer);
-            printf("Exiting buildResponse\n");
 
-            printf("Tile Sent: %s\n", mv.getTile().getTileName().c_str());
-            printf(":Tile Sent: %s\n", buffer->data.move.tile);
+            printf(":Tile Sent: %s at X: %d, and Y: %d\n", buffer->data.move.tile, buffer->data.move.x, buffer->data.move.y);
 
-            printf("byte %c ");
-            for (int i = 0; i < sizeof(gameMessage); i++)
-            {
-                printf(" %c", ((char *)buffer)[i]);
-
-            }
             n = write(this->mySocket, (char *)(buffer), sizeof(gameMessage));
-            printf("\nSENT %d BYTES OF DATA OUT OF %d bytes\n", n, sizeof(gameMessage));
         }
         i++;
         //handleMessage(msg);
