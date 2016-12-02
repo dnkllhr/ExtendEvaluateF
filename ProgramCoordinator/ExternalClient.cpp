@@ -241,7 +241,6 @@ void matchProtocol(int sockfd)
     number_tiles = stoi(strAtIndex(std::string(buffer),2));
 
     //CREATE TILE STACK OF INTERNAL SERVER
-    std::string tileStack;
     out<<tile;
     for(int i = 0; i < number_tiles;i++)
         out<<strAtIndex(std::string(buffer),6+i);
@@ -249,9 +248,8 @@ void matchProtocol(int sockfd)
     //Create Tile Stack Massage
     struct gameMessage* msg = new struct gameMessage;
     msg -> data.tile.lengthOfStack = 80;
-    strcpy(msg -> data.tile.tileStack, tileStack.c_str());
+    strcpy(msg -> data.tile.tileStack, out.str().c_str());
 
-    //add tileStack to message once thats operational
     std::cout<<"TILE STACK: "<<out.str()<<std::endl;
     out.str("");
 
@@ -462,6 +460,7 @@ void gameThread(int thread_num){
     send(mySocket, (char*)(&start), sizeof(start), 0);
     //process tile stack
 
+    struct gameMessage * gameMove = new gameMessage();
     while(!isEnded(thread_num))
     {
         std::cout << "Get tile for move. " << thread_num << std::endl;
@@ -469,11 +468,11 @@ void gameThread(int thread_num){
         if (isEnded(thread_num)) return;
         std::cout << "received and sending message!" << std::endl;
         send(mySocket, (char*)(&tileForMove), sizeof(tileForMove), 0);
-        struct gameMessage gameMove;
-        read(mySocket, (char*)(&gameMove), sizeof(gameMove));
+        bzero(gameMove, sizeof(gameMessage));
+        read(mySocket, (char*)gameMove, sizeof(gameMessage) - 1);
+        std::cout << "Response Tile: " << gameMove->data.move.tile << std::endl;
         std::cout << "Reading and setting message!" << std::endl;
-        setMsg(2, gameMove);
-        if (isEnded(thread_num)) std::cout << "Game Ended!" << std::endl;
+        setMsg(2, *gameMove);
         std::cout << "Game not over yet!" << std::endl;
     }
 }

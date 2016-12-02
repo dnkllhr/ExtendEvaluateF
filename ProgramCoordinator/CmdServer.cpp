@@ -15,6 +15,7 @@
 #include <netinet/in.h>
 #include <vector>
 #include <sstream>
+#include <algorithm>
 
 void Tournament_Protocol(int);
 
