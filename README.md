@@ -9,9 +9,9 @@
 | Brett Simons  | brettsimons  |
 | Cody Lent  | IronMage |
 | Michael Riccardi | MichaelRiccardi |
-| John Randall | jrandall1 |
+| John Randall | jrandall1 **AND** johnrich340@live.com |
 | Hong-Nhi Le | hnle04 |
-| Jacob Mellinger | jacobmellinger |
+| Jacob Mellinger | jacobmellinger **AND** jacobmellinger1 |
 
 
 ## Architecture & Design Documentation
