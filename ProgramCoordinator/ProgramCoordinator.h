@@ -9,7 +9,7 @@
 
 #include <unistd.h>
 
-#define PATH_TO_GAME "/path/to/game/"
+#define PATH_TO_GAME "./GameInstance"
 
 
 void handleGame (int gameSocket, int gamePort);

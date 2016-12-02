@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
+#include <exception>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -66,9 +68,6 @@ int main(int argc, char *argv[])
 
 void Tournament_Protocol (int sock)
 {
-
-
-   int n;
    char buffer[256];
    char pid[] = "PLAYER 1";
 
@@ -108,34 +107,53 @@ void Tournament_Protocol (int sock)
       sprintf(buffer,"THE REMAINING 6 TILES ARE [ TLTTP LJTJ- JLJL- JJTJX JLTTB TLLT- ]\r\n" );
       write(sock,buffer,255);
 
+      std::string tiles[6] = { "TLTTP", "LJTJ-", "JLJL-", "JJTJX", "JLTTB", "TLLT-" };
+
       bzero(buffer,256);
       sprintf(buffer,"MATCH BEGINS IN 5 SECONDS\r\n");
       write(sock,buffer,255);
-      for(int i = 1; i <= 5; i++){
-
+      for(int i = 1; i <= 6; i++){
           bzero(buffer,256);
-          sprintf(buffer,"MAKE YOUR MOVE IN GAME A WITHIN 1 SECOND: MOVE %d PLACE JLJL-\r\n", i);
+          sprintf(buffer,"MAKE YOUR MOVE IN GAME A WITHIN 1 SECOND: MOVE %d PLACE %s\r\n", i, tiles[i-1].c_str());
           write(sock,buffer,255);
 
           bzero(buffer,256);
-          read(sock,buffer,255);
+          int n = read(sock,buffer,255);
+          printf("%s\n", buffer);
+          printf("Length: %i\n", n);
 
           bzero(buffer,256);
-          sprintf(buffer,"GAME A MOVE %i PLAYER 24601 PLACED LJTJ- AT 2 2 270 NONE\r\n", i);
+          sprintf(buffer,"GAME A MOVE %i PLAYER 24601 PLACED %s AT 2 2 270 NONE\r\n", i, tiles[i-1].c_str());
           write(sock,buffer,255);
 
           bzero(buffer,256);
-          sprintf(buffer,"GAME B MOVE %i PLAYER 12345 PLACED LJTJ- AT 2 25 90 NONE\r\n", i);
+          sprintf(buffer,"GAME B MOVE %i PLAYER 12345 PLACED %s AT 2 25 90 NONE\r\n", i, tiles[i-1].c_str());
           write(sock,buffer,255);
 
+          bzero(buffer,256);
+          sprintf(buffer,"MAKE YOUR MOVE IN GAME B WITHIN 1 SECOND: MOVE %d PLACE %s\r\n", i, tiles[i-1].c_str());
+          write(sock,buffer,255);
+
+          bzero(buffer,256);
+          n = read(sock,buffer,255);
+          printf("%s\n", buffer);
+          printf("Length: %i\n", n);
+
+          bzero(buffer,256);
+          sprintf(buffer,"GAME A MOVE %i PLAYER 24601 PLACED %s AT 2 2 270 NONE\r\n", i, tiles[i-1].c_str());
+          write(sock,buffer,255);
+
+          bzero(buffer,256);
+          sprintf(buffer,"GAME B MOVE %i PLAYER 12345 PLACED %s AT 2 25 90 NONE\r\n", i, tiles[i-1].c_str());
+          write(sock,buffer,255);
       }
 
       bzero(buffer,256);
-      sprintf(buffer,"GAME A OVER PLAYER <pid> <score> PLAYER <pid> <score>\r\n");
+      sprintf(buffer,"GAME A OVER PLAYER 0 100 PLAYER 1 50\r\n");
       write(sock,buffer,255);
 
       bzero(buffer,256);
-      sprintf(buffer,"GAME B OVER PLAYER <pid> <score> PLAYER <pid> <score>\r\n");
+      sprintf(buffer,"GAME B OVER PLAYER 1 50 PLAYER 0 100\r\n");
       write(sock,buffer,255);
 
       bzero(buffer,256);

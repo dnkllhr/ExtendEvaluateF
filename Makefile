@@ -11,6 +11,7 @@ tests:
 	mkdir -p Compiled
 	$(MAKE) -C ./Core -f Makefile tests
 	$(MAKE) -C ./ExternalPlayers -f Makefile tests
+	g++ -Wall -std=c++14 $(DEPS) -o GameInstance
 	$(MAKE) -C ./ProgramCoordinator -f Makefile tests
 	$(MAKE) -C ./Testing
 
