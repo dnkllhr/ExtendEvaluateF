@@ -2,6 +2,36 @@
 import datetime
 import threading
 import time
+import ctypes
+
+class TILEMESSAGE(Structure):
+    _field_ = [ ("length", c_int),
+                ("tileStack", c_char * 401)]
+
+class MOVEMESSAGE(Structure):
+    _field_ = [ ("pid", c_int),
+                ("player", c_uint),
+                ("tile", c_char * 6),
+                ("placeable", c_byte),
+                ("x", c_uint),
+                ("y", c_uint),
+                ("rotationClockwise", c_uint),
+                ("meepleType", c_int),
+                ("pickupMeeple", c_byte),
+                ("passTurn", c_byte),
+                ("meepleZone", c_int)]
+
+class WHOAMIMESSAGE(Structure):
+    _field_ = [("playerNumber", c_uint)]
+
+class DATAMESSAGE(Union):
+    _field_ = [ ("tile", TILEMESSAGE),
+                ("move", MOVEMESSAGE),
+                ("who", WHOAMIMESSAGE)]
+
+class GAMEMESSAGE(Structure):
+    _field_ = [ ("type", c_int),
+                ("data", DATAMESSAGE)]
 
 threadLocks = []
 killedThreads = []
@@ -87,17 +117,54 @@ def challengeProtocol(tokens):
     #insert code here
     for i in xrange(int(tokens[6])):
         roundProtocol()
+        #END OF CHALLENGES || PLEASE WAIT FOR THE NEXT CHALLENGE TO BEGIN 
+        msg = readlines(tournamentSocket)
 
 def roundProtocol():
+    #BEGIN ROUND <rid> OF <rounds>
+    msg = readlines(tournamentSocket)
+    tokens = msg.split(" ")
+    for i in xrange(int(tokens[4])):
+        matchProtocol()
+        #END OF ROUND <rid> OF <rounds> || END OF ROUND <rid> OF <rounds> PLEASE WAIT FOR THE NEXT MATCH
+        msg = readlines(tournamentSocket)
+
+
+def matchProtocol():
+    #insert code here
+    #YOUR OPPONENT IS PLAYER <pid>
+    msg = readlines(tournamentSocket)
+    #STARTING TILE IS <tile> AT <x> <y> <orientation>
+    msg = readlines(tournamentSocket)
+    startingTokens = msg.split(" ")
+    #THE REMAINING <number_tiles> TILES ARE [ <tiles> ] 
+    msg = readlines(tournamentSocket)
+    stackTokens = msg.split(" ")
+    #MATCH BEGINS IN <timeplan> SECONDS
+    msg = readlines(tournamentSocket)
+
+    for i in xrange(int(stackTokens[2]) * 2):
+        moveProtocol()
+        #GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
+        msg = readlines(tournamentSocket)
+        #GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
+        msg = readlines(tournamentSocket)
+
+def getMoveFromGame():
+
+
+def moveProtocol():
     #insert code here
     msg = readlines(tournamentSocket)
-    
+    tokens = msg.split(" ")
+    if(tokens[0] == "MAKE"):
+        getMoveFromGame()
+    elif(tokens[4] == "TILE"):
+        specialMove()
+    else:
+        regularMove()
 
-def matchProtocol(tokens):
-    #insert code here
 
-def moveProtocol(tokens):
-    #insert code here
 
 def doWork():
     print "working"
@@ -117,7 +184,12 @@ class myThread (threading.Thread):
         self.threadID = threadID
         self.name = name
         setupThreadStuff()
-
+        self.tileStack = ""
+        self.startingTileName = ""
+        self.startingTileX = 0
+        self.startingTileY = 0
+        self.startingTileRotation = 0
+        self.playerNumber = 0
     def run(self):
         while True:
             if(killedThreads[self.threadID]):
@@ -133,6 +205,15 @@ class myThread (threading.Thread):
 
     def getThreadID(self):
         return self.threadID
+
+    def setStartingTile(self, name, x, y, rotation):
+        self.startingTileName = name
+        self.startingTileX = x
+        self.startingTileY = y
+        self.startingTileRotation = rotation
+
+    def setPlayerNumber(self, num):
+        self.playerNumber = num
 
 
 
