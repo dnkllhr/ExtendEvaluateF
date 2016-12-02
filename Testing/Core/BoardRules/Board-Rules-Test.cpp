@@ -241,9 +241,10 @@ TEST(RulesTest, ScoreChurch) {
     //Coord *currentCoord;
     const Tile **surroundingTiles;
     BoardManager::gameInit();
+    Array<Array<Tile>> tiles = Tile::CreateTiles();
 
     unsigned int expectedScore = 1;
-    currentTile = &(Tile::CreateTileB(1, startID, PreyType::None)[0]);
+    currentTile = &tiles[1][0]; //&(Tile::CreateTileB(1, startID, PreyType::None)[0]);
 
     unsigned int currentTileID = currentTile->getId();
     unsigned int centerChurchID = currentTileID;
@@ -261,6 +262,9 @@ TEST(RulesTest, ScoreChurch) {
     EXPECT_EQ(actualScore,1);
     ////printf("scored\n");
 
+    Array<Tile> tilesY = Tile::CreateTileY(8, startID, PreyType::None);
+    unsigned int yIndex = 0;
+
     for (int i = -1; i <= 1; i++)
     {
         for (int j = -1; j <= 1; j++)
@@ -272,7 +276,8 @@ TEST(RulesTest, ScoreChurch) {
             else
             {
                 // place field tiles around church tile
-                currentTile = &(Tile::CreateTileY(1, startID, PreyType::None)[0]);
+
+                currentTile = &tilesY[yIndex++];
                 currentTileID = currentTile->getId();
                 currentTile->setRotation(0);
                 testingTilePlacement(&startID, (churchCoord->getX() + i), (churchCoord->getY() + j), currentTile, surroundingTiles);

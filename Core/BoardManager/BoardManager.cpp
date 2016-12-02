@@ -167,6 +167,7 @@ std::vector<Move> BoardManager::getValidMoves(const Tile& tile, unsigned int pla
 
     return validMoves;
 }
+
 void BoardManager::makeMove(const Move& move, unsigned int playerNumber)
 {
     // if calling this method, it is assumed that this is a legal move
@@ -189,6 +190,17 @@ void BoardManager::makeMove(const Move& move, unsigned int playerNumber)
 
     tile.placeTile(); // mark Tile as placed so it can no longer be rotated
     tileStack->pop(); // remove top Tile from listg
+
+    std::shared_ptr<struct regionSet> * regions = Regions::getRegions(tile.getId());
+
+    for(int i = 0; i < 12; i++)
+    {
+        //std::cout << "regions[" << i << "] = " << regions[i] << std::endl;
+        if(regions[i] != NULL && regions[i]->edgesTillCompletion == 0)
+        { 
+            GameRules::scoreEdge(tile.getId(), i, false);
+        }
+    }
 }
 
 

@@ -25,7 +25,7 @@ TEST(TileTests, getTileName) {
     Tile& tileD_noDeer = tiles[3][0];
     Tile& tileD_deer = tiles[4][0];
 
-    EXPECT_EQ(tileD_noDeer.getTileName(), "TLTJ");
+    EXPECT_EQ(tileD_noDeer.getTileName(), "TLTJ-");
     EXPECT_EQ(tileD_deer.getTileName(), "TLTJD");
 }
 
@@ -40,7 +40,7 @@ TEST(TileTests, outputOperator) {
     noDeerOut << tileD_noDeer;
     deerOut << tileD_deer;
 
-    EXPECT_EQ(noDeerOut.str(), "TLTJ");
+    EXPECT_EQ(noDeerOut.str(), "TLTJ-");
     EXPECT_EQ(deerOut.str(), "TLTJD");
 }
 
