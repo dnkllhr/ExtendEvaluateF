@@ -43,7 +43,6 @@ private:
     unsigned int otherPlayerNumber;
     bool AISetup;
     int mySocket;
-    int clientSocket;
     struct sockaddr_in myAddr;
 };
 

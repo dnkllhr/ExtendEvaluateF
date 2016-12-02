@@ -106,6 +106,7 @@ void TurnCoordinator::buildResponse(Move& move, gameMessage *gMsg)
     bzero(gMsg, sizeof(*gMsg));
     gMsg->messageType = 1;
     strcpy(gMsg->data.move.tile, (move.getTile().getTileName()).c_str());
+    printf("Tile Name: %s\n", gMsg->data.move.tile);
 
     gMsg->data.move.p1 = ourPlayerNumber;
 
@@ -295,10 +296,11 @@ void TurnCoordinator::startCoordinator()
 
 void TurnCoordinator::receiveMessage()
 {
-    int n;
+    int n, i = 0;
 
-    char buffer[sizeof(gameMessage)]; //Change to message struct.
-    gameMessage *msg = (gameMessage *)(&buffer);
+    //char buffer[sizeof(gameMessage)]; //Change to message struct.
+    //gameMessage *msg = (gameMessage *)(&buffer);
+    gameMessage * buffer = new gameMessage();
 
     while(true)
     {
@@ -311,13 +313,27 @@ void TurnCoordinator::receiveMessage()
         bzero(buffer, sizeof(gameMessage));
         n = read(this->mySocket, buffer, sizeof(gameMessage) - 1);
 
-        if (n <= 0) 
+        if (n < 0) 
         {
             throw std::runtime_error("ERROR reading from socket");
         }
+        else if (n == 1) continue;
 
         //Handle message here
-        printf("Length: %d, Content: %s\n", n, buffer);
+        if (i == 0) printf("Length: %d, Content: %s\n", n, buffer->data.tile.tileStack);
+        else {
+            printf("Length %d, Content: %s\n", n, buffer->data.move.tile);
+
+            bzero(buffer, sizeof(gameMessage));
+            Move mv((Tile&)BoardManager::getTopTileStack(), 76, 77);
+            buildResponse(mv, buffer);
+
+            printf("Tile Sent: %s\n", mv.getTile().getTileName().c_str());
+            printf(":Tile Sent: %s\n", buffer->data.move.tile);
+
+            n = write(this->mySocket, (char *)(buffer), sizeof(gameMessage));
+        }
+        i++;
         //handleMessage(msg);
     }
 }
