@@ -122,17 +122,17 @@ int createServerSocket(int portno, int thread_num)
 void authenticationProtocol(int sockfd)
 {
     std::string pid;
-    char buffer[1024];
+    char buffer[256];
 
     //Prepare Output Stream
     std::stringstream out;
 
     //Server: THIS IS SPARTA!
-    read(sockfd,buffer,1023);
+    read(sockfd,buffer,255);
     printf("%s\n",buffer);
 
     //Client: JOIN <tournament password>
-    bzero(buffer,1024);
+    bzero(buffer,256);
     out<<"JOIN ";
     out<<TOURNAMENT_PASSWD;
     std::cout<<out.str()<<std::endl;
@@ -140,12 +140,12 @@ void authenticationProtocol(int sockfd)
     out.str("");
 
     //Server: HELLO!
-    bzero(buffer,1024);
-    read(sockfd,buffer,1023);
+    bzero(buffer,256);
+    read(sockfd,buffer,255);
     printf("%s\n",buffer);
 
    //Client: I AM <username> <password>
-    bzero(buffer,1024);
+    bzero(buffer,256);
     out<<"I AM ";
     out<<USERNAME<<" "<<PASSWD;
     std::cout<<out.str()<<std::endl;
@@ -153,8 +153,8 @@ void authenticationProtocol(int sockfd)
     out.str("");
 
     //Server: WELCOME <pid> PLEASE WAIT FOR THE NEXT CHALLENGE
-    bzero(buffer,1024);
-    read(sockfd,buffer,1023);
+    bzero(buffer,256);
+    read(sockfd,buffer,255);
     printf("%s\n",buffer);
     pid = strAtIndex(std::string(buffer),1);
 }
@@ -163,11 +163,11 @@ void challengeProtocol(int sockfd)
 {
     std::string cid;
     int rounds;
-    char buffer[1024];
+    char buffer[256];
 
     //Server: NEW CHALLENGE <cid> YOU WILL PLAY <rounds> MATCH
-    bzero(buffer,1024);
-    read(sockfd,buffer,1023);
+    bzero(buffer,256);
+    read(sockfd,buffer,255);
     printf("%s\n",buffer);
     cid = strAtIndex(std::string(buffer),1);
     rounds = stoi(strAtIndex(std::string(buffer),6));
@@ -177,8 +177,8 @@ void challengeProtocol(int sockfd)
         roundProtocol(sockfd);
 
    //Server: END OF CHALLENGES or PLEASE WAIT
-    bzero(buffer,1024);
-    read(sockfd,buffer,1023);
+    bzero(buffer,256);
+    read(sockfd,buffer,255);
     printf("%s\n",buffer);
 
 }
@@ -186,11 +186,11 @@ void challengeProtocol(int sockfd)
 void roundProtocol(int sockfd)
 {
   int rid,rounds;
-  char buffer[1024];
+  char buffer[256];
 
   //Server: BEGIN ROUND <rid> OF <rounds>
-  bzero(buffer,1024);
-  read(sockfd,buffer,1023);
+  bzero(buffer,256);
+  read(sockfd,buffer,255);
   printf("%s\n",buffer);
   rid = stoi(strAtIndex(std::string(buffer),2));
   rounds = stoi(strAtIndex(std::string(buffer),4));
@@ -199,8 +199,8 @@ void roundProtocol(int sockfd)
   matchProtocol(sockfd);
 
   //Server: END OF ROUND <rid> OF <rounds>
-  bzero(buffer,1024);
-  read(sockfd,buffer,1023);
+  bzero(buffer,256);
+  read(sockfd,buffer,255);
   printf("%s\n",buffer);
 
 }
@@ -209,13 +209,13 @@ void matchProtocol(int sockfd)
 {
     std::string oppPid, tile;
     int x, y, orientation, number_tiles, time_plan;
-    char buffer[1024];
+    char buffer[256];
     //Prepare Output and Input Stream
     std::stringstream out;
 
     //Server: YOUR OPPONENT IS PLAYER <pid>
-    bzero(buffer,1024);
-    read(sockfd,buffer,1023);
+    bzero(buffer,256);
+    read(sockfd,buffer,255);
     printf("%s\n",buffer);
     oppPid = strAtIndex(buffer,4);
 
@@ -223,8 +223,8 @@ void matchProtocol(int sockfd)
 
 
     //Server: STARTING TILE IS <tile> AT <x> <y> <orientation>
-    bzero(buffer,1024);
-    read(sockfd,buffer,1023);
+    bzero(buffer,256);
+    read(sockfd,buffer,255);
     printf("%s\n",buffer);
     tile = strAtIndex(std::string(buffer),3);
     x = stoi(strAtIndex(std::string(buffer),5));
@@ -234,9 +234,11 @@ void matchProtocol(int sockfd)
     //PASS STARTING TILE TO INTERNAL SERVER
 
     //Server: THE REMAINING <number_tiles> TILES ARE [ <tiles> ]
-    bzero(buffer,1024);
-    read(sockfd,buffer,1023);
-    printf("%s\n",buffer);
+    char stackBuffer[512];
+    bzero(buffer,256);
+    bzero(stackBuffer,512);
+    read(sockfd,stackBuffer,511);
+    printf("%s\n",stackBuffer);
     number_tiles = stoi(strAtIndex(std::string(buffer),2));
 
     //CREATE TILE STACK OF INTERNAL SERVER
@@ -268,8 +270,8 @@ void matchProtocol(int sockfd)
     WAI1 -> data.who.p1 = 2;
 
     //Server: MATCH BEGINS IN <timeplan> SECONDS
-    bzero(buffer,1024);
-    read(sockfd,buffer,1023);
+    bzero(buffer,256);
+    read(sockfd,buffer,255);
     printf("%s\n",buffer);
     int timeplan = stoi(strAtIndex(std::string(buffer),3));
 
@@ -304,20 +306,20 @@ void matchProtocol(int sockfd)
     endThread(1);
 
     //Server: GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
-    bzero(buffer,1024);
-    read(sockfd,buffer,1023);
+    bzero(buffer,256);
+    read(sockfd,buffer,255);
     printf("%s\n",buffer);
 
     //Server: GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
-    bzero(buffer,1024);
-    read(sockfd,buffer,1023);
+    bzero(buffer,256);
+    read(sockfd,buffer,255);
     printf("%s\n",buffer);
 }
 
 // pass msg and move to threads
 void moveProtocol(int sockfd)
 {
-    char buffer[1024];
+    char buffer[256];
     int timeMove, moveNum;
     bool player1[2];
     int gamesActive = 2;
@@ -328,8 +330,8 @@ void moveProtocol(int sockfd)
     struct gameMessage* msg = new struct gameMessage;
 
     //Server: MAKE YOUR MOVE IN GAME <gid> WITHIN <timemove> SECOND: MOVE <#> PLACE <tile>
-    bzero(buffer,1024);
-    read(sockfd,buffer,1023);
+    bzero(buffer,256);
+    read(sockfd,buffer,255);
     printf("%s\n",buffer);
 
     gid = strAtIndex(std::string(buffer),5);
@@ -363,7 +365,7 @@ void moveProtocol(int sockfd)
     int zone = newMsg.data.move.zone;
 
     int response;
-    bzero(buffer,1024);
+    bzero(buffer,256);
 
     if(!newMsg.data.move.placeable)
         response = 0;
@@ -395,8 +397,8 @@ void moveProtocol(int sockfd)
       int movePid, x, y, orientation, zone;
 
       //Server: GAME <gid> MOVE <#> PLAYER <pid> <move>
-      bzero(buffer,1024);
-      read(sockfd,buffer,1023);
+      bzero(buffer,256);
+      read(sockfd,buffer,255);
       printf("%s\n",buffer);
 
       std::vector<std::string> split;
