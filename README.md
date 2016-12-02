@@ -41,8 +41,13 @@ After building the client
 
 [//]: # ( all the test [unit and acceptance code] you wrote for the client, detailed instructions on how to run the tests, & )
 
+First, build the [Google C++ Testing Framework](https://github.com/google/googletest/) by executing the following command in the root directory:
 
-To build and execute all tests, simply
+    make gtestlib
+
+This only has to be done once.
+
+Each time you want to build and run the tests, simply execute the following command in the root directory:
 
     make tests
 
@@ -51,4 +56,3 @@ To build and execute all tests, simply
 [//]: # (a detailed list of all the known bugs/issues needing to be addressed (if the repository system has an issue tracking system, record the issues there)
 
 See the Issues page.
-
