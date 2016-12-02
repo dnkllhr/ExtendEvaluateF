@@ -49,6 +49,7 @@ void endThread(int);
 bool isEnded(int);
 int orientationFix(int);
 void gameThread(int);
+std::string dynamicRead(int sock);
 
 
 int main(int argc, char *argv[])
@@ -237,7 +238,9 @@ void matchProtocol(int sockfd)
     char stackBuffer[512];
     bzero(buffer,256);
     bzero(stackBuffer,512);
-    read(sockfd,stackBuffer,511);
+    std::string outString = dynamicRead(sockfd);
+    std::cout << "Dynamic recv : " << outString << std::endl;
+    //read(sockfd,stackBuffer,511);
     printf("%s\n",stackBuffer);
     number_tiles = stoi(strAtIndex(std::string(buffer),2));
 
@@ -634,4 +637,24 @@ int orientationFix(int orientation)
         default:
             return orientation;
     }
+}
+
+
+
+std::string dynamicRead(int sock) 
+{
+    char output[1024];
+    char currentChar = 'i';
+    int i = 0;
+    while (currentChar != '\n') 
+    {
+        recv(sock, &currentChar, 1, 0);
+        printf("%c ", currentChar);
+        strcat(output, &currentChar);
+        i++;
+    }
+    //strcat(output, '\0');
+    //i++;
+    std::string ret(output, output + i);
+    return ret;
 }
