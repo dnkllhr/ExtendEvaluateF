@@ -9,17 +9,18 @@
 | Brett Simons  | brettsimons  |
 | Cody Lent  | IronMage |
 | Michael Riccardi | MichaelRiccardi |
-| John Randall | jrandall1 **AND** johnrich340@live.com |
+| John Randall | jrandall1 |
 | Hong-Nhi Le | hnle04 |
-| Jacob Mellinger | jacobmellinger **AND** jacobmellinger1 |
+| Jacob Mellinger | jacobmellinger |
 
 
 ## Architecture & Design Documentation
 
 [//]: # (all architecture/design related documentation your team produced to guide the implementation)
 
+**NOTE: This has not been tested on Windows. Everything has been verified to work using Unix G++ compilers supporting C++14.**
 
-Stored in the Documents folder.
+More in-depth documents are stored in the Documents folder. At the top level, in ProgramCoordinator, we have ExternalClient.cpp. ExternalClient is the executable which talks to the Tournament Server and spawns instances of the game. In Core/Entry-Points is where the main function for the Game instance is located. From there, TurnManager orchestrates the communication between the ExternalClient, the AI, and the BoardManager. The AI uses all of the functions provided by the BoardManager, Regions, Rules, and Board so that it can make the most accurate prediction for the highest scoring move. The BoardManager uses the Board, Tiles, Regions, and Rules to make moves, manage what is on the board, and track regions.
 
 **TODO: Provide links here!**
 
@@ -35,7 +36,13 @@ In the root directory, simply execute:
 
 ### Running the Client
 
-After building the client
+After building the client, you can execute it by running:
+
+    ./ExternalClient server-ip server-port tournament-password username user-password
+
+To run the test server, run DaveServer in the ProgramCoordinator folder which takes a single argument which is a port to listen to. Another test server option is CmdServer, also in the ProgramCoordinator folder, which allows you to choose the responses of the other player and server.
+
+The GameInstance file can be ignored since it is executed by the ExternalClient so that every game receives a new instance of the TigerZone game.
 
 ## Our Tests
 
