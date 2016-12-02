@@ -5,3 +5,5 @@ Testing/Compiled/*
 Compiled/*
 GameInstance
 **/ExternalClient
+ProgramCoordinator/CmdServer
+ProgramCoordinator/DaveServer
