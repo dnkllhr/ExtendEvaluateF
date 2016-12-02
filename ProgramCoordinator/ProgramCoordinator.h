@@ -10,6 +10,7 @@
 #include <unistd.h>
 
 #define PATH_TO_GAME "./GameInstance"
+#define GAME_NAME "GameInstance"
 
 
 void handleGame (int gameSocket, int gamePort);
