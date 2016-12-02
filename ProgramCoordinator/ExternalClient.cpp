@@ -34,7 +34,6 @@ bool ready[3];
 bool ended[2];
 std::mutex msg_mutexes[3];
 std::condition_variable cvs[3];
-
 std::unordered_map<std::string, int> socketMap;
 
 int createSocket(std::string, int);
@@ -115,7 +114,7 @@ int createServerSocket(int portno, int thread_num)
 
     newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
     if (newsockfd < 0) perror("ERROR on accept.");
-    
+
     return newsockfd; /* we never get here */
 }
 
@@ -123,17 +122,17 @@ int createServerSocket(int portno, int thread_num)
 void authenticationProtocol(int sockfd)
 {
     std::string pid;
-    char buffer[256];
+    char buffer[1024];
 
     //Prepare Output Stream
     std::stringstream out;
 
     //Server: THIS IS SPARTA!
-    read(sockfd,buffer,255);
+    read(sockfd,buffer,1023);
     printf("%s\n",buffer);
 
     //Client: JOIN <tournament password>
-    bzero(buffer,256);
+    bzero(buffer,1024);
     out<<"JOIN ";
     out<<TOURNAMENT_PASSWD;
     std::cout<<out.str()<<std::endl;
@@ -141,21 +140,21 @@ void authenticationProtocol(int sockfd)
     out.str("");
 
     //Server: HELLO!
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
+    bzero(buffer,1024);
+    read(sockfd,buffer,1023);
     printf("%s\n",buffer);
 
    //Client: I AM <username> <password>
-    bzero(buffer,256);
+    bzero(buffer,1024);
     out<<"I AM ";
     out<<USERNAME<<" "<<PASSWD;
-    std::cout<<out.str()<<std::endl;    
+    std::cout<<out.str()<<std::endl;
     write(sockfd,out.str().c_str(),out.gcount()+1);
     out.str("");
 
     //Server: WELCOME <pid> PLEASE WAIT FOR THE NEXT CHALLENGE
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
+    bzero(buffer,1024);
+    read(sockfd,buffer,1023);
     printf("%s\n",buffer);
     pid = strAtIndex(std::string(buffer),1);
 }
@@ -164,11 +163,11 @@ void challengeProtocol(int sockfd)
 {
     std::string cid;
     int rounds;
-    char buffer[256];
+    char buffer[1024];
 
     //Server: NEW CHALLENGE <cid> YOU WILL PLAY <rounds> MATCH
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
+    bzero(buffer,1024);
+    read(sockfd,buffer,1023);
     printf("%s\n",buffer);
     cid = strAtIndex(std::string(buffer),1);
     rounds = stoi(strAtIndex(std::string(buffer),6));
@@ -178,8 +177,8 @@ void challengeProtocol(int sockfd)
         roundProtocol(sockfd);
 
    //Server: END OF CHALLENGES or PLEASE WAIT
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
+    bzero(buffer,1024);
+    read(sockfd,buffer,1023);
     printf("%s\n",buffer);
 
 }
@@ -187,11 +186,11 @@ void challengeProtocol(int sockfd)
 void roundProtocol(int sockfd)
 {
   int rid,rounds;
-  char buffer[256];
+  char buffer[1024];
 
   //Server: BEGIN ROUND <rid> OF <rounds>
-  bzero(buffer,256);
-  read(sockfd,buffer,255);
+  bzero(buffer,1024);
+  read(sockfd,buffer,1023);
   printf("%s\n",buffer);
   rid = stoi(strAtIndex(std::string(buffer),2));
   rounds = stoi(strAtIndex(std::string(buffer),4));
@@ -200,8 +199,8 @@ void roundProtocol(int sockfd)
   matchProtocol(sockfd);
 
   //Server: END OF ROUND <rid> OF <rounds>
-  bzero(buffer,256);
-  read(sockfd,buffer,255);
+  bzero(buffer,1024);
+  read(sockfd,buffer,1023);
   printf("%s\n",buffer);
 
 }
@@ -210,13 +209,13 @@ void matchProtocol(int sockfd)
 {
     std::string oppPid, tile;
     int x, y, orientation, number_tiles, time_plan;
-    char buffer[256];
+    char buffer[1024];
     //Prepare Output and Input Stream
     std::stringstream out;
 
     //Server: YOUR OPPONENT IS PLAYER <pid>
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
+    bzero(buffer,1024);
+    read(sockfd,buffer,1023);
     printf("%s\n",buffer);
     oppPid = strAtIndex(buffer,4);
 
@@ -224,8 +223,8 @@ void matchProtocol(int sockfd)
 
 
     //Server: STARTING TILE IS <tile> AT <x> <y> <orientation>
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
+    bzero(buffer,1024);
+    read(sockfd,buffer,1023);
     printf("%s\n",buffer);
     tile = strAtIndex(std::string(buffer),3);
     x = stoi(strAtIndex(std::string(buffer),5));
@@ -235,8 +234,8 @@ void matchProtocol(int sockfd)
     //PASS STARTING TILE TO INTERNAL SERVER
 
     //Server: THE REMAINING <number_tiles> TILES ARE [ <tiles> ]
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
+    bzero(buffer,1024);
+    read(sockfd,buffer,1023);
     printf("%s\n",buffer);
     number_tiles = stoi(strAtIndex(std::string(buffer),2));
 
@@ -261,9 +260,16 @@ void matchProtocol(int sockfd)
     move -> data.move.y = 76;
     move -> data.move.orientation = (unsigned int)orientationFix(orientation);
 
+    struct gameMessage * WAI0 = new struct gameMessage;
+    struct gameMessage * WAI1 = new struct gameMessage;
+    WAI0 -> messageType = 2;
+    WAI1 -> messageType = 2;
+    WAI0 -> data.who.p1 = 1;
+    WAI1 -> data.who.p1 = 2;
+
     //Server: MATCH BEGINS IN <timeplan> SECONDS
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
+    bzero(buffer,1024);
+    read(sockfd,buffer,1023);
     printf("%s\n",buffer);
     int timeplan = stoi(strAtIndex(std::string(buffer),3));
 
@@ -286,31 +292,34 @@ void matchProtocol(int sockfd)
     setMsg(0, *move);
     std::cout << "Send start tile for thread 1." << std::endl;
     setMsg(1, *move);
+    std::cout << "Send who am i for thread 0." << std::endl;
+    setMsg(0, *WAI0);
+    std::cout << "Send who am i for thread 1." << std::endl;
+    setMsg(1, *WAI1);
 
     for (int i = 0; i < 2*number_tiles; i++)
         moveProtocol(sockfd);
 
-    kill(pids[0], SIGKILL);
-    kill(pids[1], SIGKILL);
     endThread(0);
     endThread(1);
 
     //Server: GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
+    bzero(buffer,1024);
+    read(sockfd,buffer,1023);
     printf("%s\n",buffer);
 
     //Server: GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
+    bzero(buffer,1024);
+    read(sockfd,buffer,1023);
     printf("%s\n",buffer);
 }
 
 // pass msg and move to threads
 void moveProtocol(int sockfd)
 {
-    char buffer[256];
+    char buffer[1024];
     int timeMove, moveNum;
+    bool player1[2];
     int gamesActive = 2;
     std::string tile, gid;
 
@@ -319,17 +328,30 @@ void moveProtocol(int sockfd)
     struct gameMessage* msg = new struct gameMessage;
 
     //Server: MAKE YOUR MOVE IN GAME <gid> WITHIN <timemove> SECOND: MOVE <#> PLACE <tile>
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
+    bzero(buffer,1024);
+    read(sockfd,buffer,1023);
     printf("%s\n",buffer);
 
     gid = strAtIndex(std::string(buffer),5);
+
+    if(socketMap.size() == 0){
+        socketMap[gid] = 0;
+
+    }
+    else if(socketMap.count(gid)==0){
+        socketMap[gid] = 1;
+
+    }
+
     timeMove = stoi(strAtIndex(std::string(buffer),7));
     moveNum = stoi(strAtIndex(std::string(buffer),10));
     tile = strAtIndex(std::string(buffer),12);
 
     //Create Move Message and Pass to INTERNAL Server
     strcpy(msg -> data.move.tile, tile.c_str());
+    msg -> messageType = 1;
+    msg -> data.move.p1 = (unsigned int)socketMap[gid]+1;
+
 
     setMsg(socketMap[gid], *msg);
     //Await response
@@ -341,7 +363,7 @@ void moveProtocol(int sockfd)
     int zone = newMsg.data.move.zone;
 
     int response;
-    bzero(buffer,256);
+    bzero(buffer,1024);
 
     if(!newMsg.data.move.placeable)
         response = 0;
@@ -353,7 +375,7 @@ void moveProtocol(int sockfd)
             out<<"GAME "<<gid<<" MOVE "<<moveNum<<" TILE "<< tile <<" UNPLACEABLE PASS";
             break;
         case 0:
-            out<<"GAME "<<gid<<" MOVE "<<moveNum<<" PLACE "<< tile <<" AT "<<newMsg.data.move.x <<" "<<newMsg.data.move.y<<" "<<orient<<" NONE";
+            out<<"GAME "<<gid<<" MOVE "<<moveNum<<" PLACE "<< tile <<" AT "<<newMsg.data.move.x  <<" "<<newMsg.data.move.y<<" "<<orient<<" NONE";
             break;
         case 1:
             out<<"GAME "<<gid<<" MOVE "<<moveNum<<" PLACE " << tile << " AT "<<newMsg.data.move.x <<" "<<newMsg.data.move.y<<" "<<orient<<" TIGER "<<zone;
@@ -373,27 +395,125 @@ void moveProtocol(int sockfd)
       int movePid, x, y, orientation, zone;
 
       //Server: GAME <gid> MOVE <#> PLAYER <pid> <move>
-      bzero(buffer,256);
-      read(sockfd,buffer,255);
+      bzero(buffer,1024);
+      read(sockfd,buffer,1023);
       printf("%s\n",buffer);
-      if(strAtIndex(std::string(buffer),6).compare("FORFEITED") == 0) //Game FORFEITED
-      {
-          gamesActive--;
-          std::cout << buffer << std::endl;
-          // stop forfeited match
+
+      std::vector<std::string> split;
+      std::string s;
+      std::istringstream in (buffer);
+      while(getline(in, s, ' ')) {
+          s.erase(std::remove(s.begin(), s.end(), '\n'), s.end());
+          s.erase(std::remove(s.begin(), s.end(), '\r'), s.end());
+          split.push_back(s);
       }
-      else
+
+      //Strings Contains split buffer
+
+      bzero(msg,sizeof(gameMessage));
+      msg -> messageType = 1;
+      msg -> data.move.p1 = socketMap[strAtIndex(std::string(buffer),1)]+1;
+      if(split[6].compare("PLACED") == 0)//place tile
       {
-        if(gid.compare(strAtIndex(std::string(buffer),1)) != 0);    //Game You Care About
-        else
-        {
-            //Let Game Know of the opponents move (not a Forfeit)
-            bzero(msg, sizeof(gameMessage));
-            // fill message
-            setMsg(socketMap[gid], *msg);
-        }
+          strcpy(msg -> data.move.tile, split[7].c_str());
+          msg -> data.move.placeable = 1;
+          msg -> data.move.x = stoi(split[9]) - 76;
+          msg -> data.move.y = stoi(split[10]) -76;
+          msg -> data.move.orientation = (unsigned int)orientationFix(stoi(split[11]));
+
+          if(split[12].compare("NONE")==0)
+          {
+              msg -> data.move.meepleType = 0;
+          }
+          else if(split[12].compare("TIGER") == 0)
+          {
+              msg -> data.move.meepleType = 1;
+              msg -> data.move.zone = stoi(split[13]);
+          }
+          else //CROCODILE
+          {
+              msg -> data.move.meepleType = 2;
+          }
 
       }
+      else if (split[6].compare("TILE")==0)
+      {
+          msg->data.move.placeable = 0;
+          if (split[9].compare("PASSED")==0)
+            msg->data.move.pass = 1;
+          else if(split[9].compare("RETRIEVED")==0)
+          {
+              msg -> data.move.pickupMeeple = 1;
+              msg -> data.move.x = stoi(split[12]) - 76;
+              msg -> data.move.y = stoi(split[13]) -76;
+          }
+          else //Adding a TIGER
+          {
+              msg -> data.move.placeSpecialTiger = 1;
+              msg -> data.move.x = stoi(split[12]) - 76;
+              msg -> data.move.y = stoi(split[13]) -76;
+          }
+      }
+
+      else if (split[6].compare("FORFEITED")==0)
+      {
+          //Kill Thread in next next message
+          endThread(socketMap[split[1]]);
+          gamesActive --;
+
+      }
+
+    //   if(strAtIndex(std::string(buffer),6).compare("FORFEITED") == 0) //Game FORFEITED
+    //   {
+    //       gamesActive--;
+    //       std::cout << buffer << std::endl;
+    //       // stop forfeited match
+    //   }
+    //   else
+    //   {
+    //     if(gid.compare(strAtIndex(std::string(buffer),1)) != 0)   //Game You Care About
+    //     {
+    //         //Let Game Know of the opponents move (not a Forfeit)
+    //         if(setPlayerNumber){
+    //             playernumber[strAtIndex(std::string(buffer),1)] = 2;
+    //             setPlayerNumber = 0;
+    //         }
+    //         bzero(msg, sizeof(gameMessage));
+    //         msg -> messageType= 1;
+    //         strcpy(msg -> data.move.tile, strAtIndex(std::string(buffer),7).c_str());
+      //
+    //         if(strAtIndex(std::string(buffer),6).compare("PLACED")){        //PLACED
+    //             msg -> data.move.placeable = 1;
+    //             msg -> data.move.x = stoi(strAtIndex(std::string(buffer),9)) - 76;
+    //             msg -> data.move.y = stoi(strAtIndex(std::string(buffer),10)) -76;
+    //             msg -> data.move.orientation = (unsigned int)orientationFix(stoi(strAtIndex(std::string(buffer),11)));
+    //             if(strAtIndex(std::string(buffer),12).compare("TIGER") == 0)
+    //                 msg -> data.move.zone = stoi(strAtIndex(std::string(buffer),13));
+    //         }
+    //         else{ //PASS
+    //             std::string passType = strAtIndex(std::string(buffer),9);
+    //             msg -> data.move.placeable = 0;
+    //             if(passType.compare("PASSED")==0){
+    //                 msg -> data.move.pass = 1;
+    //             }
+    //             else if (passType.compare("RETRIEVED")==0){
+    //                 msg -> data.move.pickupMeeple = 1;
+    //                 msg -> data.move.x = stoi(strAtIndex(std::string(buffer),12)) - 76;
+    //                 msg -> data.move.y = stoi(strAtIndex(std::string(buffer),13)) -76;
+      //
+    //             }
+    //             else{
+    //                 msg -> data.move.pass = 1;
+    //                 msg -> data.move.x = stoi(strAtIndex(std::string(buffer),12)) - 76;
+    //                 msg -> data.move.y = stoi(strAtIndex(std::string(buffer),13)) -76;
+    //             }
+    //         }
+      //
+    //         msg -> data.move.p1 = playernumber[strAtIndex(std::string(buffer),1)];
+    //     }
+      //
+    //   }
+      setMsg(socketMap[gid], *msg);
   }
 
 }
@@ -439,6 +559,7 @@ void endThread(int thread_num) {
     ended[thread_num] = true;
     guard.unlock();
     cvs[thread_num].notify_all();
+    kill(pids[thread_num], SIGKILL);
 }
 
 bool isEnded(int thread_num) {
@@ -459,6 +580,13 @@ void gameThread(int thread_num){
     struct gameMessage start = getMsg(thread_num);
     std::cout << "Send starting tile! " << thread_num << std::endl;
     send(mySocket, (char*)(&start), sizeof(start), 0);
+    //process tile stack
+
+    //wait for starting tile
+    std::cout << "Get WHO AM I! " << thread_num << std::endl;
+    struct gameMessage whoarti = getMsg(thread_num);
+    std::cout << "Send who am i! " << thread_num << std::endl;
+    send(mySocket, (char*)(&whoarti), sizeof(whoarti), 0);
     //process tile stack
 
     while(!isEnded(thread_num))
