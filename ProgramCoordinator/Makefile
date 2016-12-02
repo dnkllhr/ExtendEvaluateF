@@ -2,11 +2,14 @@ CC=g++
 CFLAGS=-Wall -std=c++14 -pthread -lpthread
 DCFLAGS=-g -D__testing
 DEPS=ProgramCoordinator.h ../ExternalPlayers/TurnCoordinator/TurnCoordinator.h
-CLEAN=*.o ExternalClient DaveServer
+CLEAN=*.o CmdServer ExternalClient DaveServer
 
-default: ExternalClient DaveServer
+default: ExternalClient DaveServer CmdServer
 
-tests: ExternalClient DaveServer
+tests: ExternalClient DaveServer CmdServer
+
+CmdServer: CmdServer.cpp
+	$(CC) $(CFLAGS) $< -o $@
 
 DaveServer: DaveServer.cpp
 	$(CC) $(CFLAGS) $< -o $@
