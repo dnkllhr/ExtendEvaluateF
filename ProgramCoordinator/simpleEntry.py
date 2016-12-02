@@ -23,7 +23,7 @@ class MOVEMESSAGE(Structure):
                 ("meepleZone", c_int)]
 
 class WHOAMIMESSAGE(Structure):
-    _field_ = [("playerNumber", c_uint)]
+    _field_ = [ ("playerNumber", c_uint)]
 
 class DATAMESSAGE(Union):
     _field_ = [ ("tile", TILEMESSAGE),

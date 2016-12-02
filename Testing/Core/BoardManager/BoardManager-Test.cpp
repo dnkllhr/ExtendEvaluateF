@@ -524,12 +524,13 @@ TEST(BoardManagerTests, makeMove)
 { 
     BoardManager::gameInit();
 
-    unsigned int tileIdCounter = 100;
+    unsigned int tileIdCounter = 9090;
 
     TileStack* tileStack = BoardManager::getTileStack();
     unsigned int initalSize = tileStack->getSize();
+    Array<Array<Tile>> tiles = Tile::CreateTiles();
 
-    Tile& tile1 = Tile::CreateTileJ(1, tileIdCounter, PreyType::None)[0];
+    Tile& tile1 = tiles[9][0]; //Tile::CreateTileJ(1, tileIdCounter, PreyType::None)[0];
     Coord coord1 = Coord(76, 75);
     const Move& move1 = Move(tile1, coord1, 2);
 
@@ -543,7 +544,7 @@ TEST(BoardManagerTests, makeMove)
     EXPECT_EQ(tileStack->getSize(), initalSize - 1);
     EXPECT_TRUE(tile1.isPlaced());
 
-    Tile& tile2 = Tile::CreateTileV(1, tileIdCounter, PreyType::None)[0];
+    Tile& tile2 = tiles[22][0]; //Tile::CreateTileV(1, tileIdCounter, PreyType::None)[0];
     Coord coord2 = Coord(77, 75);
     const Move& move2 = Move(tile2, coord2);    
 
@@ -557,7 +558,7 @@ TEST(BoardManagerTests, makeMove)
     EXPECT_EQ(tileStack->getSize(), initalSize - 2);
     EXPECT_TRUE(tile2.isPlaced());
 
-    Tile& tile3 = Tile::CreateTileK(1, tileIdCounter, PreyType::None)[0];
+    Tile& tile3 = tiles[11][0];//Tile::CreateTileK(1, tileIdCounter, PreyType::None)[0];
     Coord coord3 = Coord(77, 76);
     const Move& move3 = Move(tile3, coord3, 2);
 
