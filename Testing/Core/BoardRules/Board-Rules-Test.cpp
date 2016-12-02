@@ -391,38 +391,30 @@ TEST(RulesTest, ScoreCastle1) {
     ////printf("Where am i\n");
 
 }
-/*
+
 TEST(RulesTest, ScoreCastle2) {
-    unsigned int startID = 0;
+    unsigned int startID = 100023;
     Tile *currentTile;
-    //Move *currentMove;
-    //Coord *currentCoord;
-    const Tile **surroundingTiles;
 
-    currentTile = &(Tile::CreateTileI(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(0);
-    testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileI = (Tile::CreateTileI(1, startID, PreyType::None)[0]);
+    currentTile = &tileI;
+    BoardManager::makeMove(Move(*currentTile, 72, 72), 1);
 
-    currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0]);
-    currentTile->setRotation(0);
-    testingTilePlacement(&startID, 71, 73, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileJ = (Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0]);
+    currentTile = &tileJ;
+    BoardManager::makeMove(Move(*currentTile, 71, 73), 2);
 
-    currentTile = &(Tile::CreateTileC(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(0);
-    testingTilePlacement(&startID, 72, 73, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileC = (Tile::CreateTileC(1, startID, PreyType::None)[0]);
+    currentTile = &tileC;
+    BoardManager::makeMove(Move(*currentTile, 72, 73), 1);
 
-    currentTile = &(Tile::CreateTileE(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(0);
-    testingTilePlacement(&startID, 72, 74, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileE = (Tile::CreateTileE(1, startID, PreyType::None)[0]);
+    currentTile = &tileE;
+    BoardManager::makeMove(Move(*currentTile, 72, 74), 2);
 
-    currentTile = &(Tile::CreateTileN(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(3);
-    testingTilePlacement(&startID, 73, 73, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileN = (Tile::CreateTileN(1, startID, PreyType::None)[0]);
+    currentTile = &tileN;
+    BoardManager::makeMove(Move(*currentTile, 73, 73, 3), 1);
 
     unsigned int currentTileID = currentTile->getId();
     std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
@@ -432,10 +424,11 @@ TEST(RulesTest, ScoreCastle2) {
     actualScore = GameRules::scoreCastle(*currentSet, false, false);
     EXPECT_EQ(actualScore,10);
     
-    currentTile = &(Tile::CreateTileN(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(2);
-    testingTilePlacement(&startID, 73, 73, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    /* DUPLICATE PLACEMENT
+    Tile tileN2 = (Tile::CreateTileN(1, startID, PreyType::None)[0]);
+    currentTile = &tileN2;
+    BoardManager::makeMove(Move(*currentTile, 73, 73, 2), 2);
+    */
 
     currentTileID = currentTile->getId();
     currentSet = Regions::getRegions(currentTileID);
@@ -445,7 +438,7 @@ TEST(RulesTest, ScoreCastle2) {
     actualScore = GameRules::scoreCastle(*currentSet, false, false);
     EXPECT_EQ(actualScore,24);
 }
-*/
+
 TEST(RulesTest, scoreRoad)
 {
     unsigned int startID = 0;
@@ -521,37 +514,30 @@ TEST(RulesTest, scoreRoad)
 
 
 }
-/*
+
 TEST(RulesTest, scoreGrassAndRoad)
 {
     //Testing grass next to completed castle/lake and incomplete den
     //Testing complete road that starts with den and ends with castle
     unsigned int startID = 0;
     Tile *currentTile;
-    //Move *currentMove;
-    //Coord *currentCoord;
-    const Tile **surroundingTiles;
 
     //this creates a complete castle, so grass should be 5 pts
-    currentTile = &(Tile::CreateTileZ(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(2);
-    testingTilePlacement(&startID, 72, 71, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileZ = (Tile::CreateTileZ(1, startID, PreyType::None)[0]);
+    currentTile = &tileZ;
+    BoardManager::makeMove(Move(*currentTile, 72, 71, 2), 1);
 
-    currentTile = &(Tile::CreateTileG(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(1);
-    testingTilePlacement(&startID, 72, 70, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileG = (Tile::CreateTileG(1, startID, PreyType::None)[0]);
+    currentTile = &tileG;
+    BoardManager::makeMove(Move(*currentTile, 72, 70, 1), 2);
 
-    currentTile = &(Tile::CreateTileE(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(0);
-    testingTilePlacement(&startID, 72, 69, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileE = (Tile::CreateTileE(1, startID, PreyType::None)[0]);
+    currentTile = &tileE;
+    BoardManager::makeMove(Move(*currentTile, 72, 69), 1);
 
-    currentTile = &(Tile::CreateTileA(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(0);
-    testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileA = (Tile::CreateTileA(1, startID, PreyType::None)[0]);
+    currentTile = &tileA;
+    BoardManager::makeMove(Move(*currentTile, 72, 72), 2);
 
     unsigned int currentTileID = currentTile->getId();
     std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileID);
@@ -566,7 +552,7 @@ TEST(RulesTest, scoreGrassAndRoad)
     EXPECT_EQ(realGrassScore, returnGrassScore);
     EXPECT_EQ(realRoadScore, returnRoadScore);
 }
-*/
+
 TEST(RulesTest, scoreGrass)
 {
     //Testing grass next to completed den and completed lake
@@ -667,35 +653,27 @@ TEST(RulesTest, scoreGrass)
     EXPECT_EQ(returnGrassScore, realGrassScore);
 }
 
-/*
 TEST(RulesTest, scoreMoreRoads)
 {
     //Testing incomplete road with prey animals
     unsigned int startID = 0;
     Tile *currentTile;
-    //Move *currentMove;
-    //Coord *currentCoord;
-    const Tile **surroundingTiles;
 
-    currentTile = &(Tile::CreateTileZ(1, startID, PreyType::Deer)[0]);
-    currentTile->setRotation(3);
-    testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileZ = Tile::CreateTileZ(1, startID, PreyType::Deer)[0];
+    currentTile = &tileZ;
+    BoardManager::makeMove(Move(*currentTile, 72, 72, 3), 1);
 
-    currentTile = &(Tile::CreateTileK(1, startID, PreyType::Boar)[0]);
-    currentTile->setRotation(0);
-    testingTilePlacement(&startID, 73, 72, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileK = Tile::CreateTileK(1, startID, PreyType::Boar)[0];
+    currentTile = &tileK;
+    BoardManager::makeMove(Move(*currentTile, 73, 72, 0), 2);
 
-    currentTile = &(Tile::CreateTileU(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(1);
-    testingTilePlacement(&startID, 74, 73, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileU = Tile::CreateTileU(1, startID, PreyType::None)[0];
+    currentTile = &tileU;
+    BoardManager::makeMove(Move(*currentTile, 74, 73, 1), 1);
 
-    currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0]);
-    currentTile->setRotation(3);
-    testingTilePlacement(&startID, 73, 73, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileJ = Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0];
+    currentTile = &tileJ;
+    BoardManager::makeMove(Move(*currentTile, 73, 73, 3), 2);
 
     unsigned int currentTileID = currentTile->getId();
 
@@ -708,35 +686,29 @@ TEST(RulesTest, scoreMoreRoads)
     EXPECT_EQ(realRoadScore, returnRoadScore);
 }
 
-
 TEST (RulesTest, scoreMoreMoreRoads)
 {
+    BoardManager::gameInit();
+
     //Testing complete road that starts with den and ends with den and has prey animals
-    unsigned int startID = 0;
+    unsigned int startID = 758943;
     Tile *currentTile;
-    //Move *currentMove;
-    //Coord *currentCoord;
-    const Tile **surroundingTiles;
 
-    currentTile = &(Tile::CreateTileA(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(3);
-    testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileA = Tile::CreateTileA(1, startID, PreyType::None)[0];
+    currentTile = &tileA;
+    BoardManager::makeMove(Move(*currentTile, 72, 72, 3), 1);
 
-    currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0]);
-    currentTile->setRotation(0);
-    testingTilePlacement(&startID, 73, 72, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileJ = Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0];
+    currentTile = &tileJ;
+    BoardManager::makeMove(Move(*currentTile, 73, 72, 0), 2);
 
-    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(1);
-    testingTilePlacement(&startID, 73, 71, currentTile, surroundingTiles);
-    currentTile->placeTile();
-
-    currentTile = &(Tile::CreateTileA(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(1);
-    testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileV = Tile::CreateTileV(1, startID, PreyType::None)[0];
+    currentTile = &tileV;
+    BoardManager::makeMove(Move(*currentTile, 73, 71, 1), 1);
+    
+    Tile tileA2 = Tile::CreateTileA(1, startID, PreyType::None)[0];
+    currentTile = &tileA2;
+    BoardManager::makeMove(Move(*currentTile, 72, 72, 1), 1);
 
     unsigned int currentTileID = currentTile->getId();
 
@@ -753,51 +725,40 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
 {
     //Testing grass next to completed den but incomplete lake
     //Testing two different incomplete sets of roads
-    unsigned int startID = 0;
+    unsigned int startID = 214321;
     Tile *currentTile;
-    //Move *currentMove;
-    //Coord *currentCoord;
-    const Tile **surroundingTiles;
 
-    currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0]);
-    currentTile->setRotation(3);
-    testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileJ = Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0];
+    currentTile = &tileJ;
+    BoardManager::makeMove(Move(*currentTile, 72, 72, 3), 1);
 
-    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(0);
-    testingTilePlacement(&startID, 73,72, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileV = Tile::CreateTileV(1, startID, PreyType::None)[0];
+    currentTile = &tileV;
+    BoardManager::makeMove(Move(*currentTile, 73, 72, 0), 2);
 
-    currentTile = &(Tile::CreateTileA(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(1);
-    testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileA = Tile::CreateTileA(1, startID, PreyType::None)[0];
+    currentTile = &tileA;
+    BoardManager::makeMove(Move(*currentTile, 72, 72, 1), 1);
 
-    currentTile = &(Tile::CreateTileU(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(0);
-    testingTilePlacement(&startID, 73,70, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileU = Tile::CreateTileU(1, startID, PreyType::None)[0];
+    currentTile = &tileU;
+    BoardManager::makeMove(Move(*currentTile, 73, 70, 0), 2);
 
-    currentTile = &(Tile::CreateTileU(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(0);
-    testingTilePlacement(&startID, 72,70, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileU2 = Tile::CreateTileU(1, startID, PreyType::None)[0];
+    currentTile = &tileU2;
+    BoardManager::makeMove(Move(*currentTile, 72, 70, 0), 1);
 
-    currentTile = &(Tile::CreateTileU(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(1);
-    testingTilePlacement(&startID, 74,72, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileU3 = Tile::CreateTileU(1, startID, PreyType::None)[0];
+    currentTile = &tileU3;
+    BoardManager::makeMove(Move(*currentTile, 74, 72, 1), 2);
 
-    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(0);
-    testingTilePlacement(&startID, 74,70, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileV2 = Tile::CreateTileV(1, startID, PreyType::None)[0];
+    currentTile = &tileV2;
+    BoardManager::makeMove(Move(*currentTile, 74, 70, 0), 1);
 
-    currentTile = &(Tile::CreateTileD(1, startID, PreyType::Deer)[0]);
-    currentTile->setRotation(0);
-    testingTilePlacement(&startID, 74,71, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileD = Tile::CreateTileD(1, startID, PreyType::Deer)[0];
+    currentTile = &tileD;
+    BoardManager::makeMove(Move(*currentTile, 74, 71, 0), 2);
 
     //Testing road portion of this landscape
     unsigned int currentTileId = currentTile->getId();
@@ -809,10 +770,9 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
 
     EXPECT_EQ(realRoadScore, returnRoadScore);
 
-    currentTile = &(Tile::CreateTileV(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(1);
-    testingTilePlacement(&startID, 72, 71, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileV3 = Tile::CreateTileV(1, startID, PreyType::None)[0];
+    currentTile = &tileV3;
+    BoardManager::makeMove(Move(*currentTile, 72, 71, 1), 1);
 
     unsigned int currentTileID = currentTile->getId();
     std::shared_ptr<struct regionSet> *currentSet2 = Regions::getRegions(currentTileID);
@@ -827,16 +787,18 @@ TEST(RulesTest, scoreGrassWithJustCompleteDen)
 }
 
 TEST(RulesTest, getCurrentScore) {
-    unsigned int startID = 0;
+
+    BoardManager::gameInit();
+    
+    unsigned int startID = 565;
     Tile *currentTile;
     //Move *currentMove;
     //Coord *currentCoord;
     const Tile **surroundingTiles;
 
-    currentTile = &(Tile::CreateTileD(1, startID, PreyType::None)[0]);
-    currentTile->setRotation(0);
-    testingTilePlacement(&startID, 72, 72, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileD = Tile::CreateTileD(1, startID, PreyType::None)[0];
+    currentTile = &tileD;
+    BoardManager::makeMove(Move(*currentTile, Coord(72, 72), 0), 1);
 
     unsigned int currentTileId = currentTile->getId();
     std::shared_ptr<struct regionSet> *currentSet = Regions::getRegions(currentTileId);
@@ -849,10 +811,9 @@ TEST(RulesTest, getCurrentScore) {
 
     EXPECT_EQ(actualScore, expectedScore);
 
-    currentTile = &(Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0]);
-    currentTile->setRotation(2);
-    testingTilePlacement(&startID, 73, 72, currentTile, surroundingTiles);
-    currentTile->placeTile();
+    Tile tileJ = Tile::CreateTileJ(1, startID, PreyType::Buffalo)[0];
+    currentTile = &tileJ;
+    BoardManager::makeMove(Move(*currentTile, Coord(73, 72), 2), 1);
 
     currentTileId = currentTile->getId();
     currentSet = Regions::getRegions(currentTileId);
@@ -864,8 +825,6 @@ TEST(RulesTest, getCurrentScore) {
 
     EXPECT_EQ(actualScore, expectedScore);
 }
-*/
-    
 
 TEST(RulesTest, validTilePlacement)
 {
@@ -873,64 +832,34 @@ TEST(RulesTest, validTilePlacement)
 
     unsigned int tileIdCounter = 100;
 
-
     Tile tile = Tile::CreateTileJ(1, tileIdCounter, PreyType::None)[0];
-
 
     const Coord left = Coord(75, 76);
     const Coord right = Coord(77, 76);
     const Coord up = Coord(76, 77);
     const Coord down = Coord(76, 75);
 
-    tile.setRotation(0);
-    std::cout << std::endl << "left ";
-    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(left))) { std::cout <<  "0 "; }
-    tile.setRotation(1);
-    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(left))) { std::cout <<  "1 "; }
-    tile.setRotation(2);
-    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(left))) { std::cout <<  "2 "; }
-    tile.setRotation(3);
-    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(left))) { std::cout <<  "3 "; }
+    // LEFT 90
+    tile.setRotation(0); EXPECT_FALSE(GameRules::validTilePlacement(tile, Board::getBorderingTiles(left)));
+    tile.setRotation(1); EXPECT_TRUE(GameRules::validTilePlacement(tile, Board::getBorderingTiles(left)));
+    tile.setRotation(2); EXPECT_FALSE(GameRules::validTilePlacement(tile, Board::getBorderingTiles(left)));
+    tile.setRotation(3); EXPECT_FALSE(GameRules::validTilePlacement(tile, Board::getBorderingTiles(left)));
 
-    tile.setRotation(0);
-    std::cout << std::endl << "right ";
-    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(right))) { std::cout <<  "0 "; }
-    tile.setRotation(1);
-    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(right))) { std::cout <<  "1 "; }
-    tile.setRotation(2);
-    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(right))) { std::cout <<  "2 "; }
-    tile.setRotation(3);
-    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(right))) { std::cout <<  "3 "; }
+    // RIGHT 180
+    tile.setRotation(0); EXPECT_FALSE(GameRules::validTilePlacement(tile, Board::getBorderingTiles(right)));
+    tile.setRotation(1); EXPECT_FALSE(GameRules::validTilePlacement(tile, Board::getBorderingTiles(right)));
+    tile.setRotation(2); EXPECT_TRUE(GameRules::validTilePlacement(tile, Board::getBorderingTiles(right)));
+    tile.setRotation(3); EXPECT_FALSE(GameRules::validTilePlacement(tile, Board::getBorderingTiles(right)));
 
-    tile.setRotation(0);
-    std::cout << std::endl << "up ";
-    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(up))) { std::cout <<  "0 "; }
-    tile.setRotation(1);
-    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(up))) { std::cout <<  "1 "; }
-    tile.setRotation(2);
-    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(up))) { std::cout <<  "2 "; }
-    tile.setRotation(3);
-    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(up))) { std::cout <<  "3 "; }
+    // UP 0 270
+    tile.setRotation(0); EXPECT_TRUE(GameRules::validTilePlacement(tile, Board::getBorderingTiles(up)));
+    tile.setRotation(1); EXPECT_FALSE(GameRules::validTilePlacement(tile, Board::getBorderingTiles(up)));
+    tile.setRotation(2); EXPECT_FALSE(GameRules::validTilePlacement(tile, Board::getBorderingTiles(up)));
+    tile.setRotation(3); EXPECT_TRUE(GameRules::validTilePlacement(tile, Board::getBorderingTiles(up)));
 
-    tile.setRotation(0);
-    std::cout << std::endl << "down ";
-    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(down))) { std::cout <<  "0 "; }
-    tile.setRotation(1);
-    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(down))) { std::cout <<  "1 "; }
-    tile.setRotation(2);
-    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(down))) { std::cout <<  "2 "; }
-    tile.setRotation(3);
-    if(GameRules::validTilePlacement(tile, Board::getBorderingTiles(down))) { std::cout <<  "3 "; }
-    std::cout << std::endl;
-
-    /*
-    Tile tile2 = Tile::CreateTileV(1, tileIdCounter, PreyType::None)[0];
-    Coord coord2 = Coord(77, 75);
-    Move move2 = Move(tile2, coord2);
-
-    
-
-    Tile tile3 = Tile::CreateTileK(1, tileIdCounter, PreyType::None)[0];
-    Coord coord3 = Coord(77, 76);
-    Move move3 = Move(tile3, coord3, 2);*/
+    // DOWN 90 180
+    tile.setRotation(0); EXPECT_FALSE(GameRules::validTilePlacement(tile, Board::getBorderingTiles(down)));
+    tile.setRotation(1); EXPECT_TRUE(GameRules::validTilePlacement(tile, Board::getBorderingTiles(down)));
+    tile.setRotation(2); EXPECT_TRUE(GameRules::validTilePlacement(tile, Board::getBorderingTiles(down)));
+    tile.setRotation(3); EXPECT_FALSE(GameRules::validTilePlacement(tile, Board::getBorderingTiles(down)));
 }
