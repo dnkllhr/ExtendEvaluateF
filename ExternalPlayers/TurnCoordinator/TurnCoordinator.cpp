@@ -39,11 +39,13 @@ void TurnCoordinator::setupSocket(int portNumber)
     bcopy((char *)server->h_addr, (char *)&this->myAddr.sin_addr.s_addr, server->h_length);
     this->myAddr.sin_port = htons(portNumber);
    
+#ifndef __testing
    /* Now bind the host address using bind() call.*/
     if (connect(this->mySocket, (struct sockaddr *)&this->myAddr, sizeof(this->myAddr)) < 0) 
     {
         throw std::runtime_error("ERROR connecting socket");
     }
+#endif
 }
 
 void TurnCoordinator::setUpAI()

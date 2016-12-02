@@ -322,16 +322,22 @@ void matchProtocol(int sockfd)
 
     std::cout << "Send tile stack for thread 0." << std::endl;
     setMsg(0, *msg);
+    //printf("sent.\n");
     std::cout << "Send tile stack for thread 1." << std::endl;
     setMsg(1, *msg);
+    //printf("sent.\n");
     std::cout << "Send start tile for thread 0." << std::endl;
     setMsg(0, *move);
+    //printf("sent.\n");
     std::cout << "Send start tile for thread 1." << std::endl;
     setMsg(1, *move);
+    //printf("sent.\n");
     std::cout << "Send who am i for thread 0." << std::endl;
     setMsg(0, *WAI0);
+    //printf("sent.\n");
     std::cout << "Send who am i for thread 1." << std::endl;
     setMsg(1, *WAI1);
+    //printf("sent.\n");
 
     for (int i = 0; i < 2*number_tiles; i++)
         moveProtocol(sockfd);
@@ -578,13 +584,20 @@ struct gameMessage getMsg (int thread_num, bool noWait) {
 }
 
 void setMsg (int thread_num, struct gameMessage message, bool noWait){
+    printf("Creating lock\n");
     std::unique_lock<std::mutex> guard(msg_mutexes[thread_num]);
+    printf("waiting on  lock\n");
     cvs[thread_num].wait(guard, [thread_num, noWait](){return !ready[thread_num];});
+    printf("loading msg\n");
 
     Msgs[thread_num] = message;
+    printf("getting ready\n");
     ready[thread_num] = true;
+    printf("unlock\n");
     guard.unlock();
+    printf("notify\n");
     cvs[thread_num].notify_all();
+    printf("done\n");
 }
 
 void endThread(int thread_num) {
