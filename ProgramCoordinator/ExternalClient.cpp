@@ -26,6 +26,8 @@ char* PASSWD;
 int pid;
 int portno;
 
+std::string mystring;
+
 std::thread ** threads;
 
 int pids[2];
@@ -122,65 +124,94 @@ int createServerSocket(int portno, int thread_num)
 //AUTHENTICATION PROTOCOL
 void authenticationProtocol(int sockfd)
 {
-    std::string pid;
+    std::string pid, mystring;
     char buffer[256];
 
     //Prepare Output Stream
     std::stringstream out;
 
     //Server: THIS IS SPARTA!
-    read(sockfd,buffer,255);
-    printf("%s\n",buffer);
+    mystring = dynamicRead(sockfd);
+    std::cout <<  mystring << std::endl;
 
     //Client: JOIN <tournament password>
     bzero(buffer,256);
     out<<"JOIN ";
     out<<TOURNAMENT_PASSWD;
     std::cout<<out.str()<<std::endl;
-    write(sockfd,out.str().c_str(),out.gcount()+1);
+    std::string s(TOURNAMENT_PASSWD);
+    mystring = "JOIN " + s + "\r\n";
+    std::cout << "Loaded passwd " << mystring << std::endl;
+    write(sockfd,mystring.c_str(),mystring.size());
     out.str("");
 
     //Server: HELLO!
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
+        mystring = dynamicRead(sockfd);
     printf("%s\n",buffer);
 
    //Client: I AM <username> <password>
-    bzero(buffer,256);
-    out<<"I AM ";
-    out<<USERNAME<<" "<<PASSWD;
-    std::cout<<out.str()<<std::endl;
-    write(sockfd,out.str().c_str(),out.gcount()+1);
+    s.assign(USERNAME);
+    mystring = "I AM " + s;
+    s.assign(PASSWD);
+    mystring += " " + s + "\r\n";
+    std::cout << "Loaded passwd " << mystring << std::endl;
+    write(sockfd,mystring.c_str(),mystring.size());
     out.str("");
 
     //Server: WELCOME <pid> PLEASE WAIT FOR THE NEXT CHALLENGE
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
+        mystring = dynamicRead(sockfd);
     printf("%s\n",buffer);
-    pid = strAtIndex(std::string(buffer),1);
+    pid = strAtIndex(mystring,1);
+}
+
+std::string getStringAtTokenIndex(std::string input, int index)
+{
+    int start = 0;
+    int count = 0;
+    int i = 0;
+    while (input.at(i) != '\n')
+    {
+        if(input.at(i) == ' ')
+        {
+            count++;
+            if(count == index)
+            {
+                start = i;
+                printf("start char : %c", input.at(i));
+            }
+        }
+        if(start != 0 && (input.at(i) == '\r' || input.at(i) == ' '))
+        {
+            return input.substr(start, i);
+        }
+        i++;
+    }
+    return "";
 }
 
 void challengeProtocol(int sockfd)
 {
     std::string cid;
-    int rounds;
+    //int rounds;
     char buffer[256];
 
     //Server: NEW CHALLENGE <cid> YOU WILL PLAY <rounds> MATCH
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
-    printf("%s\n",buffer);
-    cid = strAtIndex(std::string(buffer),1);
-    rounds = stoi(strAtIndex(std::string(buffer),6));
+    std::string mystring = dynamicRead(sockfd);
+    std::cout << "String returned :" << mystring << std::endl;
+    //printf("%s\n",buffer);
+    cid = strAtIndex(mystring,1);
+    //std::cout << strAtIndex(mystring,6) << std::endl;
+
+    std::cout << "Found token : " <<getStringAtTokenIndex(mystring, 6) << std::endl;
+    int rounds = stoi(getStringAtTokenIndex(mystring, 6));
 
     //roundProtocol
     for(int i = 0; i < rounds; i++)
         roundProtocol(sockfd);
 
    //Server: END OF CHALLENGES or PLEASE WAIT
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
-    printf("%s\n",buffer);
+        mystring = dynamicRead(sockfd);
+    //printf("%s\n",buffer);
 
 }
 
@@ -189,48 +220,47 @@ void roundProtocol(int sockfd)
   int rid,rounds;
   char buffer[256];
 
+
   //Server: BEGIN ROUND <rid> OF <rounds>
   bzero(buffer,256);
-  read(sockfd,buffer,255);
-  printf("%s\n",buffer);
-  rid = stoi(strAtIndex(std::string(buffer),2));
-  rounds = stoi(strAtIndex(std::string(buffer),4));
+  mystring = dynamicRead(sockfd);
+  //printf("%s\n",buffer);
+  rid = stoi(getStringAtTokenIndex(mystring, 2));
+  rounds = stoi(getStringAtTokenIndex(mystring, 4));
 
   //matchProtocol
   matchProtocol(sockfd);
 
   //Server: END OF ROUND <rid> OF <rounds>
   bzero(buffer,256);
-  read(sockfd,buffer,255);
-  printf("%s\n",buffer);
+  mystring = dynamicRead(sockfd);
+  //printf("%s\n",buffer);
 
 }
 
 void matchProtocol(int sockfd)
 {
-    std::string oppPid, tile;
+    std::string oppPid, tile, mystring;
     int x, y, orientation, number_tiles, time_plan;
     char buffer[256];
     //Prepare Output and Input Stream
     std::stringstream out;
 
     //Server: YOUR OPPONENT IS PLAYER <pid>
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
-    printf("%s\n",buffer);
-    oppPid = strAtIndex(buffer,4);
+        mystring = dynamicRead(sockfd);
+    //printf("%s\n",buffer);
+    oppPid = getStringAtTokenIndex(mystring, 4);
 
     struct gameMessage * whoAmI = new struct gameMessage;
 
 
     //Server: STARTING TILE IS <tile> AT <x> <y> <orientation>
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
+        mystring = dynamicRead(sockfd);
     printf("%s\n",buffer);
-    tile = strAtIndex(std::string(buffer),3);
-    x = stoi(strAtIndex(std::string(buffer),5));
-    y = stoi(strAtIndex(std::string(buffer),6));
-    orientation = stoi(strAtIndex(std::string(buffer),7));
+    tile = getStringAtTokenIndex(mystring, 3);
+    x = stoi(getStringAtTokenIndex(mystring, 5));
+    y = stoi(getStringAtTokenIndex(mystring, 6));
+    orientation = stoi(getStringAtTokenIndex(mystring, 7));
 
     //PASS STARTING TILE TO INTERNAL SERVER
 
@@ -239,15 +269,17 @@ void matchProtocol(int sockfd)
     bzero(buffer,256);
     bzero(stackBuffer,512);
     std::string outString = dynamicRead(sockfd);
-    std::cout << "Dynamic recv : " << outString << std::endl;
+    std::cout << "token : " << outString << std::endl;
     //read(sockfd,stackBuffer,511);
-    printf("%s\n",stackBuffer);
-    number_tiles = stoi(strAtIndex(std::string(buffer),2));
+    //printf("%s\n",stackBuffer);
+    number_tiles = stoi(getStringAtTokenIndex(outString, 2));
 
     //CREATE TILE STACK OF INTERNAL SERVER
-    out<<tile;
+    std::string iHateLife = tile;
     for(int i = 0; i < number_tiles;i++)
-        out<<strAtIndex(std::string(buffer),6+i);
+        //out<<strAtIndex(mystring,6+i);
+        iHateLife += getStringAtTokenIndex(outString, 6 +i);
+
 
     //Create Tile Stack Massage
     struct gameMessage* msg = new struct gameMessage;
@@ -273,10 +305,9 @@ void matchProtocol(int sockfd)
     WAI1 -> data.who.p1 = 2;
 
     //Server: MATCH BEGINS IN <timeplan> SECONDS
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
-    printf("%s\n",buffer);
-    int timeplan = stoi(strAtIndex(std::string(buffer),3));
+        mystring = dynamicRead(sockfd);
+    //printf("%s\n",buffer);
+    int timeplan = stoi(getStringAtTokenIndex(mystring, 3));
 
     ready[0] = false;
     ended[0] = false;
@@ -309,14 +340,12 @@ void matchProtocol(int sockfd)
     endThread(1);
 
     //Server: GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
-    printf("%s\n",buffer);
+        mystring = dynamicRead(sockfd);
+    //printf("%s\n",buffer);
 
     //Server: GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
-    printf("%s\n",buffer);
+        mystring = dynamicRead(sockfd);
+    //printf("%s\n",buffer);
 }
 
 // pass msg and move to threads
@@ -333,11 +362,10 @@ void moveProtocol(int sockfd)
     struct gameMessage* msg = new struct gameMessage;
 
     //Server: MAKE YOUR MOVE IN GAME <gid> WITHIN <timemove> SECOND: MOVE <#> PLACE <tile>
-    bzero(buffer,256);
-    read(sockfd,buffer,255);
+        mystring = dynamicRead(sockfd);
     printf("%s\n",buffer);
 
-    gid = strAtIndex(std::string(buffer),5);
+    gid = strAtIndex(mystring,5);
 
     if(socketMap.size() == 0){
         socketMap[gid] = 0;
@@ -348,9 +376,9 @@ void moveProtocol(int sockfd)
 
     }
 
-    timeMove = stoi(strAtIndex(std::string(buffer),7));
-    moveNum = stoi(strAtIndex(std::string(buffer),10));
-    tile = strAtIndex(std::string(buffer),12);
+    timeMove = stoi(strAtIndex(mystring,7));
+    moveNum = stoi(strAtIndex(mystring,10));
+    tile = strAtIndex(mystring,12);
 
     //Create Move Message and Pass to INTERNAL Server
     strcpy(msg -> data.move.tile, tile.c_str());
@@ -401,7 +429,7 @@ void moveProtocol(int sockfd)
 
       //Server: GAME <gid> MOVE <#> PLAYER <pid> <move>
       bzero(buffer,256);
-      read(sockfd,buffer,255);
+      mystring = dynamicRead(sockfd);
       printf("%s\n",buffer);
 
       std::vector<std::string> split;
@@ -417,7 +445,7 @@ void moveProtocol(int sockfd)
 
       bzero(msg,sizeof(gameMessage));
       msg -> messageType = 1;
-      msg -> data.move.p1 = socketMap[strAtIndex(std::string(buffer),1)]+1;
+      msg -> data.move.p1 = socketMap[strAtIndex(mystring,1)]+1;
       if(split[6].compare("PLACED") == 0)//place tile
       {
           strcpy(msg -> data.move.tile, split[7].c_str());
@@ -468,7 +496,7 @@ void moveProtocol(int sockfd)
 
       }
 
-    //   if(strAtIndex(std::string(buffer),6).compare("FORFEITED") == 0) //Game FORFEITED
+    //   if(strAtIndex(mystring,6).compare("FORFEITED") == 0) //Game FORFEITED
     //   {
     //       gamesActive--;
     //       std::cout << buffer << std::endl;
@@ -476,45 +504,45 @@ void moveProtocol(int sockfd)
     //   }
     //   else
     //   {
-    //     if(gid.compare(strAtIndex(std::string(buffer),1)) != 0)   //Game You Care About
+    //     if(gid.compare(strAtIndex(mystring,1)) != 0)   //Game You Care About
     //     {
     //         //Let Game Know of the opponents move (not a Forfeit)
     //         if(setPlayerNumber){
-    //             playernumber[strAtIndex(std::string(buffer),1)] = 2;
+    //             playernumber[strAtIndex(mystring,1)] = 2;
     //             setPlayerNumber = 0;
     //         }
     //         bzero(msg, sizeof(gameMessage));
     //         msg -> messageType= 1;
-    //         strcpy(msg -> data.move.tile, strAtIndex(std::string(buffer),7).c_str());
+    //         strcpy(msg -> data.move.tile, strAtIndex(mystring,7).c_str());
       //
-    //         if(strAtIndex(std::string(buffer),6).compare("PLACED")){        //PLACED
+    //         if(strAtIndex(mystring,6).compare("PLACED")){        //PLACED
     //             msg -> data.move.placeable = 1;
-    //             msg -> data.move.x = stoi(strAtIndex(std::string(buffer),9)) - 76;
-    //             msg -> data.move.y = stoi(strAtIndex(std::string(buffer),10)) -76;
-    //             msg -> data.move.orientation = (unsigned int)orientationFix(stoi(strAtIndex(std::string(buffer),11)));
-    //             if(strAtIndex(std::string(buffer),12).compare("TIGER") == 0)
-    //                 msg -> data.move.zone = stoi(strAtIndex(std::string(buffer),13));
+    //             msg -> data.move.x = stoi(strAtIndex(mystring,9)) - 76;
+    //             msg -> data.move.y = stoi(strAtIndex(mystring,10)) -76;
+    //             msg -> data.move.orientation = (unsigned int)orientationFix(stoi(strAtIndex(mystring,11)));
+    //             if(strAtIndex(mystring,12).compare("TIGER") == 0)
+    //                 msg -> data.move.zone = stoi(strAtIndex(mystring,13));
     //         }
     //         else{ //PASS
-    //             std::string passType = strAtIndex(std::string(buffer),9);
+    //             std::string passType = strAtIndex(mystring,9);
     //             msg -> data.move.placeable = 0;
     //             if(passType.compare("PASSED")==0){
     //                 msg -> data.move.pass = 1;
     //             }
     //             else if (passType.compare("RETRIEVED")==0){
     //                 msg -> data.move.pickupMeeple = 1;
-    //                 msg -> data.move.x = stoi(strAtIndex(std::string(buffer),12)) - 76;
-    //                 msg -> data.move.y = stoi(strAtIndex(std::string(buffer),13)) -76;
+    //                 msg -> data.move.x = stoi(strAtIndex(mystring,12)) - 76;
+    //                 msg -> data.move.y = stoi(strAtIndex(mystring,13)) -76;
       //
     //             }
     //             else{
     //                 msg -> data.move.pass = 1;
-    //                 msg -> data.move.x = stoi(strAtIndex(std::string(buffer),12)) - 76;
-    //                 msg -> data.move.y = stoi(strAtIndex(std::string(buffer),13)) -76;
+    //                 msg -> data.move.x = stoi(strAtIndex(mystring,12)) - 76;
+    //                 msg -> data.move.y = stoi(strAtIndex(mystring,13)) -76;
     //             }
     //         }
       //
-    //         msg -> data.move.p1 = playernumber[strAtIndex(std::string(buffer),1)];
+    //         msg -> data.move.p1 = playernumber[strAtIndex(mystring,1)];
     //     }
       //
     //   }
@@ -649,12 +677,14 @@ std::string dynamicRead(int sock)
     while (currentChar != '\n') 
     {
         recv(sock, &currentChar, 1, 0);
-        printf("%c ", currentChar);
-        strcat(output, &currentChar);
+        printf("%c", currentChar);
+        output[i] = currentChar;
         i++;
     }
     //strcat(output, '\0');
     //i++;
-    std::string ret(output, output + i);
-    return ret;
+    std::string ret(output, output + i + 1);
+    //printf("char array : %s", output);
+    std::cout << "string returning : " << ret << std::endl;
+    return ret; 
 }

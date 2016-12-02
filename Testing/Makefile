@@ -14,12 +14,12 @@ default:
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(DEPS) $(GTEST_DEPS)  -o tests
 	./tests --gtest_output=xml:test_result.xml || /bin/true
 
-gtest:
-	cd Carcassonne-FA16/Testing/googletest-master/make
-	make gtest.a
-	make gtest_main.a
-	cp gtest.a Carcassonne-FA16/Testing/gtest/
-	cp gtest_main.a Carcassonne-FA16/Testing/gtest/
+gtestlib:
+	cd 
+	$(MAKE) -C googletest-master/googletest/make gtest.a
+	$(MAKE) -C googletest-master/googletest/make gtest_main.a
+	cp googletest-master/googletest/make/gtest.a gtest/
+	cp googletest-master/googletest/make/gtest_main.a gtest/
 
 
 clean:

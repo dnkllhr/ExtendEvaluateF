@@ -15,6 +15,9 @@ tests:
 	$(MAKE) -C ./ProgramCoordinator -f Makefile tests
 	$(MAKE) -C ./Testing
 
+gtestlib:
+	$(MAKE) -C ./Testing gtestlib
+
 test-clean:
 	$(MAKE) -C ./Testing -f Makefile clean
 

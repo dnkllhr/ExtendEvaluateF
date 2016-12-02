@@ -71,11 +71,11 @@ void Tournament_Protocol (int sock)
    char buffer[256];
    char pid[] = "PLAYER 1";
 
-   write(sock,"THIS IS SPARTA!\r\n",15);
+   write(sock,"THIS IS SPARTA!\r\n",17);
 
    bzero(buffer,256);
    read(sock,buffer,255);
-   write(sock,"HELLO!",6);
+   write(sock,"HELLO!\r\n",9);
 
    bzero(buffer,256);
    read(sock,buffer,255);
