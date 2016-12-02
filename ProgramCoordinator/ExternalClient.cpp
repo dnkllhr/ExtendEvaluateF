@@ -29,11 +29,11 @@ int portno;
 std::thread ** threads;
 
 int pids[2];
-gameMessage Msgs[2];
-bool ready[2];
+gameMessage Msgs[3];
+bool ready[3];
 bool ended[2];
-std::mutex msg_mutexes[2];
-std::condition_variable cvs[2];
+std::mutex msg_mutexes[3];
+std::condition_variable cvs[3];
 
 std::unordered_map<std::string, int> socketMap;
 
@@ -273,6 +273,8 @@ void matchProtocol(int sockfd)
     ended[0] = false;
     ready[1] = false;
     ended[1] = false;
+    ready[2] = false;
+    ended[2] = false;
     /* Begin new threads here!! */
     threads = new std::thread*[2];
     threads[0] = new std::thread(gameThread, 0);
@@ -333,7 +335,7 @@ void moveProtocol(int sockfd)
 
     setMsg(socketMap[gid], *msg);
     //Await response
-    struct gameMessage newMsg = getMsg(socketMap[gid]);
+    struct gameMessage newMsg = getMsg(2);
 
     newMsg.data.move.x -= 76;
     newMsg.data.move.y -= 76;
@@ -413,13 +415,8 @@ std::string strAtIndex(std::string buffer, int index)
 
 struct gameMessage getMsg (int thread_num, bool noWait) {
     std::unique_lock<std::mutex> guard(msg_mutexes[thread_num]);
-    cvs[thread_num].wait(guard, [thread_num, noWait](){return (ready[thread_num]);});
-
-    if (noWait && !ready[thread_num]) {
-        gameMessage notValid;
-        notValid.messageType = -1;
-        return notValid;
-    }
+    cvs[thread_num].wait(guard, [thread_num, noWait](){return (ready[thread_num] || ended[thread_num]);});
+    if (ended[thread_num]) return gameMessage();
 
     ready[thread_num] = false;
     struct gameMessage newMsg = Msgs[thread_num];
@@ -430,6 +427,7 @@ struct gameMessage getMsg (int thread_num, bool noWait) {
 
 void setMsg (int thread_num, struct gameMessage message, bool noWait){
     std::unique_lock<std::mutex> guard(msg_mutexes[thread_num]);
+    cvs[thread_num].wait(guard, [thread_num, noWait](){return !ready[thread_num];});
 
     Msgs[thread_num] = message;
     ready[thread_num] = true;
@@ -440,6 +438,8 @@ void setMsg (int thread_num, struct gameMessage message, bool noWait){
 void endThread(int thread_num) {
     std::unique_lock<std::mutex> guard(msg_mutexes[thread_num]);
     ended[thread_num] = true;
+    guard.unlock();
+    cvs[thread_num].notify_all();
 }
 
 bool isEnded(int thread_num) {
@@ -448,30 +448,31 @@ bool isEnded(int thread_num) {
 }
 
 void gameThread(int thread_num){
-    //int mySocket = createServerSocket(portno + 1 + thread_num, thread_num);
+    int mySocket = createServerSocket(portno + 1 + thread_num, thread_num);
 
     std::cout << "Get TileStack! " << thread_num << std::endl;
     struct gameMessage tileStack = getMsg(thread_num);
     std::cout << "Send TileStack! " << thread_num << std::endl;
-    //send(mySocket, (char*)(&tileStack), sizeof(tileStack), 0);
+    send(mySocket, (char*)(&tileStack), sizeof(tileStack), 0);
 
     //wait for starting tile
     std::cout << "Get starting tile! " << thread_num << std::endl;
     struct gameMessage start = getMsg(thread_num);
     std::cout << "Send starting tile! " << thread_num << std::endl;
-    //send(mySocket, (char*)(&start), sizeof(start), 0);
+    send(mySocket, (char*)(&start), sizeof(start), 0);
     //process tile stack
 
     while(!isEnded(thread_num))
     {
         std::cout << "Get tile for move. " << thread_num << std::endl;
         struct gameMessage tileForMove = getMsg(thread_num);
+        if (isEnded(thread_num)) return;
         std::cout << "received and sending message!" << std::endl;
-        //send(mySocket, (char*)(&tileForMove), sizeof(tileForMove), 0);
+        send(mySocket, (char*)(&tileForMove), sizeof(tileForMove), 0);
         struct gameMessage gameMove;
-        //read(mySocket, (char*)(&gameMove), sizeof(gameMove));
+        read(mySocket, (char*)(&gameMove), sizeof(gameMove));
         std::cout << "Reading and setting message!" << std::endl;
-        setMsg(thread_num, gameMove);
+        setMsg(2, gameMove);
         if (isEnded(thread_num)) std::cout << "Game Ended!" << std::endl;
         std::cout << "Game not over yet!" << std::endl;
     }

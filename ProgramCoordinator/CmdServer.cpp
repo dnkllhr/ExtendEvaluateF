@@ -173,7 +173,8 @@ void Tournament_Protocol (int sock)
 
           int moveType;
           int x_move, y_move;
-          std::cout<<"Tile is "<<tiles[i-1]<<"\nMove Type ? \n(1)Place\n(2)Unplacable\n";
+          std::cout<<"\nMOVE "+ std::to_string(i)+"_________________________";
+          std::cout<<"\nTile is: "<<tiles[i-1]<<"\nMove Type ? \n(1)Place\n(2)Unplacable\n";
           std::cin >> moveType;
 
           std::string serverMove = "GAME "+games[gameIndex]+" MOVE "+std::to_string(i)+" PLAYER "+S_pid+" ";
@@ -198,6 +199,7 @@ void Tournament_Protocol (int sock)
                     break;
                   case 3:
                     serverMove += "PLACED "+tiles[i-1]+" AT "+std::to_string(x_move)+" "+std::to_string(y_move)+" "+std::to_string(orientation)+" CROCODILE\r\n";
+                    break;
               }
 
           }
@@ -226,7 +228,7 @@ void Tournament_Protocol (int sock)
           }
           for (int j = 0; j < 4; j++)
               clientMove += strings[j] + " ";
-          clientMove += "PLAYER "+ C_pid;
+          clientMove += "PLAYER "+ C_pid + " ";
           for(int j = 4; j < strings.size()-1;j++)
             clientMove += strings[j] + " ";
           clientMove += strings[strings.size()-1]+"\r\n";
