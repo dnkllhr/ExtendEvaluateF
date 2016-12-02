@@ -469,17 +469,8 @@ void gameThread(int thread_num){
         std::cout << "received and sending message!" << std::endl;
         send(mySocket, (char*)(&tileForMove), sizeof(gameMessage), 0);
         bzero(&tileForMove, sizeof(gameMessage));
-        int qn = read(mySocket, (char*)&tileForMove, sizeof(gameMessage) - 1);
+        int qn = read(mySocket, (char*)&tileForMove, sizeof(gameMessage));
 
-        char c;
-        printf("Chars : ");
-        for(int i = 0; i < sizeof(gameMessage); i ++)
-        {
-            c = tileForMove.data.move.tile[i];
-            i++;
-            printf("%c ", c);
-        }
-        //std::cout << "Response Tile: " << gameMove->data.move.tile << std::endl;
         printf("Response with length %d tile %s received\n", qn, tileForMove.data.move.tile);
         std::cout << "Reading and setting message!" << std::endl;
         setMsg(2, tileForMove);
