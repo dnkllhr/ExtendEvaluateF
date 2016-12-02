@@ -26,7 +26,6 @@ struct tileStackMessage
 
 struct moveMessage
 {
-    int pid;            //pid of Player
     unsigned int p1;    //Player flag
     char tile[6];       //Tile Identifier
     bool placeable;     //Can you use tile?

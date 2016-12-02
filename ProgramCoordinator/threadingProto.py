@@ -9,8 +9,7 @@ class TILEMESSAGE(Structure):
                 ("tileStack", c_char * 401)]
 
 class MOVEMESSAGE(Structure):
-    _field_ = [ ("pid", c_int),
-                ("player", c_uint),
+    _field_ = [ ("player", c_uint),
                 ("tile", c_char * 6),
                 ("placeable", c_byte),
                 ("x", c_uint),
@@ -76,7 +75,8 @@ def sendlines(sock, msg, blocking = 1):
 
 def createNewThread(gameID):
     global currentIndex
-    t = myThread(1, gameID, currentIndex)
+    t = myThread(gameID, currentIndex)
+    gameIDToThreadID[gameID] = currentIndex
     currentIndex += 1
     threads.append(t)
 
@@ -144,13 +144,20 @@ def matchProtocol():
     msg = readlines(tournamentSocket)
 
     for i in xrange(int(stackTokens[2]) * 2):
-        moveProtocol()
-        #GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
-        msg = readlines(tournamentSocket)
-        #GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
-        msg = readlines(tournamentSocket)
+        ret = moveProtocol()
 
-def getMoveFromGame():
+    #GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
+    msg = readlines(tournamentSocket)
+    #GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
+    msg = readlines(tournamentSocket)
+
+def getMoveFromGame(tokens):
+    #get rid of the pid field
+    if(gameIDToThreadID.get(tokens[1]) == None):
+        createNewThread(tokens[1])
+        threads[gameIDToThreadID.get(tokens[1])].sendWho()
+
+    mv = MOVEMESSAGE()
 
 
 def moveProtocol():
@@ -158,11 +165,13 @@ def moveProtocol():
     msg = readlines(tournamentSocket)
     tokens = msg.split(" ")
     if(tokens[0] == "MAKE"):
-        getMoveFromGame()
+        getMoveFromGame(tokens)
+    elif(tokens[4] == "PLACE"):
+        regularMove(tokens)
     elif(tokens[4] == "TILE"):
-        specialMove()
+        specialMove(tokens)
     else:
-        regularMove()
+        forfeitMove(tokens)
 
 
 
@@ -190,6 +199,7 @@ class myThread (threading.Thread):
         self.startingTileY = 0
         self.startingTileRotation = 0
         self.playerNumber = 0
+        self.socket = 0
     def run(self):
         while True:
             if(killedThreads[self.threadID]):
@@ -214,6 +224,14 @@ class myThread (threading.Thread):
 
     def setPlayerNumber(self, num):
         self.playerNumber = num
+
+    def setTileStack(self, ts):
+        self.tileStack = ts
+
+    def setupSocket(self, port):
+        
+
+    def sendWho(self, playerNumber):
 
 
 
