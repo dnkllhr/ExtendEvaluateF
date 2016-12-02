@@ -328,7 +328,7 @@ void TurnCoordinator::receiveMessage()
             Move mv((Tile&)BoardManager::getTopTileStack(), 76, 77);
             TurnCoordinator::buildResponse(mv, buffer);
 
-            printf(":Tile Sent: %s\n", buffer->data.move.tile);
+            printf(":Tile Sent: %s at X: %d, and Y: %d\n", buffer->data.move.tile, buffer->data.move.x, buffer->data.move.y);
 
             n = write(this->mySocket, (char *)(buffer), sizeof(gameMessage));
         }
