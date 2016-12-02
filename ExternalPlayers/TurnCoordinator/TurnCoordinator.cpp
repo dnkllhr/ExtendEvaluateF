@@ -12,13 +12,11 @@ TurnCoordinator::TurnCoordinator(int port)
 
 TurnCoordinator::~TurnCoordinator()
 {
-    close(this->clientSocket);
     close(this->mySocket);
 }
 
 void TurnCoordinator::setupSocket(int portNumber)
 {
-    std::cout << "Port Number: " << portNumber << std::endl;
     /* First call to socket() function */
     std::string hostname = "localhost";
     struct hostent *server;
@@ -148,7 +146,7 @@ void TurnCoordinator::callAI()
     gameMessage *msg = new gameMessage;
     buildResponse(chosenMove, msg);
 
-    int n = write(this->clientSocket, (char *)(msg), sizeof(*msg));
+    int n = write(this->mySocket, (char *)(msg), sizeof(*msg));
 
     if (n < 0) 
     {
@@ -304,22 +302,22 @@ void TurnCoordinator::receiveMessage()
 
     while(true)
     {
-        if (this->clientSocket < 0) 
+        if (this->mySocket < 0) 
         {
             throw std::runtime_error("ERROR on accept");
         }
 
         //Clear out any previous data
         bzero(buffer, sizeof(gameMessage));
-        n = read(this->clientSocket, buffer, sizeof(gameMessage) - 1);
+        n = read(this->mySocket, buffer, sizeof(gameMessage) - 1);
 
-        if (n < 0) 
+        if (n <= 0) 
         {
             throw std::runtime_error("ERROR reading from socket");
         }
 
         //Handle message here
-        printf("%s\n", buffer);
+        printf("Length: %d, Content: %s\n", n, buffer);
         //handleMessage(msg);
     }
 }

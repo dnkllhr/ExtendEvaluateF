@@ -8,6 +8,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <signal.h>
 #include <iostream>
 #include "ProgramCoordinator.h"
 #include <vector>
@@ -27,8 +28,10 @@ int portno;
 
 std::thread ** threads;
 
+int pids[2];
 gameMessage Msgs[2];
 bool ready[2];
+bool ended[2];
 std::mutex msg_mutexes[2];
 std::condition_variable cvs[2];
 
@@ -43,6 +46,8 @@ void moveProtocol(int);
 std::string strAtIndex(std::string,int);
 struct gameMessage getMsg(int, bool=false);
 void setMsg (int , struct gameMessage, bool=false);
+void endThread(int);
+bool isEnded(int);
 int orientationFix(int);
 void gameThread(int);
 
@@ -58,7 +63,6 @@ int main(int argc, char *argv[])
 
     //SOCKET GOOD TO GO
     int sockfd = createSocket(hostname,portno);
-    std::cout << sockfd <<std::endl;
     authenticationProtocol(sockfd);
     challengeProtocol(sockfd);
 
@@ -83,11 +87,8 @@ int createSocket(std::string hostname, int portno)
     return sockfd;
 }
 
-int createServerSocket(int portno)
+int createServerSocket(int portno, int thread_num)
 {
-    std::stringstream toRun;
-    toRun << PATH_TO_GAME << " " << portno;
-
     int sockfd, newsockfd, pid;
     socklen_t clilen;
     struct sockaddr_in serv_addr, cli_addr;
@@ -106,16 +107,15 @@ int createServerSocket(int portno)
     listen(sockfd, 5);
     clilen = sizeof(cli_addr);
 
-    std::cout << "Server listening on " << portno << std::endl;
-    std::cout << toRun.str() << std::endl;
+    pids[thread_num] = fork();
 
-    system(toRun.str().c_str());
+    if (pids[thread_num] == 0) {
+        std::cout << execlp(PATH_TO_GAME, GAME_NAME, std::to_string(portno).c_str(), NULL) << std::endl;
+    }
 
-    std::cout << "Accept connection" << std::endl;
     newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
     if (newsockfd < 0) perror("ERROR on accept.");
     
-    std::cout << "Connection accepted!!!" << std::endl;
     return newsockfd; /* we never get here */
 }
 
@@ -270,23 +270,30 @@ void matchProtocol(int sockfd)
     int timeplan = stoi(strAtIndex(std::string(buffer),3));
 
     ready[0] = false;
+    ended[0] = false;
     ready[1] = false;
+    ended[1] = false;
     /* Begin new threads here!! */
     threads = new std::thread*[2];
     threads[0] = new std::thread(gameThread, 0);
     threads[1] = new std::thread(gameThread, 1);
 
     std::cout << "Send tile stack for thread 0." << std::endl;
-    setMsg(0, *msg, true);
+    setMsg(0, *msg);
     std::cout << "Send tile stack for thread 1." << std::endl;
-    setMsg(1, *msg, true);
+    setMsg(1, *msg);
     std::cout << "Send start tile for thread 0." << std::endl;
-    setMsg(0, *move, true);
+    setMsg(0, *move);
     std::cout << "Send start tile for thread 1." << std::endl;
-    setMsg(1, *move, true);
+    setMsg(1, *move);
 
     for (int i = 0; i < 2*number_tiles; i++)
         moveProtocol(sockfd);
+
+    kill(pids[0], SIGKILL);
+    kill(pids[1], SIGKILL);
+    endThread(0);
+    endThread(1);
 
     //Server: GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
     bzero(buffer,256);
@@ -324,7 +331,7 @@ void moveProtocol(int sockfd)
     //Create Move Message and Pass to INTERNAL Server
     strcpy(msg -> data.move.tile, tile.c_str());
 
-    setMsg(socketMap[gid], *msg, true);
+    setMsg(socketMap[gid], *msg);
     //Await response
     struct gameMessage newMsg = getMsg(socketMap[gid]);
 
@@ -406,9 +413,7 @@ std::string strAtIndex(std::string buffer, int index)
 
 struct gameMessage getMsg (int thread_num, bool noWait) {
     std::unique_lock<std::mutex> guard(msg_mutexes[thread_num]);
-    auto timeout = std::chrono::milliseconds(50);
-    while(!ready[thread_num] && !noWait)
-        cvs[thread_num].wait_for(guard, timeout, [thread_num, noWait](){return (ready[thread_num] || noWait);});
+    cvs[thread_num].wait(guard, [thread_num, noWait](){return (ready[thread_num]);});
 
     if (noWait && !ready[thread_num]) {
         gameMessage notValid;
@@ -425,48 +430,50 @@ struct gameMessage getMsg (int thread_num, bool noWait) {
 
 void setMsg (int thread_num, struct gameMessage message, bool noWait){
     std::unique_lock<std::mutex> guard(msg_mutexes[thread_num]);
-    auto timeout = std::chrono::milliseconds(50);
-    while (ready[thread_num]) {
-        cvs[thread_num].wait_for(guard, timeout, [thread_num](){return !ready[thread_num];});
-    }
 
     Msgs[thread_num] = message;
     ready[thread_num] = true;
     guard.unlock();
     cvs[thread_num].notify_all();
-    while (ready[thread_num] && !noWait)
-        cvs[thread_num].wait_for(guard, timeout, [thread_num, noWait](){return (!ready[thread_num] || noWait);});
+}
+
+void endThread(int thread_num) {
+    std::unique_lock<std::mutex> guard(msg_mutexes[thread_num]);
+    ended[thread_num] = true;
+}
+
+bool isEnded(int thread_num) {
+    std::unique_lock<std::mutex> guard(msg_mutexes[thread_num]);
+    return ended[thread_num];
 }
 
 void gameThread(int thread_num){
-    int socketfd = createServerSocket(portno + 1 + thread_num);
-
-    //Instaniate game
-    //if (fork() == 0) {
-    //    std::cout << "Execute Game!" << std::endl;
-    //    execl(PATH_TO_GAME, std::to_string(thread_num == 0 ? portno+1 : portno+2).c_str());
-    //}
-    //process tile and place
+    //int mySocket = createServerSocket(portno + 1 + thread_num, thread_num);
 
     std::cout << "Get TileStack! " << thread_num << std::endl;
     struct gameMessage tileStack = getMsg(thread_num);
     std::cout << "Send TileStack! " << thread_num << std::endl;
-    send(socketfd, (char*)(&tileStack), sizeof(tileStack), 0);
+    //send(mySocket, (char*)(&tileStack), sizeof(tileStack), 0);
 
     //wait for starting tile
     std::cout << "Get starting tile! " << thread_num << std::endl;
     struct gameMessage start = getMsg(thread_num);
     std::cout << "Send starting tile! " << thread_num << std::endl;
-    send(socketfd, (char*)(&start), sizeof(start), 0);
+    //send(mySocket, (char*)(&start), sizeof(start), 0);
     //process tile stack
 
-    while(true)
+    while(!isEnded(thread_num))
     {
+        std::cout << "Get tile for move. " << thread_num << std::endl;
         struct gameMessage tileForMove = getMsg(thread_num);
-        send(socketfd, (char*)(&tileForMove), sizeof(tileForMove), 0);
+        std::cout << "received and sending message!" << std::endl;
+        //send(mySocket, (char*)(&tileForMove), sizeof(tileForMove), 0);
         struct gameMessage gameMove;
-        read(socketfd, (char*)(&gameMove), sizeof(gameMove));
+        //read(mySocket, (char*)(&gameMove), sizeof(gameMove));
+        std::cout << "Reading and setting message!" << std::endl;
         setMsg(thread_num, gameMove);
+        if (isEnded(thread_num)) std::cout << "Game Ended!" << std::endl;
+        std::cout << "Game not over yet!" << std::endl;
     }
 }
 
