@@ -1,5 +1,8 @@
 #include "Regions.h"
 
+
+
+
 std::unordered_map<unsigned int, std::shared_ptr<struct regionSet> *> Regions::regionTracker = std::unordered_map<unsigned int, std::shared_ptr<struct regionSet> *>();
 
 struct meeple Regions::ownerMeeples[] = {};
@@ -8,24 +11,6 @@ unsigned int Regions::availableMeeples[2] = { MEEPLES_PER_PLAYER, MEEPLES_PER_PL
 struct croc Regions::ownerCrocs[] = {};
 unsigned int Regions::availableCrocs[2] = { CROCS_PER_PLAYER, CROCS_PER_PLAYER };
 
-/***************** Temporary! *****************/
-#include <iostream>
-
-std::ostream& operator<<(std::ostream& os, TerrainType t)
-{
-    switch(t)
-    {
-        case TerrainType::Grass: os << "Grass";    break;
-        case TerrainType::Road: os << "Road"; break;
-        case TerrainType::Castle: os << "Castle";  break;
-        case TerrainType::Church: os << "Church";   break;
-        case TerrainType::Fork: os << "Fork";   break;
-        default: os << "Invalid TerrainType";
-    }
-
-    return os;
-}
-/*************** End Temporary! ***************/
 
 int Regions::addCroc(unsigned int playerNumber, unsigned int tileID)
 {
@@ -414,7 +399,7 @@ unsigned int Regions::getMeepleTileId(unsigned int meepleIndex)
 }
 
 // This expects all 12 boardering tiles
-struct moveResult Regions::tryMove(const Tile& tile, const Tile ** boarderingTiles, int meepleEdge, bool specialMeeple) {
+struct moveResult Regions::tryMove(Tile& tile, const Tile ** boarderingTiles, int meepleEdge, bool specialMeeple) {
     // create a new unordered_map to hold our potential move so that we don't actually make the changes to our game
     std::unordered_map<unsigned int, std::shared_ptr<struct regionSet> *> myTracker;
     // iterate through the current regions and copy them to our new one

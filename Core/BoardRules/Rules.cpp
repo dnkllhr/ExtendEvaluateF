@@ -1,5 +1,26 @@
 #include "Rules.h"
 
+
+/***************** Temporary! *****************/
+#include <iostream>
+
+std::ostream& operator<<(std::ostream& os, TerrainType t)
+{
+    switch(t)
+    {
+        case TerrainType::Grass: os << "Grass";    break;
+        case TerrainType::Road: os << "Road"; break;
+        case TerrainType::Castle: os << "Castle";  break;
+        case TerrainType::Church: os << "Church";   break;
+        case TerrainType::Fork: os << "Fork";   break;
+        default: os << "Invalid TerrainType";
+    }
+
+    return os;
+}
+/*************** End Temporary! ***************/
+
+
 unsigned int GameRules::player1Score = 0;
 unsigned int GameRules::player2Score = 0;
 
@@ -309,9 +330,10 @@ unsigned int GameRules::scoreCastle(std::shared_ptr<struct regionSet> currentSet
     return score;
 }
 
-unsigned int GameRules::scoreGrass(std::shared_ptr<struct regionSet> * passedSets, unsigned int tileID, unsigned int edge, const Tile * passedTile)
+unsigned int GameRules::scoreGrass(std::shared_ptr<struct regionSet> * passedSets, unsigned int tileID, unsigned int edge, Tile * passedTile)
 {
-    //printf("enter\n");
+    //printf("passedSets addr : %X\n", passedSets);
+    //printf("passedTile addr : %X\n", passedTile);
     unsigned int score = 0;
     unsigned int leftOfEdge, rightOfEdge;
     std::unordered_map<std::shared_ptr<struct regionSet>, bool> fieldTracker;
@@ -320,13 +342,26 @@ unsigned int GameRules::scoreGrass(std::shared_ptr<struct regionSet> * passedSet
     auto tileSearch = fieldTracker.find(passedSets[edge]);
     std::shared_ptr<struct regionSet> * currentSets = passedSets;
 
-                        return 0;
-/*
-    //Iterate through the linked list of the given region
+    //std::cout << "TerrainType of right region in starting tile : " << Regions::getRegions(7)[4]->type << std::endl;
+
+    //printf("setting currentTile..\n");
+    Tile *currentTile;
+    if(passedTile != NULL)
+    {
+        //printf("passedTile is not NULL\n");
+        currentTile = passedTile;
+    }
+    else
+    {
+        //printf("passedTile is NULL\n");
+        currentTile = Board::get(tileID);
+        //printf("currentTile addr : %X\n", currentTile);
+    }
+
     while(currentNode != NULL)
     {
-        printf("tile %d has score %d", currentNode->tileID, score);
-        if ((unsigned int)currentNode->tileID == tileID) {
+        //printf("tile %d has score %d\n", currentNode->tileID, score);
+        if ((unsigned int)currentNode->tileID == tileID && (passedTile != NULL)) {
             currentSets = passedSets;
             currentTile = passedTile;
         }
@@ -334,7 +369,7 @@ unsigned int GameRules::scoreGrass(std::shared_ptr<struct regionSet> * passedSet
             //Get all of the regions for the current tileID (associated with the current node)
             currentSets = Regions::getRegions(currentNode->tileID);
             //We need the actual tile to be able to determine which regions are actually touching.
-            currentTile = Board::get(tileID);
+            currentTile = Board::get(currentNode->tileID);
         }
 
         //Init the starting values of left and right.
@@ -345,9 +380,9 @@ unsigned int GameRules::scoreGrass(std::shared_ptr<struct regionSet> * passedSet
 
 
         //Check through all edges on tile to the left of the edge inside of the region we care about
-        for(; leftOfEdge != edge; leftOfEdge--)
+        for(; leftOfEdge != currentNode->edge; leftOfEdge--)
         {
-            if(!(currentTile->isConnected(leftOfEdge, edge)))
+            if(!(currentTile->isConnected(leftOfEdge, currentNode->edge)))
             {
                 break; //Found the adjacent region
             }
@@ -358,9 +393,11 @@ unsigned int GameRules::scoreGrass(std::shared_ptr<struct regionSet> * passedSet
         }
 
         //Check through all edges on tile to the right of the edge inside of the region we care about
-        for(; rightOfEdge != edge; rightOfEdge--)
+        //printf("starting rightOfEdge at %d\n", rightOfEdge);
+        for(; rightOfEdge != currentNode->edge; rightOfEdge++)
         {
-            if(!(currentTile->isConnected(rightOfEdge, edge)))
+            //printf("rightOfEdge : %d\n", rightOfEdge);
+            if(!(currentTile->isConnected(rightOfEdge, currentNode->edge)))
             {
                 break; //Found the adjacent region
             }
@@ -370,10 +407,14 @@ unsigned int GameRules::scoreGrass(std::shared_ptr<struct regionSet> * passedSet
             }
         }
 
+        //printf("tileID : %d starting edge : %d leftOfEdge : %d rightOfEdge : %d\n",currentTile->getId(), currentNode->edge, leftOfEdge, rightOfEdge);
+
         tileSearch = fieldTracker.find(currentSets[leftOfEdge]);
         //If we haven't scored this region before, and leftOfEdge hasn't looped back around
         if(leftOfEdge != edge && tileSearch == fieldTracker.end())
         {
+            //printf("Found region with tileID %d at edge %d with type %d on left of desired edge %d at tileID %d\n", currentSets[leftOfEdge]->head->tileID, 
+            //        currentSets[leftOfEdge]->head->edge, currentSets[leftOfEdge]->type, edge, currentTile->getId());
             if((currentSets[leftOfEdge]->type == TerrainType::Church) && (currentSets[leftOfEdge]->edgesTillCompletion == 0))
             {
                 //Score it, and add it to the hash map
@@ -384,6 +425,8 @@ unsigned int GameRules::scoreGrass(std::shared_ptr<struct regionSet> * passedSet
             else if((currentSets[leftOfEdge]->type == TerrainType::Castle) && (currentSets[leftOfEdge]->edgesTillCompletion == 0))
             {
                 //Score it, and add it to the hash map
+                //printf("found castle connected to tile %d edge %d, next to field connected to tile %d edge %d\n", 
+                 //   currentSets[leftOfEdge]->head->tileID, currentSets[leftOfEdge]->head->edge, currentNode->tileID, currentNode->edge);
                 score += FIELD_CASTLE_VALUE;
                 //Add the region to the hash map to make sure we don't re-score it.
                 fieldTracker[currentSets[leftOfEdge]] = true;
@@ -404,15 +447,17 @@ unsigned int GameRules::scoreGrass(std::shared_ptr<struct regionSet> * passedSet
             else if((currentSets[rightOfEdge]->type == TerrainType::Castle) && (currentSets[rightOfEdge]->edgesTillCompletion == 0))
             {
                 //Score it, and add it to the hash map
+                //printf("found castle connected to tile %d edge %d, next to field connected to tile %d edge %d\n", 
+                //    currentSets[leftOfEdge]->head->tileID, currentSets[leftOfEdge]->head->edge, currentNode->tileID, currentNode->edge);
                 score += FIELD_CASTLE_VALUE;
                 //Add the region to the hash map to make sure we don't re-score it.
                 fieldTracker[currentSets[rightOfEdge]] = true;
             }
         }
+        //if(currentNode->next != NULL) printf("Current Node : %d Next Node : %d\n", currentNode->tileID, currentNode->next->tileID);
         currentNode = currentNode->next;
     }
     return score;
-    */
 }
 
 unsigned int GameRules::scoreChurch(unsigned int tilesSurrounded, bool actuallyScore)
@@ -432,7 +477,7 @@ unsigned int GameRules::scoreChurch(unsigned int tilesSurrounded, bool actuallyS
     return score;
 }
 
-unsigned int GameRules::getCurrentScore(std::shared_ptr<struct regionSet> * currentRegion, unsigned int edge, const Tile * tile, unsigned int tilesSurrounded)
+unsigned int GameRules::getCurrentScore(std::shared_ptr<struct regionSet> * currentRegion, unsigned int edge, Tile * tile, unsigned int tilesSurrounded)
 {
     unsigned int returnValue = 0;
 

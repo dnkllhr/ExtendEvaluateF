@@ -31,7 +31,7 @@ class BoardManager {
 		/// Returns whether the given tile is fully surrounded by other tiles
 		static unsigned int isSurrounded(int tileID);
         //Entry points for functions needed by the AI
-        static struct moveResult tryMove(const Tile& tile, int meepleEdge = -1, bool specialMeeple = false);
+        static struct moveResult tryMove(Tile& tile, int meepleEdge = -1, bool specialMeeple = false);
 
         //Handle special cases.
         static void cannotPlaceTile(const Move& move, unsigned int playerNumber);

@@ -605,7 +605,7 @@ TEST(RulesTest, scoreGrass)
     currentTile = &tileT;
     //testingTilePlacement(&startID, 72, 73, currentTile, surroundingTiles);
 
-    BoardManager::makeMove(Move(*currentTile, Coord(76, 75), 2), 1);
+    BoardManager::makeMove(Move(*currentTile, Coord(75, 77), 2), 1);
     //printf("tile\n");
 
 
@@ -621,18 +621,18 @@ TEST(RulesTest, scoreGrass)
     currentTile = &tileD2;
     //testingTilePlacement(&startID, 72, 73, currentTile, surroundingTiles);
 
-    BoardManager::makeMove(Move(*currentTile, Coord(76, 75)), 1);
+    BoardManager::makeMove(Move(*currentTile, Coord(77, 76), 2), 1);
     //printf("tile\n");
 
 
-    Tile tileD = (Tile::CreateTileD(1, startID, PreyType::None)[0]); //No prey, starting tile
-    currentTile = &tileD;
+    Tile tileV2 = (Tile::CreateTileV(1, startID, PreyType::None)[0]); //No prey, starting tile
+    currentTile = &tileV2;
     //testingTilePlacement(&startID, 72, 73, currentTile, surroundingTiles);
 
     BoardManager::makeMove(Move(*currentTile, Coord(77, 77), 3), 1);
     //printf("tile\n");
 
-
+    /*
     Tile tileN = (Tile::CreateTileN(1, startID, PreyType::None)[0]); //No prey, starting tile
     currentTile = &tileN;
     //testingTilePlacement(&startID, 72, 73, currentTile, surroundingTiles);
@@ -645,18 +645,26 @@ TEST(RulesTest, scoreGrass)
     currentTile = &tileZ;
     //testingTilePlacement(&startID, 72, 73, currentTile, surroundingTiles);
     unsigned int grassGrass = tileZ.getId();
-
+    
     BoardManager::makeMove(Move(*currentTile, Coord(77, 75)), 1);
     //printf("tile\n");
+    */
 
+    std::shared_ptr<struct regionSet> *currentSets = Regions::regionTracker[tileV.getId()];
+    /*
+    printf("currentSets addr : %X\n", currentSets);
+    printf("head tileID : %d\n", currentSets[10]->head->tileID);
+    printf("can access head\n");
+    */
+    unsigned int returnGrassScore = GameRules::scoreGrass(currentSets, tileV.getId(), 0);
+    unsigned int realGrassScore = 0; //5 pt for completed lake + 3 pts for completed den
 
+    EXPECT_EQ(returnGrassScore, realGrassScore);
 
-    std::shared_ptr<struct regionSet> *currentSets = Regions::regionTracker[grassGrass];
-    //printf("sets?\n");
-    unsigned int returnGrassScore = GameRules::scoreGrass(currentSets, grassGrass, 10);
-    unsigned int realGrassScore = 3; //5 pt for completed lake + 3 pts for completed den
+    returnGrassScore = GameRules::scoreGrass(currentSets, tileV.getId(), 2);
+    realGrassScore = 3; //5 pt for completed lake + 3 pts for completed den
 
-                                EXPECT_EQ(returnGrassScore, 0);
+    EXPECT_EQ(returnGrassScore, realGrassScore);
 }
 
 /*
