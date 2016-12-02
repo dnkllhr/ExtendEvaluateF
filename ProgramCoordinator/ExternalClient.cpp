@@ -75,17 +75,19 @@ int createSocket(std::string hostname, int portno)
 
     bzero((char *) &serv_addr, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
-    bcopy((char *)server->h_addr,
-         (char *)&serv_addr.sin_addr.s_addr,
-         server->h_length);
+    bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length);
     serv_addr.sin_port = htons(portno);
-    connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr));
+    if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) > 0)
+        perror("ERROR connecting socket");
 
     return sockfd;
 }
 
 int createServerSocket(int portno)
 {
+    std::stringstream toRun;
+    toRun << PATH_TO_FILE << " " << portno;
+
     int sockfd, newsockfd, pid;
     socklen_t clilen;
     struct sockaddr_in serv_addr, cli_addr;
@@ -104,12 +106,16 @@ int createServerSocket(int portno)
     listen(sockfd, 5);
     clilen = sizeof(cli_addr);
 
-    system(PATH_TO_GAME);
+    std::cout << "Server listening on " << portno << std::endl;
 
-    newsockf = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+    system(toRun.str());
+
+    std::cout << "Accept connection" << std::endl;
+    newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
     if (newsockfd < 0) perror("ERROR on accept.");
     
-    return sockfd; /* we never get here */
+    std::cout << "Connection accepted!!!" << std::endl;
+    return newsockfd; /* we never get here */
 }
 
 //AUTHENTICATION PROTOCOL

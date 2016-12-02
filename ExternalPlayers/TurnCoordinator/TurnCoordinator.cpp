@@ -7,8 +7,6 @@ TurnCoordinator::TurnCoordinator(int port)
     this->AISetup = false;
     this->ourPlayerNumber = 0;
     this->otherPlayerNumber = 0;
-    this->myAddr = new struct sockaddr_in;
-    this->clientAddr = new struct sockaddr_in;
     setupSocket(port);
 }
 
@@ -20,7 +18,9 @@ TurnCoordinator::~TurnCoordinator()
 
 void TurnCoordinator::setupSocket(int portNumber)
 {
+    std::cout << "Port Number: " << portNumber << std::endl;
     /* First call to socket() function */
+    std::string hostname = "localhost";
     struct hostent *server;
     this->mySocket = socket(AF_INET, SOCK_STREAM, 0);
    
@@ -28,21 +28,21 @@ void TurnCoordinator::setupSocket(int portNumber)
     {
         throw std::runtime_error("ERROR opening socket");
     }
-    server = gethostbyname("localhost");
+    server = gethostbyname(hostname.c_str());
     if (server == NULL)
     {
         throw std::runtime_error("ERROR can't gethostbyname()");
     }
    
     /* Initialize socket structure */
-    bzero((char *) this->myAddr, sizeof(*this->myAddr));
+    bzero((char *) &this->myAddr, sizeof(this->myAddr));
    
-    this->myAddr->sin_family = AF_INET;
-    bcopy((char *)server->h_addr, (char *)&this->clientAddr->sin_addr.s_addr, server->h_length);
-    this->myAddr->sin_port = htons(portNumber);
+    this->myAddr.sin_family = AF_INET;
+    bcopy((char *)server->h_addr, (char *)&this->myAddr.sin_addr.s_addr, server->h_length);
+    this->myAddr.sin_port = htons(portNumber);
    
    /* Now bind the host address using bind() call.*/
-    if (connect(this->mySocket, (struct sockaddr *) this->clientAddr, sizeof(this->clientAddr)) < 0) 
+    if (connect(this->mySocket, (struct sockaddr *)&this->myAddr, sizeof(this->myAddr)) < 0) 
     {
         throw std::runtime_error("ERROR connecting socket");
     }

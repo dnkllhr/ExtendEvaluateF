@@ -44,8 +44,7 @@ private:
     bool AISetup;
     int mySocket;
     int clientSocket;
-    struct sockaddr_in *myAddr;
-    struct sockaddr_in *clientAddr;
+    struct sockaddr_in myAddr;
 };
 
 
