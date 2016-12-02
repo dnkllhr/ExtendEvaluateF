@@ -330,14 +330,7 @@ void TurnCoordinator::receiveMessage()
 
             printf(":Tile Sent: %s\n", buffer->data.move.tile);
 
-            printf("byte ");
-            for (int i = 0; i < sizeof(gameMessage); i++)
-            {
-                printf(" %c", ((char *)buffer)[i]);
-
-            }
             n = write(this->mySocket, (char *)(buffer), sizeof(gameMessage));
-            printf("\nSENT %d BYTES OF DATA OUT OF %d bytes\n", n, sizeof(gameMessage));
         }
         i++;
         //handleMessage(msg);
