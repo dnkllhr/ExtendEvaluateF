@@ -86,7 +86,7 @@ int createSocket(std::string hostname, int portno)
 int createServerSocket(int portno)
 {
     std::stringstream toRun;
-    toRun << PATH_TO_FILE << " " << portno;
+    toRun << PATH_TO_GAME << " " << portno;
 
     int sockfd, newsockfd, pid;
     socklen_t clilen;
@@ -107,8 +107,9 @@ int createServerSocket(int portno)
     clilen = sizeof(cli_addr);
 
     std::cout << "Server listening on " << portno << std::endl;
+    std::cout << toRun.str() << std::endl;
 
-    system(toRun.str());
+    system(toRun.str().c_str());
 
     std::cout << "Accept connection" << std::endl;
     newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
