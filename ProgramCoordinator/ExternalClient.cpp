@@ -112,7 +112,7 @@ int createServerSocket(int portno, int thread_num)
     pids[thread_num] = fork();
 
     if (pids[thread_num] == 0) {
-        std::cout << execlp(PATH_TO_GAME, GAME_NAME, std::to_string(portno).c_str(), NULL) << std::endl;
+        std::cout << "Trying to execlp " << execlp(PATH_TO_GAME, GAME_NAME, std::to_string(portno).c_str(), NULL) << std::endl;
     }
 
     newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
@@ -147,7 +147,7 @@ void authenticationProtocol(int sockfd)
 
     //Server: HELLO!
         mystring = dynamicRead(sockfd);
-    printf("%s\n",buffer);
+    //printf("%s\n",buffer);
 
    //Client: I AM <username> <password>
     s.assign(USERNAME);
@@ -160,7 +160,7 @@ void authenticationProtocol(int sockfd)
 
     //Server: WELCOME <pid> PLEASE WAIT FOR THE NEXT CHALLENGE
         mystring = dynamicRead(sockfd);
-    printf("%s\n",buffer);
+    //printf("%s\n",buffer);
     pid = strAtIndex(mystring,1);
 }
 
@@ -177,7 +177,7 @@ std::string getStringAtTokenIndex(std::string input, int index)
             if(count == index)
             {
                 start = i;
-                printf("start char : %c", input.at(i));
+                //printf("start char : %c", input.at(i));
             }
         }
         if(start != 0 && (input.at(i) == '\r' || input.at(i) == ' '))
@@ -256,7 +256,7 @@ void matchProtocol(int sockfd)
 
     //Server: STARTING TILE IS <tile> AT <x> <y> <orientation>
         mystring = dynamicRead(sockfd);
-    printf("%s\n",buffer);
+    //printf("%s\n",buffer);
     tile = getStringAtTokenIndex(mystring, 3);
     x = stoi(getStringAtTokenIndex(mystring, 5));
     y = stoi(getStringAtTokenIndex(mystring, 6));
@@ -369,7 +369,7 @@ void moveProtocol(int sockfd)
 
     //Server: MAKE YOUR MOVE IN GAME <gid> WITHIN <timemove> SECOND: MOVE <#> PLACE <tile>
         mystring = dynamicRead(sockfd);
-    printf("%s\n",buffer);
+    //printf("%s\n",buffer);
 
     gid = strAtIndex(mystring,5);
 
@@ -436,7 +436,7 @@ void moveProtocol(int sockfd)
       //Server: GAME <gid> MOVE <#> PLAYER <pid> <move>
       bzero(buffer,256);
       mystring = dynamicRead(sockfd);
-      printf("%s\n",buffer);
+      //printf("%s\n",buffer);
 
       std::vector<std::string> split;
       std::string s;
@@ -584,20 +584,20 @@ struct gameMessage getMsg (int thread_num, bool noWait) {
 }
 
 void setMsg (int thread_num, struct gameMessage message, bool noWait){
-    printf("Creating lock\n");
+    //printf("Creating lock\n");
     std::unique_lock<std::mutex> guard(msg_mutexes[thread_num]);
-    printf("waiting on  lock\n");
+    //printf("waiting on  lock\n");
     cvs[thread_num].wait(guard, [thread_num, noWait](){return !ready[thread_num];});
-    printf("loading msg\n");
+    //printf("loading msg\n");
 
     Msgs[thread_num] = message;
-    printf("getting ready\n");
+    //printf("getting ready\n");
     ready[thread_num] = true;
-    printf("unlock\n");
+    //printf("unlock\n");
     guard.unlock();
-    printf("notify\n");
+    //printf("notify\n");
     cvs[thread_num].notify_all();
-    printf("done\n");
+    //printf("done\n");
 }
 
 void endThread(int thread_num) {
@@ -698,6 +698,6 @@ std::string dynamicRead(int sock)
     //i++;
     std::string ret(output, output + i + 1);
     //printf("char array : %s", output);
-    std::cout << "string returning : " << ret << std::endl;
+    // /std::cout << "string returning : " << ret << std::endl;
     return ret; 
 }
