@@ -13,7 +13,7 @@ class Move {
         bool getHasCrocodile() const;
         bool getPlacesTile() const;
         bool getPickupMeeple() const;
-        bool getPlaceExtraMeeple() const;
+        bool getPlacesExtraMeeple() const;
 
         friend std::ostream &operator<<(std::ostream &out, Move move);
 
@@ -49,6 +49,7 @@ class Move {
 
         bool placesTile;
         bool pickupMeeple;
+        bool placesExtraMeeple;
 };
 
 #endif
