@@ -60,9 +60,3 @@ Each time you want to build and run the tests, simply execute the following comm
 [//]: # (a detailed list of all the known bugs/issues needing to be addressed (if the repository system has an issue tracking system, record the issues there)
 
 See the Issues page.
-
-Bug(s):
-Networking – turnCoordinator tests are failing due to attempts of connecting to a socket that doesn’t exist. Therefore, when you make tests, if you have a server at a particular port, the tests will not pass.
-
-Limitation(s):
-AI – the AI does not look far ahead and because it does not know the current state of the meeple or meepleAvailable, it does not know to ration them. The AI is expected to place 7 meeples in the most optimal wat and close out regions to get more.
