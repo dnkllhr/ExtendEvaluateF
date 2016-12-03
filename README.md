@@ -9,10 +9,9 @@
 | Brett Simons  | brettsimons  |
 | Cody Lent  | IronMage |
 | Michael Riccardi | MichaelRiccardi |
-| John Randall | jrandall1 |
+| John Randall | jrandall1 **AND** johnrich340@live.com |
 | Hong-Nhi Le | hnle04 |
-| Jacob Mellinger | jacobmellinger |
-
+| Jacob Mellinger | jacobmellinger **AND** jacobmellinger1 |
 
 ## Architecture & Design Documentation
 
@@ -20,9 +19,7 @@
 
 **NOTE: This has not been tested on Windows. Everything has been verified to work using Unix G++ compilers supporting C++14.**
 
-More in-depth documents are stored in the Documents folder. At the top level, in ProgramCoordinator, we have ExternalClient.cpp. ExternalClient is the executable which talks to the Tournament Server and spawns instances of the game. In Core/Entry-Points is where the main function for the Game instance is located. From there, TurnManager orchestrates the communication between the ExternalClient, the AI, and the BoardManager. The AI uses all of the functions provided by the BoardManager, Regions, Rules, and Board so that it can make the most accurate prediction for the highest scoring move. The BoardManager uses the Board, Tiles, Regions, and Rules to make moves, manage what is on the board, and track regions.
-
-**TODO: Provide links here!**
+More in-depth documents are stored in the [Documents](https://github.com/MichaelRiccardi/TigerZone/tree/master/Documents) folder. At the top level, in ProgramCoordinator, we have ExternalClient.cpp. ExternalClient is the executable which talks to the Tournament Server and spawns instances of the game. In Core/Entry-Points is where the main function for the Game instance is located. From there, TurnManager orchestrates the communication between the ExternalClient, the AI, and the BoardManager. The AI uses all of the functions provided by the BoardManager, Regions, Rules, and Board so that it can make the most accurate prediction for the highest scoring move. The BoardManager uses the Board, Tiles, Regions, and Rules to make moves, manage what is on the board, and track regions.
 
 ## Our Client
 
