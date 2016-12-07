@@ -32,7 +32,7 @@ struct moveMessage
     unsigned int x;              //X coordinate
     unsigned int y;              //Y coordinate
     unsigned int orientation;    //Orientation using network protocol offsets
-    int meepleType;     //0: NONE    1: TIGER    2: CROC
+    int meepleType;     //0: NONE    1: TIGER    2: CROC  3: GOAT
     bool pickupMeeple;
     bool placeSpecialTiger;
     bool pass;

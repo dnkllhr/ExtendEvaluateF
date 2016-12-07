@@ -15,6 +15,9 @@
 #define CROCS_PER_PLAYER   2
 #define TOTAL_CROCS        (CROCS_PER_PLAYER * 2)
 
+#define GOATS_PER_PLAYER 3
+#define TOTAL_GOATS (GOATS_PER_PLAYER * 2)
+
 #define OWNER_P1        1
 #define OWNER_TIE       0
 #define OWNER_P2        -1
@@ -160,5 +163,16 @@ struct croc
     bool inUse;
     std::shared_ptr<struct regionSet> *ownedRegions;
 };
+
+struct goat
+{
+  goat()
+  {
+    ownedRegions = NULL;
+    inUse = false;
+  };
+  bool inUse;
+  std::shared_ptr<struct regionSet> *ownedRegions;
+}
 
 #endif

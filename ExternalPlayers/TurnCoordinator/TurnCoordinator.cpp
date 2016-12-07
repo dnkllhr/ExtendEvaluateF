@@ -21,8 +21,8 @@ void TurnCoordinator::setupSocket(int portNumber)
     std::string hostname = "localhost";
     struct hostent *server;
     this->mySocket = socket(AF_INET, SOCK_STREAM, 0);
-   
-    if (this->mySocket < 0) 
+
+    if (this->mySocket < 0)
     {
         throw std::runtime_error("ERROR opening socket");
     }
@@ -31,17 +31,17 @@ void TurnCoordinator::setupSocket(int portNumber)
     {
         throw std::runtime_error("ERROR can't gethostbyname()");
     }
-   
+
     /* Initialize socket structure */
     bzero((char *) &this->myAddr, sizeof(this->myAddr));
-   
+
     this->myAddr.sin_family = AF_INET;
     bcopy((char *)server->h_addr, (char *)&this->myAddr.sin_addr.s_addr, server->h_length);
     this->myAddr.sin_port = htons(portNumber);
-   
+
 #ifndef __testing
    /* Now bind the host address using bind() call.*/
-    if (connect(this->mySocket, (struct sockaddr *)&this->myAddr, sizeof(this->myAddr)) < 0) 
+    if (connect(this->mySocket, (struct sockaddr *)&this->myAddr, sizeof(this->myAddr)) < 0)
     {
         throw std::runtime_error("ERROR connecting socket");
     }
@@ -120,10 +120,13 @@ void TurnCoordinator::buildResponse(Move& move, gameMessage *gMsg)
     gMsg->data.move.x = move.getCoord().getX();
     gMsg->data.move.y = move.getCoord().getY();
     gMsg->data.move.orientation = move.getTile().getRotation();
-    
+
     if(move.getHasCrocodile())
     {
         gMsg->data.move.meepleType = 2; //Croc Type
+    }
+    else if(move.getHasGoat()){
+        gMsg->data.move.meepleType = 3;
     }
     else if(move.getMeepleLocation() != -1)
     {
@@ -156,7 +159,7 @@ void TurnCoordinator::callAI()
 
     int n = write(this->mySocket, (char *)(msg), sizeof(*msg));
 
-    if (n < 0) 
+    if (n < 0)
     {
         throw std::runtime_error("ERROR writing to socket");
     }
@@ -267,7 +270,7 @@ void TurnCoordinator::handleMessage(gameMessage *msg)
             }
             else
             {
-                if(!strcmp((BoardManager::getTopTileStack()).getTileName().c_str(), msg->data.move.tile)) 
+                if(!strcmp((BoardManager::getTopTileStack()).getTileName().c_str(), msg->data.move.tile))
                 {
                     throw std::logic_error("Top of the tile stack and current tile move do not match");
                 }
@@ -283,7 +286,7 @@ void TurnCoordinator::handleMessage(gameMessage *msg)
             else
             {
                 this->otherPlayerNumber = 1;
-                this->ourPlayerNumber = 2;                
+                this->ourPlayerNumber = 2;
             }
             setUpAI();
             break;
@@ -312,7 +315,7 @@ void TurnCoordinator::receiveMessage()
 
     while(true)
     {
-        if (this->mySocket < 0) 
+        if (this->mySocket < 0)
         {
             throw std::runtime_error("ERROR on accept");
         }
@@ -321,7 +324,7 @@ void TurnCoordinator::receiveMessage()
         bzero(buffer, sizeof(gameMessage));
         n = read(this->mySocket, buffer, sizeof(gameMessage) - 1);
 
-        if (n < 0) 
+        if (n < 0)
         {
             throw std::runtime_error("ERROR reading from socket");
         }
@@ -354,5 +357,3 @@ void TurnCoordinator::receiveMessage()
         //handleMessage(msg);
     }
 }
-
-
