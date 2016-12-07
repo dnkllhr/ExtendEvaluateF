@@ -160,6 +160,25 @@ bool GameRules::hasCroc(unsigned int tileID)
     return false;
 }
 
+bool GameRules::hasGoat(unsigned int tileID)
+{
+    std::shared_ptr<struct regionSet> * regions = Regions::getRegions(tileID);
+
+    if(regions == nullptr)
+    {
+        return false;
+    }
+
+    for(int i = 0; i < NUM_TILE_EDGES + 1; i++)
+    {
+        if(regions[i] != NULL && regions[i]->hasGoat)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool GameRules::validCrocPlacement(unsigned int tileID)
 {
     const Tile *currentTile = Board::get(tileID);
@@ -178,7 +197,7 @@ bool GameRules::validCrocPlacement(unsigned int tileID)
         return false;
     }
 
-    return !(GameRules::hasCroc(tileID));
+    return !(GameRules::hasGoat(tileID));
 }
 
 
@@ -189,6 +208,15 @@ bool GameRules::checkSideForCroc(unsigned int x, unsigned int y)
     if(sideTile == nullptr) return false;
     unsigned int tileID = sideTile->getId();
     return hasCroc(tileID);  //If the adjacent tile regions return valid move, no croc.
+}
+
+bool GameRules::checkSideForCroc(unsigned int x, unsigned int y)
+{
+    Coord sideCoord = Coord(x,y);
+    Tile* sideTile = Board::get(sideCoord);
+    if(sideTile == nullptr) return false;
+    unsigned int tileID = sideTile->getId();
+    return hasGoat(tileID);  //If the adjacent tile regions return valid move, no goat.
 }
 
 bool GameRules::validCrocPlacement(const Tile& toPlace, const Coord& location)
@@ -227,6 +255,49 @@ bool GameRules::validCrocPlacement(const Tile& toPlace, const Coord& location)
     }
 
     else if(checkSideForCroc(currentX, currentY + 1)) //Croc exists
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool GameRules::validGoatPlacement(const Tile& toPlace, const Coord& location)
+{
+    int currentX = location.getX();
+    int currentY = location.getY();
+
+    bool valid = false;
+    for(int i = 0; i < NUM_TILE_EDGES + 1; i++)
+    {
+        if(toPlace.getTerrainType(i) == TerrainType::Road || toPlace.getTerrainType(i) == TerrainType::Castle)
+        {
+            valid = true;
+            break;
+        }
+    }
+
+    if(!valid)
+    {
+        return false;
+    }
+
+    if(checkSideForGoat(currentX - 1, currentY)) //Croc exists
+    {
+        return false;
+    }
+
+    else if(checkSideForGoat(currentX + 1, currentY)) //Croc exists
+    {
+        return false;
+    }
+
+    else if(checkSideForGoat(currentX, currentY - 1)) //Croc exists
+    {
+        return false;
+    }
+
+    else if(checkSideForGoat(currentX, currentY + 1)) //Croc exists
     {
         return false;
     }

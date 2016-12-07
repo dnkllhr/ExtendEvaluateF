@@ -40,6 +40,7 @@ int BoardManager::setupHashMap()
     BoardManager::getTileFunctionFromName["LJTJ-"] = 26;    //Tile::CreateTileZ;
     BoardManager::getTileFunctionFromName["LJTJD"] = 27;    //Tile::CreateTileZ;
     BoardManager::getTileFunctionFromName["TLLLC"] = 20;    //Tile::CreateTileZ;
+    BoardManager::getTileFunctionFromName["LTLT-"] = 28;
     return 0;
 }
 

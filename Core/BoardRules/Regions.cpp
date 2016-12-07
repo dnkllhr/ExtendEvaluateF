@@ -11,6 +11,45 @@ unsigned int Regions::availableMeeples[2] = { MEEPLES_PER_PLAYER, MEEPLES_PER_PL
 struct croc Regions::ownerCrocs[] = {};
 unsigned int Regions::availableCrocs[2] = { CROCS_PER_PLAYER, CROCS_PER_PLAYER };
 
+struct goat Regions::ownerGoats[] = {};
+unsigned int Regions::availableGoats[2] = { GOATS_PER_PLAYER, GOATS_PER_PLAYER};
+
+int Regions::addGoat(unsigned int playerNumber, unsigned int tileID)
+{
+    unsigned int i;
+    bool valid = false;
+    for(i = (playerNumber -  1)*(GOATS_PER_PLAYER); i < ((playerNumber - 1)*(GOATS_PER_PLAYER) + (GOATS_PER_PLAYER)); i++)
+    {
+        if(!(ownerGoats[i].inUse))
+        {
+            valid = true;
+// -- logically we should break and use this croc index i? --
+            break;
+// ----------------------------------------------------------
+        }
+    }
+    if(!valid)
+    {
+        return -1;
+    }
+
+    if(GameRules::validCrocPlacement(tileID))
+    {
+        ownerGoats[i].inUse = true;
+        ownerGoats[i].ownedRegions = (regionTracker.find(tileID))->second;
+
+        for(int j = 0; j < NUM_TILE_EDGES; j++)
+        {
+            ownerGoats[i].ownedRegions[j]->hasCroc = true;
+        }
+        Regions::availableGoats[playerNumber - 1]--;
+
+        return 0;
+    }
+
+    return -1;
+}
+
 
 int Regions::addCroc(unsigned int playerNumber, unsigned int tileID)
 {

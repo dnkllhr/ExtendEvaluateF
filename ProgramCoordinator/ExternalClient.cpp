@@ -345,13 +345,16 @@ void matchProtocol(int sockfd)
     endThread(0);
     endThread(1);
 
-    //Server: GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
+    //Server: GAME <gid> OVER SEND OUTCOMES
+    mystring = dynamicRead(sockfd);
+
+   /* //Server: GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
         mystring = dynamicRead(sockfd);
     //printf("%s\n",buffer);
 
     //Server: GAME <gid> OVER PLAYER <pid> <score> PLAYER <pid> <score>
         mystring = dynamicRead(sockfd);
-    //printf("%s\n",buffer);
+    //printf("%s\n",buffer);*/
 }
 
 // pass msg and move to threads

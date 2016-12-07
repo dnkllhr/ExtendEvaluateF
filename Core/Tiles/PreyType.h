@@ -8,6 +8,7 @@ enum class PreyType {
     Buffalo = 1,
     Boar = 2,
     Croc = 3,
+    Goat = 4,
     None
 };
 

@@ -33,6 +33,7 @@ Array<Array<Tile>> Tile::CreateTiles() {
     arrayOfTiles[25] = Tile::CreateTileY(1, startId, PreyType::None);
     arrayOfTiles[26] = Tile::CreateTileZ(1, startId, PreyType::None);
     arrayOfTiles[27] = Tile::CreateTileZ(2, startId, PreyType::Deer);
+    arrayOfTiles[28] = Tile::CreateTileAA(2, startId, PreyType::None);
 
     return arrayOfTiles;
 }
@@ -179,6 +180,46 @@ Array<Tile> Tile::CreateTileA(unsigned int tileCount, unsigned int& startId, Pre
         TerrainType::Grass, TerrainType::Grass, TerrainType::Grass,
         TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
         TerrainType::Grass, TerrainType::Grass, TerrainType::Grass
+    };
+
+    newTile.center = TerrainType::Church;
+    newTile.edgeConnections = new unsigned int[(newTile.numberSides * newTile.countPerSide)] {
+        0b111101111111,
+        0b111101111111,
+        0b111101111111,
+        0b111101111111,
+        0b111101111111,
+        0b111101111111,
+        0b111101111111,
+        0b000010000000,
+        0b111101111111,
+        0b111101111111,
+        0b111101111111,
+        0b111101111111
+    };
+
+    Array<Tile> newTiles(tileCount);
+
+    for (unsigned int i = 0; i < tileCount; i++) {
+        newTiles[i] = newTile;
+        newTiles[i].tileId = startId++;
+    }
+
+    return newTiles;
+}
+
+Array<Tile> Tile::CreateTileAA(unsigned int tileCount, unsigned int& startId, PreyType preyType) {
+    Tile newTile;
+
+    newTile.tileName = new std::string("LTLT-");
+    newTile.prey = preyType;
+    newTile.tileType = TileType::AA;
+
+    newTile.edges = new TerrainType[(newTile.numberSides * newTile.countPerSide)] {
+        TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
+        TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
+        TerrainType::Castle, TerrainType::Castle, TerrainType::Castle,
+        TerrainType::Grass, TerrainType::Road, TerrainType::Grass,
     };
 
     newTile.center = TerrainType::Church;
