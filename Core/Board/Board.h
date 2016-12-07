@@ -1,6 +1,6 @@
 #ifndef __BOARD_H
 #define __BOARD_H
-#define NUMBER_OF_PLAYABLE_TILES 76
+#define NUMBER_OF_PLAYABLE_TILES 78
 
 #include "../../Common/Array.h"
 #include "../Tiles/Tile.h"
